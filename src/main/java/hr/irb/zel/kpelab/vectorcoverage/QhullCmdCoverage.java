@@ -1,5 +1,6 @@
 package hr.irb.zel.kpelab.vectorcoverage;
 
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.List;
 /** Calculates coverage via qhull command line invocation. */
 public class QhullCmdCoverage implements ICoverageCalculator {
   
-    private static final String command = "/home/dam1root/software/qhull-2012.1/bin/qconvex";
+    private static final String command = KpeConfig.getProperty("qhull.exec");
     private static final String args = "FS";
     
     public CoverageMeasures calculateCoverage(List<IRealVector> vectors) 

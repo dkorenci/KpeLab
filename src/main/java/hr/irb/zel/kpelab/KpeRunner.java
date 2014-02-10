@@ -8,6 +8,7 @@ import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.experiments.HulthCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
+import hr.irb.zel.kpelab.experiments.SimilarityExperiments;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorMemMap;
 import hr.irb.zel.kpelab.extraction.TfidfKpextractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
@@ -29,8 +30,7 @@ public class KpeRunner {
     public static void main(String[] args) throws Exception {
         start(); // init environment                
         
-        //testStemming();
-        //SimilarityExperiments.expWS353ESA();
+        //testStemming();       
         //testWordStemming();
         //ExtractionExperiments.esacovCorpus(10);
         //ExtractionExperiments.randomCorpus(10);
@@ -41,7 +41,10 @@ public class KpeRunner {
         //printPhrases("Training/639.abstr");
         //printPhrases("Training/90.abstr");
         //ws353vectorSims();
-        SemevalCorpusExperiments.singleDocOpenNLPPos();
+        //SemevalCorpusExperiments.singleDocOpenNLPPos();
+        
+        SimilarityExperiments.expWS353ESA();
+        //SimilarityExperiments.expWS353LSI();
         
         end(); // finalize environment
     }

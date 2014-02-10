@@ -1,5 +1,6 @@
 package hr.irb.zel.kpelab.corpus.semeval;
 
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import java.io.File;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class CorpusSemeval {
 
-    public static String corpusLocation = "/data/datasets/kpe/SemEval2010/";        
+    private static final String corpusLocation = KpeConfig.getProperty("corpus.semeval");            
     
     /** Get "trial" subset of the dataset. */
     public static List<KpeDocument> getTrial(SolutionPhraseSet phSet) throws IOException {

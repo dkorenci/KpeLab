@@ -5,6 +5,7 @@
 
 package hr.irb.zel.kpelab.corpus.hulth;
 
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  */
 public class CorpusHulth {
-    public static String corpusLocation = "/data/datasets/kpe/Hulth2003/";
+    public static final String corpusLocation = KpeConfig.getProperty("corpus.semeval");
     
     /** Get all documents form one of the 'Test','Training' or 'Validation' folders.       
      * @param readPhrases weather to read solution keyphrases for a document or not

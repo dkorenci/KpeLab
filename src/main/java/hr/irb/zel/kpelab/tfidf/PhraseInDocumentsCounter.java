@@ -1,5 +1,6 @@
 package hr.irb.zel.kpelab.tfidf;
 
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
@@ -26,7 +27,7 @@ public class PhraseInDocumentsCounter {
     private int numDocuments;
     
     // folder for saving counters
-    private static String repositoryFolder = "/data/rudjer/code/kpe/KpeLab/file_cache/"; 
+    private static final String repositoryFolder = KpeConfig.getProperty("cache.folder"); 
     
     /** Create counter by extracting phrases from collection and counting occurrences. */
     public PhraseInDocumentsCounter(Collection<KpeDocument> docs, IPhraseExtractor phExtr) throws Exception {

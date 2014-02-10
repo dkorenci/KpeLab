@@ -1,0 +1,22 @@
+#datasets
+corpus.semeval = /data/datasets/kpe/SemEval2010
+corpus.hulth = /data/datasets/kpe/Hulth2003
+dataset.ws353 = /data/datasets/kpe/wordsim353/combined.csv
+
+#caching
+cache.folder = /data/rudjer/code/kpe/KpeLab/cache/
+
+#vector files
+# collobert weston embeddings
+cwe.words = /data/datasets/word_vectors/senna3.0_embeddings/words.lst
+cwe.vectors = /data/datasets/word_vectors/senna3.0_embeddings/embeddings.txt
+
+wikilsi.words = /data/datasets/word_vectors/wiki_lsi/wiki-words.txt
+wikilsi.vectors = /data/datasets/word_vectors/wiki_lsi/wiki-matrix.txt
+
+wikiesa.words = /data/datasets/word_vectors/wiki_esa/wiki-esa-terms.txt
+wikiesa.vectors = /data/datasets/word_vectors/wiki_esa/wiki-esa-vectors.txt
+
+# qhull executable
+qhull.exec = /home/dam1root/software/qhull-2012.1/bin/qconvex
+

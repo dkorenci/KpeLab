@@ -7,6 +7,7 @@ package hr.irb.zel.kpelab.vectors.input;
 
 import de.ruedigermoeller.serialization.FSTObjectInput;
 import de.ruedigermoeller.serialization.FSTObjectOutput;
+import hr.irb.zel.kpelab.config.KpeConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +28,7 @@ public class WordToVectorMapBase {
     
     protected String wordFile, vectorFile;
     protected Map<String, Long> wordToLine;
-    protected static final String cacheFolder = "/data/rudjer/code/kpe/KpeLab/file_cache/";        
+    protected static final String cacheFolder = KpeConfig.getProperty("cache.folder");        
 
     public boolean hasWord(String word) {
         return this.wordToLine.containsKey(word);
@@ -46,7 +47,7 @@ public class WordToVectorMapBase {
         return "vectors_"+vec.getName()+"_words_"+wrd.getName();
     }    
     
-    // deserialize word to line map od create from file
+    // deserialize word to line map or create from file
     protected final void createWordToLineMap() throws FileNotFoundException, IOException, 
             ClassNotFoundException, VectorDataFormatException {        
         File cacheFile = new File(cacheFolder + "word_to_line_" + getMappingId());

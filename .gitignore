@@ -16,5 +16,7 @@ nb-configuration.xml
 # R project files
 .Rhistory
 
-# cache
-file_cache
+# cache (for serialized objects)
+cache
+
+kpelab.properties

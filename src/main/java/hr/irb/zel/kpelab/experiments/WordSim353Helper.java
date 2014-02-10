@@ -5,6 +5,7 @@
 
 package hr.irb.zel.kpelab.experiments;
 
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.SimilarityCalculationException;
@@ -26,7 +27,7 @@ import org.rosuda.JRI.Rengine;
  */
 public class WordSim353Helper {
 
-    private static String datasetFile = "/data/datasets/kpe/wordsim353/combined.csv";
+    private static String datasetFile = KpeConfig.getProperty("dataset.ws353");
     private static List<WordSimPair> dataset;        
     private static Rengine rengine;
     

@@ -19,3 +19,11 @@ normalno serijalizirati dok god su objekti iza sučelja Serializable.
 ! Serijalizacija u finalize() fazi može dovesti do problema !
 Zašto?
 
+
+- korištenje ESA i LSI vektora u jednom run-u
+SimilarityExperiments.expWS353ESA();
+SimilarityExperiments.expWS353LSI();
+
+Kada se pokrenu eksperimenti, ovim redom, dolazi do interferencije, 
+vjerojatno u klasama za učitavanje vektora. 
+

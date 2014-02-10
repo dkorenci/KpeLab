@@ -1,0 +1,20 @@
+# maven builds and bookkeeping
+
+target
+
+# temp files
+output.txt
+
+# ?
+-Djava.library.path='
+
+# netbeans project files
+
+nbactions.xml
+nb-configuration.xml
+
+# R project files
+.Rhistory
+
+# cache
+file_cache

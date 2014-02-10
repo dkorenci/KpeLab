@@ -1,0 +1,21 @@
+- problemi sa cache datotekom
+Pri uzastopnom spremanju WordToVectorMapCache-a došlo je do variranja veličine datoteke i grešaka pri čitanju. 
+Mislio sam da je problem što WordToVectorDiskMap sadrži polja koja su sučelja koja
+nisu nužno serijalizabilna (iako objekti iza tih sučelja jesu).
+No problem je izgleda u tome što datoteka za serijalizaciju nije brisana
+prije ponovnog pisanja, znači da otvaranje novog streama ne "resetira" fajl na 0 bajtova.
+
+No nakon vraćanja na sučelja ponovno su se počeli javljati problemi.
+Nakon ponovnog vraćanja na konkretne klase, problemi su ostali.
+
+Nakon što je serijalizacija pozvana eksplicitnim pozivom, 
+a ne iz finalize() metode od WordToVectorDiskMap-a problemi su nestali, 
+odnosno dosadašnje testiranje pokazuje na više nema problema.
+
+Polja su ponovo vraćena na sučelja no ponašanje je i dalje stabilno.
+Zaključci:
+Polja koja su sučelja koja ne implementiraju Serializable se mogu 
+normalno serijalizirati dok god su objekti iza sučelja Serializable.
+! Serijalizacija u finalize() fazi može dovesti do problema !
+Zašto?
+

@@ -43,8 +43,8 @@ public class KpeRunner {
         //ws353vectorSims();
         //SemevalCorpusExperiments.singleDocOpenNLPPos();
         
-        SimilarityExperiments.expWS353ESA();
-        //SimilarityExperiments.expWS353LSI();
+        //SimilarityExperiments.expWS353ESA();
+        SimilarityExperiments.expWS353LSI();
         
         end(); // finalize environment
     }

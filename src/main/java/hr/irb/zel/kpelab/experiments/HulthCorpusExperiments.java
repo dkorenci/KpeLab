@@ -10,7 +10,7 @@ import hr.irb.zel.kpelab.evaluation.F1Metric;
 import hr.irb.zel.kpelab.extraction.MaxCoverageExtractor;
 import hr.irb.zel.kpelab.extraction.RandomPhraseExtractor;
 import hr.irb.zel.kpelab.extraction.TfidfKpextractor;
-import hr.irb.zel.kpelab.extraction.esa.EsaPhraseSet;
+import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.tabu.KpeTabuSearch;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
@@ -60,7 +60,7 @@ public class HulthCorpusExperiments {
     public static void esacovSingleDoc(String docName, int K) throws Exception {
         // construct word and phrase similairty calculators
 
-        EsaPhraseSet phraseSet = new EsaPhraseSet(WordVectorMapFactory.getESAVectors());
+        EsaSearchPhraseSet phraseSet = new EsaSearchPhraseSet(WordVectorMapFactory.getESAVectors());
         KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
         KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.STEM).readDocument(docName);
 
@@ -101,7 +101,7 @@ public class HulthCorpusExperiments {
     
     // evaluate performance of esa coverage extractor on the entire corpus
     public static void esacovCorpus(int K) throws Exception {
-         EsaPhraseSet phraseSet = new EsaPhraseSet(WordVectorMapFactory.getESAVectors());
+         EsaSearchPhraseSet phraseSet = new EsaSearchPhraseSet(WordVectorMapFactory.getESAVectors());
          KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);   
          System.out.print("reading documents... ");
          List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.LEMMA);

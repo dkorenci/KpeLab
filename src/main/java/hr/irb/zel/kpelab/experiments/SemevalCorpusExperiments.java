@@ -12,7 +12,7 @@ import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.evaluation.F1Evaluator;
 import hr.irb.zel.kpelab.evaluation.F1Metric;
-import hr.irb.zel.kpelab.extraction.esa.EsaPhraseSet;
+import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.tabu.KpeTabuSearch;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
@@ -50,7 +50,7 @@ public class SemevalCorpusExperiments {
     public static void esacovSingleDoc(String docName, int K) throws Exception {
         // construct word and phrase similairty calculators
 
-        EsaPhraseSet phraseSet = new EsaPhraseSet(WordVectorMapFactory.getESAVectors());
+        EsaSearchPhraseSet phraseSet = new EsaSearchPhraseSet(WordVectorMapFactory.getESAVectors());
         KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
         KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.STEM).readDocument(docName);
 

@@ -17,7 +17,7 @@ import java.util.TreeSet;
 import org.apache.uima.UIMAException;
 
 /** */
-public class EsaPhraseSet implements ISearchPhraseSet {
+public class EsaSearchPhraseSet implements ISearchPhraseSet {
 
     IWordToVectorMap wordVectors;
     IRealVector documentVector, phraseVector;
@@ -27,7 +27,7 @@ public class EsaPhraseSet implements ISearchPhraseSet {
     
     private static PosRegexPhraseExtractor phExtractor = null;
 
-    public EsaPhraseSet(IWordToVectorMap vec) {
+    public EsaSearchPhraseSet(IWordToVectorMap vec) {
         wordVectors = vec;
     }
         

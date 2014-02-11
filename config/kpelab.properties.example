@@ -1,6 +1,6 @@
 #datasets
-corpus.semeval = /data/datasets/kpe/SemEval2010
-corpus.hulth = /data/datasets/kpe/Hulth2003
+corpus.semeval = /data/datasets/kpe/SemEval2010/
+corpus.hulth = /data/datasets/kpe/Hulth2003/
 dataset.ws353 = /data/datasets/kpe/wordsim353/combined.csv
 
 #caching

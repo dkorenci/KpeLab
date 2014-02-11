@@ -19,4 +19,7 @@ nb-configuration.xml
 # cache (for serialized objects)
 cache
 
+# local config
 kpelab.properties
+maven_install_local_jar.sh
+

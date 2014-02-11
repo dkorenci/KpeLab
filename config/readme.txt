@@ -9,7 +9,9 @@ Maven će automatski skinuti sve librarije iz pom.xml koji se nalaze u centralno
 sve osim rJava (Java-R sučelje) i GNU Trove.
 
 Jar fajlovi se dodaju u lokalni Maven repozitorij pomoću skripte maven_install_local_jar.sh
-tako da se promjene vrijednosti odgovarajućih varijabli u skripti nakon čega se skripta pokrene.
+tako da se promjene vrijednosti odgovarajućih varijabli u skripti nakon čega se skripta pokrene, 
+u repozitoriju je samo šablona: maven_install_local_jar.sh.example, 
+sama skripta nije da ne dođe do sukoba.
 Najbrže je koristiti iste vrijednosti za groupId i artifactId koje već pišu u pom.xml, 
 te vrijednosti se već nalaze u skripti.
 

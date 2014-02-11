@@ -4,25 +4,16 @@ import java.util.List;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
-import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
-import de.tudarmstadt.ukp.dkpro.core.stopwordremover.StopWordRemover;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import java.util.ArrayList;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.*;
 import static org.apache.uima.fit.pipeline.SimplePipeline.*;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.fit.component.CasDumpWriter;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;

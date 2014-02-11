@@ -3,7 +3,9 @@ package hr.irb.zel.kpelab.corpus.semeval;
 import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class CorpusSemeval {
         
         List<KpeDocument> result = new ArrayList<KpeDocument>();
         for (File doc : documents) {
-            String docText = DocumentReader.readDocument(doc);
+            String docText = readDocument(doc);
             String docId = getDocId(doc);
             List<Phrase> phrases = getPhrases(docText, solMap.getSolutions(docId));
             result.add(new KpeDocument(docId, docText, phrases));
@@ -55,7 +57,7 @@ public class CorpusSemeval {
         String folder = doc.split("/")[0];
         DocumentToSolutionMap solMap = 
                 new DocumentToSolutionMap(solutionFileName(folder, phSet));                
-        String docText = DocumentReader.readDocument(docFile);
+        String docText = readDocument(docFile);
         String docId = getDocId(docFile);        
         List<Phrase> phrases = getPhrases(docText, solMap.getSolutions(docId));
         return new KpeDocument(docId, docText, phrases);
@@ -105,6 +107,16 @@ public class CorpusSemeval {
             }
         }
         return phrases;
+    }
+
+    public static String readDocument(File doc) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(doc));
+        String line;
+        StringBuilder builder = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            builder.append(line).append("\n");
+        }
+        return builder.toString();
     }
     
 }

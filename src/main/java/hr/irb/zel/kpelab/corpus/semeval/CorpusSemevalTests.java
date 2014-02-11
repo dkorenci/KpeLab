@@ -13,7 +13,7 @@ public class CorpusSemevalTests {
     public static void printTerms(String docId) throws Exception {
         KpeDocument doc = CorpusSemeval.getDocument(docId, SolutionPhraseSet.AUTHOR);
         TermExtractor extractor = new TermExtractor(
-                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.LEMMA));
         List<String> terms = extractor.extract(doc.getText());
         int w = 0;
         for (String t : terms) {

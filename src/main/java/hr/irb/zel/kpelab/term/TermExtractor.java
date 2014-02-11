@@ -60,7 +60,8 @@ public class TermExtractor {
             if (isNoun(tok) == false && isAdj(tok) == false) continue;
             String term;            
             if (config.canonic == CanonicForm.LEMMA) term = tok.getLemma().getValue();
-            else term = tok.getStem().getValue();            
+            else term = tok.getStem().getValue();   
+            term = term.toLowerCase();
             terms.add(term);
         }
         result = new ArrayList<String>(terms);        

@@ -5,6 +5,7 @@ import hr.irb.zel.kpelab.analysis.WS353CorrelationAnalysis;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.hulth.DocumentReaderHulth;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
+import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalTests;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.experiments.HulthCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
@@ -17,6 +18,7 @@ import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
+import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.tfidf.PhraseInDocumentsCounter;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
@@ -44,7 +46,8 @@ public class KpeRunner {
         //SemevalCorpusExperiments.singleDocOpenNLPPos();
         
         //SimilarityExperiments.expWS353ESA();
-        SimilarityExperiments.expWS353LSI();
+        //SimilarityExperiments.expWS353LSI();        
+        CorpusSemevalTests.printTerms("train/C-79");
         
         end(); // finalize environment
     }

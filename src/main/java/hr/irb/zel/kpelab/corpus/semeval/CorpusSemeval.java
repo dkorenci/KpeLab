@@ -109,7 +109,7 @@ public class CorpusSemeval {
         return phrases;
     }
 
-    public static String readDocument(File doc) throws IOException {
+    private static String readDocument(File doc) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(doc));
         String line;
         StringBuilder builder = new StringBuilder();

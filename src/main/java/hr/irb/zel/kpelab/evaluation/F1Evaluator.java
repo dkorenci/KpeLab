@@ -56,6 +56,11 @@ public class F1Evaluator {
     public F1Metric evaluateDocument(KpeDocument document) throws Exception {
         List<Phrase> solution = document.getKeyphrases();
         List<Phrase> result = this.extractor.extract(document);
+        return evaluateResult(result, solution);
+    }
+    
+    public static F1Metric evaluateResult(List<Phrase> result, List<Phrase> solution) 
+            throws Exception {
         Set<Phrase> solSet = new TreeSet<Phrase>(solution);
         Set<Phrase> resSet = new TreeSet<Phrase>(result);
                 
@@ -64,13 +69,13 @@ public class F1Evaluator {
         for (Phrase res : result) if (solSet.contains(res)) coveredRes++;
         
         F1Metric f1 = new F1Metric();
-        if (result.size() == 0)  f1.precision = 0;
+        if (result.isEmpty())  f1.precision = 0;
         else f1.precision = coveredRes / result.size();        
-        if (solution.size() == 0) f1.recall = 0;
+        if (solution.isEmpty()) f1.recall = 0;
         else f1.recall = coveredSol / solution.size();        
         f1.calculateF1();
         
         return f1;
-    }
+    }    
     
 }

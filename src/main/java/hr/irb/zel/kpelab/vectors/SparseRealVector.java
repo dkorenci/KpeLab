@@ -115,6 +115,7 @@ public class SparseRealVector implements IRealVector, Serializable {
         return this;
     }
 
+    /** Add v's coordinates to this, for each shared coordinate set maximum of v and this. */
     public IRealVector maxMerge(IRealVector v) {
         checkDimension(v); checkType(v);
         SparseRealVector vec = (SparseRealVector)v;        

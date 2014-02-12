@@ -10,8 +10,8 @@ wssim <- read.table(fileName, sep=",", header=TRUE)
 # remove pairs with similarity 1 (same words in a pair)
 wssim <- wssim[wssim$vsim < 1,] 
 # scale similarities to [0,1]
-wssim$sim <- wssim$sim / max(wssim$sim)
-wssim$vsim <- wssim$vsim / max(wssim$vsim)
+wssim$sim <- wssim$sim / 10
+wssim$vsim <- wssim$vsim * 10
 
 # set graphic params
 par(mfrow=c(1,1), cex=1, pch=19)
@@ -21,6 +21,14 @@ plotSorted <- function() {
   wssim <- arrange(wssim, sim);
   plot(wssim$sim[order(wssim$sim)], col="red", cex=0.4);
   points(wssim$vsim[order(wssim$vsim)], col="blue", cex=0.4);  
+}
+
+#  both similarity measures, plus transformed dist.sim, sorted
+plotAllSorted <- function() {
+  wssim <- arrange(wssim, sim);
+  plot(wssim$sim[order(wssim$sim)], col="red", cex=0.4);
+  points(wssim$vsim[order(wssim$vsim)], col="blue", cex=0.4);  
+  points(wssim$tvsim[order(wssim$tvsim)], col="green", cex=0.4);  
 }
 
 #scatterplot
@@ -33,6 +41,14 @@ plotUnsorted <- function() {
   wssim <- arrange(wssim, sim);
   plot(wssim$sim, col="red",cex=0.4);
   points(wssim$vsim,col="blue",cex=0.4);
+}
+
+# human measure sorted vs computer vs computer mapped, unsorted
+plotAllUnsorted <- function() {
+  wssim <- arrange(wssim, sim);
+  plot(wssim$sim, col="red",cex=0.4);
+  points(wssim$vsim,col="blue",cex=0.4);
+  points(wssim$tvsim,col="green",cex=0.4);
 }
 
 histograms <- function() {

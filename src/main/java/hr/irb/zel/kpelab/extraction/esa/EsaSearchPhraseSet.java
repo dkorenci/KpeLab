@@ -5,6 +5,8 @@ import hr.irb.zel.kpelab.extraction.tabu.ISearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.tabu.KpeTabuSearch;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
+import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
@@ -48,7 +50,9 @@ public class EsaSearchPhraseSet implements ISearchPhraseSet {
     
     private static PosRegexPhraseExtractor getExtractor() throws UIMAException {
         if (phExtractor == null) {
-            phExtractor = new PosRegexPhraseExtractor(CanonicForm.STEM);
+            phExtractor = new PosRegexPhraseExtractor(
+                    new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM)
+                    );
         }
         return phExtractor;
     }

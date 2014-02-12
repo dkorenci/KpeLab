@@ -115,6 +115,23 @@ public class SparseRealVector implements IRealVector, Serializable {
         return this;
     }
 
+    public IRealVector maxMerge(IRealVector v) {
+        checkDimension(v); checkType(v);
+        SparseRealVector vec = (SparseRealVector)v;        
+        vec.map.forEachEntry(new TIntDoubleProcedure() {
+            public boolean execute(int ind, double val) {
+                if (map.containsKey(ind)) {                                        
+                    map.put(ind, Math.max(map.get(ind), val));                    
+                } 
+                else {
+                    map.put(ind, val);
+                }
+                return true;
+            }
+        });
+        return this;
+    }       
+    
     public IRealVector subtract(IRealVector v) {
         checkDimension(v); checkType(v);
         SparseRealVector vec = (SparseRealVector)v;
@@ -173,7 +190,7 @@ public class SparseRealVector implements IRealVector, Serializable {
         if (n1 == 0 || n2 == 0) return 0;
         return dot / (n1 * n2);
     }
-
+   
     public double[] toArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

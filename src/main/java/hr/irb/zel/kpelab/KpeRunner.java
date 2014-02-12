@@ -47,11 +47,24 @@ public class KpeRunner {
         
         //SimilarityExperiments.expWS353ESA();
         //SimilarityExperiments.expWS353LSI();        
-        CorpusSemevalTests.printTerms("train/C-79");
+        //CorpusSemevalTests.printTerms("train/C-79");
+        //SemevalCorpusExperiments.esaMaxCovSingleDoc("train/C-79", 10);
+        SemevalCorpusExperiments.esaCosCovSingleDoc("train/C-79", 10);
         
         end(); // finalize environment
     }
 
+    private static void testMaxCoverage() {
+        double [] v1 = {0,2,0,2,0,2},
+                  v2 = {1,1,1,1,1,1};
+        SparseRealVector sv1 = new SparseRealVector(v1), 
+                         sv2 = new SparseRealVector(v2);
+        System.out.println(sv1.maxCoverage(sv2));
+        System.out.println(sv1.sumOfCoordinates());
+        sv1.maxMerge(sv2);
+        System.out.println(sv1);
+    }
+    
     private static void testSemevalCorpus() throws Exception {
         List<KpeDocument> docs = CorpusSemeval.getTest(SolutionPhraseSet.COBINED);
         for (KpeDocument doc : docs) {

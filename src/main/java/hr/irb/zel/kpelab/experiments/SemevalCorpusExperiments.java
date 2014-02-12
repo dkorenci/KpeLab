@@ -13,13 +13,16 @@ import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.evaluation.F1Evaluator;
 import hr.irb.zel.kpelab.evaluation.F1Metric;
 import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
+import hr.irb.zel.kpelab.extraction.esa.EsamaxSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.tabu.KpeTabuSearch;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
+import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
+import java.util.List;
 
 /**
  *
@@ -44,19 +47,46 @@ public class SemevalCorpusExperiments {
         KpeDocument doc = 
                 CorpusSemeval.getDocument("train/H-37" , SolutionPhraseSet.COBINED);
         PosTaggingAnalyser.analyseDocument(doc, config);
-    }           
-    
+    }                   
+
     // evaluate performance of esa extractor on single document
-    public static void esacovSingleDoc(String docName, int K) throws Exception {
+    public static void esaMaxCovSingleDoc(String docName, int K) throws Exception {
         // construct word and phrase similairty calculators
-
-        EsaSearchPhraseSet phraseSet = new EsaSearchPhraseSet(WordVectorMapFactory.getESAVectors());
+        EsamaxSearchPhraseSet phraseSet = new EsamaxSearchPhraseSet();
         KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
-        KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.STEM).readDocument(docName);
+        KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
 
-        F1Evaluator eval = new F1Evaluator(tabuSearch);
-        F1Metric metric = eval.evaluateDocument(doc);
+        List<Phrase> result = tabuSearch.extract(doc);
+        List<Phrase> solution = doc.getKeyphrases();
+        
+        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
         System.out.println(metric);
+        
+        System.out.println("---- soultion");
+        PhraseHelper.printPhraseSet(solution, 7);
+        System.out.println("---- result");
+        PhraseHelper.printPhraseSet(result, 7);
+        
+    }      
+
+    // evaluate performance of esa extractor on single document
+    public static void esaCosCovSingleDoc(String docName, int K) throws Exception {
+        // construct word and phrase similairty calculators
+        EsaSearchPhraseSet phraseSet = new EsaSearchPhraseSet(
+                WordVectorMapFactory.getESAVectors());
+        KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
+        KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
+
+        List<Phrase> result = tabuSearch.extract(doc);
+        List<Phrase> solution = doc.getKeyphrases();
+        
+        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        System.out.println(metric);
+        
+        System.out.println("---- soultion");
+        PhraseHelper.printPhraseSet(solution, 7);
+        System.out.println("---- result");
+        PhraseHelper.printPhraseSet(result, 7);        
     }      
     
 }

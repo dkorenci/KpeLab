@@ -46,6 +46,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         //posTagger = createEngine(createEngineDescription(OpenNlpPosTagger.class));        
     }    
     
+    /** Extract phrases, return list of non-duplicate phrases. */
     public List<Phrase> extractPhrases(String text) throws UIMAException  {
         this.text = text;        
         preprocess();        

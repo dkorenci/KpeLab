@@ -32,6 +32,7 @@ public class TermExtractor {
     
     public TermExtractor(PosExtractorConfig conf) { this.config = conf; }
     
+    /** Extract terms, return list of non-duplicate terms. */
     public List<String> extract(String txt) throws UIMAException {
         text = txt;
         preprocess();
@@ -51,7 +52,7 @@ public class TermExtractor {
         else throw new IllegalArgumentException("canonic form not covered");
     }    
     
-    // extract canonic forms of word tokens that are nouns or adjectives
+    // extract canonic forms of word tokens that are nouns or adjectives    
     private void extract() {        
         Set<String> terms = new HashSet<String>();       
         // iterate over all tokens in the document jCas

@@ -77,7 +77,8 @@ public class KpeTabuSearch implements IKpextractor {
         Queue<Phrase> insertTabu = new LinkedList<Phrase>(); 
         Queue<Phrase> removeTabu = new LinkedList<Phrase>();
         int iterationCounter = 0, noImprove = 0;        
-        //System.out.println(phrases.size() + " , " + phraseSet.size());        
+        System.out.println("starting tabu search");
+        System.out.println(phrases.size() + " , " + phraseSetSize);        
         while (true) {
             //printPhraseSet(solution, 5);                                
             double optQual = Double.MIN_VALUE; 
@@ -118,6 +119,7 @@ public class KpeTabuSearch implements IKpextractor {
             searchSet.replacePhrase(optI, phrases.get(optJ));
             // update global solution        
             //printDebugData(optQual, insertTabu, removeTabu);
+            System.out.println(optQual);
             if (optQual > solQual) {
                 solQual = optQual;
                 solution = searchSet.getPhrases();

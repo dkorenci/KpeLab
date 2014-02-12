@@ -23,7 +23,7 @@ public interface ISearchPhraseSet {
     public int numPhrases();
     public boolean containsPhrase(Phrase ph);
     
-    public double calculateQuality();    
+    public double calculateQuality() throws Exception;    
     
     public void printDebugData();
 }

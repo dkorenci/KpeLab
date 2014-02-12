@@ -137,7 +137,7 @@ public class WordToVectorDiskMap extends WordToVectorMapBase implements IWordToV
         if (tokens.length % 2 != 0) {
             throw new VectorDataFormatException("number of tokens is not even");
         }
-        SparseRealVector vector = new SparseRealVector(Integer.MAX_VALUE);
+        SparseRealVector vector = new SparseRealVector();
         for (int i = 0; i < tokens.length; i += 2) {
             int coordinate = Integer.valueOf(tokens[i]);
             double value = Double.valueOf(tokens[i+1]);

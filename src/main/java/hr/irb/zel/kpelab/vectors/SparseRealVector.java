@@ -32,6 +32,10 @@ public class SparseRealVector implements IRealVector, Serializable {
         dim = d; 
         initMap();
     }
+    /** Init vector wit max. possible size. */
+    public SparseRealVector() {
+        this(Integer.MAX_VALUE);
+    }
     
     public SparseRealVector(double [] values) {
         dim = values.length;

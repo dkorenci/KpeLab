@@ -191,7 +191,58 @@ public class SparseRealVector implements IRealVector, Serializable {
         if (n1 == 0 || n2 == 0) return 0;
         return dot / (n1 * n2);
     }
-   
+
+    /** Salculate sum of coverages at shared coordinates, where coverage
+      * at i is v[i] if v[i] less than this[i], else it is this[i]. 
+      * Makes sense only if both vectors are positive. */
+    private double cov; // util variable, reachable from anonyomous inner class
+    private SparseRealVector hvec; // util vector, reachable from anonyomous inner class
+    public double maxCoverage(SparseRealVector v) {
+        checkDimension(v);
+        cov = 0;
+        // iterate over smaller vector (its map)
+        if (v.map.size() <= this.map.size()) {
+            v.map.forEachEntry(new TIntDoubleProcedure() {
+                public boolean execute(int i, double d) {
+                    if (map.containsKey(i)) {
+                        double val = map.get(i);
+                        if (d < val) cov += d; 
+                        else cov += val;
+                    }
+                    return true;
+                }
+            });
+        }
+        else {
+            hvec = v;
+            this.map.forEachEntry(new TIntDoubleProcedure() {
+                public boolean execute(int i, double d) {
+                    if (hvec.map.containsKey(i)) {
+                        double val = hvec.map.get(i);
+                        if (d < val) cov += d;
+                        else cov += val;
+                    }
+                    return true;
+                }
+            });
+            hvec = null;
+        }
+        
+        return cov;
+    }
+    
+    double sum; // helper variable visible form inner class
+    public double sumOfCoordinates() {
+        sum = 0;
+        map.forEachValue(new TDoubleProcedure() {
+            public boolean execute(double d) {
+                sum += d;
+                return true;
+            }
+        });
+        return sum;
+    }
+    
     public double[] toArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

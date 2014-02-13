@@ -81,4 +81,8 @@ public class ArrayRealVector implements IRealVector, Serializable {
         return FastMath.sqrt(norm);
     }
 
+    public IRealVector maxMerge(IRealVector v) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

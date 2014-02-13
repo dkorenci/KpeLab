@@ -26,6 +26,9 @@ public interface IRealVector extends Serializable {
     /** Add v to this vector element by element, return this. */
     public IRealVector add(IRealVector v);    
     
+    /** Add v's coordinates to this, for each shared coordinate set maximum of v and this. */
+    public IRealVector maxMerge(IRealVector v);    
+    
     /** Subtract v from this vector element by element, return this. */
     public IRealVector subtract(IRealVector v);
     

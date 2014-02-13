@@ -5,6 +5,7 @@
 
 package hr.irb.zel.kpelab.vectors;
 
+import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.TIntDoubleMap;
 import gnu.trove.map.hash.TIntDoubleHashMap;
@@ -249,6 +250,17 @@ public class SparseRealVector implements IRealVector, Serializable {
 
     public IRealVector ebeMultiply(IRealVector v) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public VectorEntry[] getNonZeroEntries() {
+        VectorEntry ent[] = new VectorEntry[map.size()];
+        TIntDoubleIterator iter = map.iterator();
+        int i = 0;
+        while (iter.hasNext()) {
+            iter.advance();
+            ent[i] = new VectorEntry(iter.key() , iter.value());
+        }
+        return ent;
     }
     
 }

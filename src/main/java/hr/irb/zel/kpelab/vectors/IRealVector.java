@@ -47,4 +47,7 @@ public interface IRealVector extends Serializable {
     /** Perform element by element multiplication of this and v. Return v. */
     public IRealVector ebeMultiply(IRealVector v);   
     
+    /** Get (coordinate, value) pairs where value is not zero. */
+    public VectorEntry[] getNonZeroEntries();
+    
 }

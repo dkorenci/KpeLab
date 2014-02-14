@@ -3,7 +3,7 @@
 setwd("/data/rudjer/code/kpe/KpeLab/data_analysis/esa_vectors")
 # read data
 if (exists("tab") == F) {
-  tab <- read.table(file="train_C-79.dat",sep="_",quote="|",
+  tab <- read.table(file="train_C-79.txt",sep="_",quote="|",
           fileEncoding="utf-8",header=TRUE,stringsAsFactors=FALSE)  
   # create empty column of parsed vectors, for caching
   tab$vector <- as.list(rep(NA,length(tab$type)))

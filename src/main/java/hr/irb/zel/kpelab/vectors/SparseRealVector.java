@@ -258,7 +258,7 @@ public class SparseRealVector implements IRealVector, Serializable {
         int i = 0;
         while (iter.hasNext()) {
             iter.advance();
-            ent[i] = new VectorEntry(iter.key() , iter.value());
+            ent[i++] = new VectorEntry(iter.key() , iter.value());
         }
         return ent;
     }

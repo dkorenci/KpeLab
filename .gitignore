@@ -1,5 +1,4 @@
 # maven builds and bookkeeping
-
 target
 
 # temp files
@@ -13,9 +12,6 @@ output.txt
 nbactions.xml
 nb-configuration.xml
 
-# R project files
-.Rhistory
-
 # cache (for serialized objects)
 cache
 
@@ -23,3 +19,9 @@ cache
 kpelab.properties
 maven_install_local_jar.sh
 
+# temp results and data files in data_analysis folder
+# .dat files will not be ignored
+data_analysis/**/*.txt
+data_analysis/**/*.Rhistory
+data_analysis/**/*.RData
+data_analysis/**/*.pdf

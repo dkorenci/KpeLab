@@ -41,6 +41,9 @@ public interface IRealVector extends Serializable {
     /** Calculate cosine similarity between this and v. */
     public double cosine(IRealVector v);
     
+    /** Sum of min. values at shared coordinates. */
+    public double sumMinShared(IRealVector v);
+    
     /** Return this vector as array of doubles. */
     public double[] toArray();
     

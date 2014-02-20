@@ -198,12 +198,13 @@ public class SparseRealVector implements IRealVector, Serializable {
       * Makes sense only if both vectors are positive. */
     private double cov; // util variable, reachable from anonyomous inner class
     private SparseRealVector hvec; // util vector, reachable from anonyomous inner class
-    public double maxCoverage(SparseRealVector v) {
-        checkDimension(v);
+    public double sumMinShared(IRealVector v) {
+        checkDimension(v); checkType(v);
+        SparseRealVector vec = (SparseRealVector)v;        
         cov = 0;
         // iterate over smaller vector (its map)
-        if (v.map.size() <= this.map.size()) {
-            v.map.forEachEntry(new TIntDoubleProcedure() {
+        if (vec.map.size() <= this.map.size()) {
+            vec.map.forEachEntry(new TIntDoubleProcedure() {
                 public boolean execute(int i, double d) {
                     if (map.containsKey(i)) {
                         double val = map.get(i);
@@ -215,7 +216,7 @@ public class SparseRealVector implements IRealVector, Serializable {
             });
         }
         else {
-            hvec = v;
+            hvec = vec;
             this.map.forEachEntry(new TIntDoubleProcedure() {
                 public boolean execute(int i, double d) {
                     if (hvec.map.containsKey(i)) {

@@ -63,7 +63,7 @@ public class SparseRealVector implements IRealVector, Serializable {
         dim = d; map = m;
     }
     
-    private void initMap() { map = new TIntDoubleHashMap(); }    
+    private void initMap() { map = new TIntDoubleHashMap(10000, 0.5f); }    
     
     // check if index is valid for this vector
     private void checkIndex(int i) {

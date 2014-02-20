@@ -16,6 +16,8 @@ import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
+import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
+import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.term.TermExtractor;
@@ -50,7 +52,12 @@ public class KpeRunner {
         //CorpusSemevalTests.printTerms("train/C-79");
         //SemevalCorpusExperiments.esaMaxCovSingleDoc("train/C-79", 10);
         SemevalCorpusExperiments.esaCosCovSingleDoc("train/C-79", 10);
-        
+//        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
+//                SolutionPhraseSet.AUTHOR);
+//        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
+//                SolutionPhraseSet.READER);        
+//        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
+//                SolutionPhraseSet.COBINED);                        
         end(); // finalize environment
     }
 

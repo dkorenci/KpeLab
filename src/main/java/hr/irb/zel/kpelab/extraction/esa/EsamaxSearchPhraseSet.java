@@ -85,7 +85,7 @@ public class EsamaxSearchPhraseSet implements ISearchPhraseSet {
 
     public double calculateQuality() throws Exception {
         constructPhrasesVector();
-        return docVector.maxCoverage(phrasesVector) / docVectorSum;        
+        return docVector.sumMinShared(phrasesVector) / docVectorSum;        
     }
 
     public void printDebugData() {

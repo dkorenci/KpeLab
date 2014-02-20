@@ -51,7 +51,8 @@ public class KpeRunner {
         //SimilarityExperiments.expWS353LSI();        
         //CorpusSemevalTests.printTerms("train/C-79");
         //SemevalCorpusExperiments.esaMaxCovSingleDoc("train/C-79", 10);
-        SemevalCorpusExperiments.esaCosCovSingleDoc("train/C-79", 10);
+        //SemevalCorpusExperiments.esaCosCovSingleDoc("train/C-79", 10);
+        SemevalCorpusExperiments.esaMaxCovSingleDocGreedy("train/C-79", 10);
 //        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
 //                SolutionPhraseSet.AUTHOR);
 //        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
@@ -66,7 +67,7 @@ public class KpeRunner {
                   v2 = {1,1,1,1,1,1};
         SparseRealVector sv1 = new SparseRealVector(v1), 
                          sv2 = new SparseRealVector(v2);
-        System.out.println(sv1.maxCoverage(sv2));
+        System.out.println(sv1.sumMinShared(sv2));
         System.out.println(sv1.sumOfCoordinates());
         sv1.maxMerge(sv2);
         System.out.println(sv1);

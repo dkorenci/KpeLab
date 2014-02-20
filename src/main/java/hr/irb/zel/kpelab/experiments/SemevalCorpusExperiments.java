@@ -15,6 +15,7 @@ import hr.irb.zel.kpelab.evaluation.F1Metric;
 import hr.irb.zel.kpelab.extraction.AllCandidatesExtractor;
 import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.esa.EsamaxSearchPhraseSet;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyMaxExtractor;
 import hr.irb.zel.kpelab.extraction.tabu.KpeTabuSearch;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.Phrase;
@@ -71,6 +72,24 @@ public class SemevalCorpusExperiments {
         
     }      
 
+    // evaluate performance of esa extractor on single document
+    public static void esaMaxCovSingleDocGreedy(String docName, int K) throws Exception {        
+        KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
+        GreedyMaxExtractor extractor = new GreedyMaxExtractor(K);
+        
+        List<Phrase> result = extractor.extract(doc);
+        List<Phrase> solution = doc.getKeyphrases();
+        
+        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        System.out.println(metric);
+        
+        System.out.println("---- soultion");
+        PhraseHelper.printPhraseSet(solution, 7);
+        System.out.println("---- result");
+        PhraseHelper.printPhraseSet(result, 7);
+        
+    }      
+    
     // evaluate performance of esa extractor on single document
     public static void esaCosCovSingleDoc(String docName, int K) throws Exception {
         // construct word and phrase similairty calculators

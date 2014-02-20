@@ -1,4 +1,5 @@
 # functions for reading and manipulating data
+library("Matrix")
 
 setwd("/data/rudjer/code/kpe/KpeLab/data_analysis/esa_vectors")
 # read data
@@ -10,7 +11,6 @@ if (exists("tab") == F) {
 }
 # transform string with (index,title,value) triples into a list of three vectors
 parse.vector <- function(vstr) {
-  print("hi")
   tokens <- strsplit(vstr,"#")
   len <- length(tokens[[1]])/3
   # init vectors and reserve space
@@ -25,21 +25,31 @@ parse.vector <- function(vstr) {
     if (i %% 3 == 2) val[j] <- as.numeric(tok);    
     i <- i + 1    
   }
-  return(list(names=n, indices=ind, values=val))
+  # create sparse vector
+  vec <- sparseVector(val, ind, .Machine$integer.max) 
+  # create sparse vector with val 1 at non-zero concept  coordinates
+  vec01 <- sparseVector(rep(1,len), ind, .Machine$integer.max) 
+  return(list(names=n, indices=ind, values=val, vector=vec, vector01=vec01))
 } 
+
 # for the raw dataset, return index of the row with specified string value
-get.index <- function(str) {
-  i <- 1
-  for (n in tab$string) {
-    if (n == str) return(i);
-    i <- i + 1;
-  }
-  return(-1)
+get.index <- function(arg) {
+  if (is.numeric(arg) || is.integer(arg)) 
+    return(arg)
+  else {
+    i <- 1
+    for (n in tab$string) {
+      if (n == arg) return(i);
+      i <- i + 1;
+    }
+    return (-1)
+  }  
 }
 
-# get parsed vector for tab row with tab$string == str
-get.vector <- function(str) {
-  i <- get.index(str) 
+# get parsed vector for tab row with tab$string == arg
+# or with index arg
+get.vector <- function(arg) {  
+  i <- get.index(arg) 
   if (i == -1) return(NULL)
   # check if vector is already constructed
   if (is.list(tab$vector[[i]]) == FALSE) {
@@ -64,6 +74,21 @@ parse.all <- function(ds) {
 
 val4name <- function(name) {
   (parse.vector(tab[get.index(tab, name), 2]))$values
+}
+
+# dataframe that has in each row: word, vector size, sum of vector values
+get.word.weights <- function() {
+  d <- list()  
+  d$words <- list.words()
+  l <- length(d$words)
+  d$len <- c(NA); length(d$len) <- l
+  d$sum <- c(NA); length(d$sum) <- l  
+  for (i in 1:l) {
+    v <- get.vector(d$words[i])
+    d$len[i] <- length(v$values)
+    d$sum[i] <- sum(v$values)
+  }  
+  d
 }
 
 list.words <- function() { tab$string[tab$type=="word"] }

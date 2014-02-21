@@ -6,6 +6,7 @@ import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.hulth.DocumentReaderHulth;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalTests;
+import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalUtils;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.experiments.HulthCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
@@ -52,13 +53,21 @@ public class KpeRunner {
         //CorpusSemevalTests.printTerms("train/C-79");
         //SemevalCorpusExperiments.esaMaxCovSingleDoc("train/C-79", 10);
         //SemevalCorpusExperiments.esaCosCovSingleDoc("train/C-79", 10);
-        SemevalCorpusExperiments.esaMaxCovSingleDocGreedy("train/C-79", 10);
-//        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
+        //SemevalCorpusExperiments.esaMaxCovSingleDocGreedy("train/C-79", 10);
+        //CorpusSemevalUtils.outputStemmedPhrases("devel/H-83");
+        
+//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
 //                SolutionPhraseSet.AUTHOR);
-//        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
+//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
 //                SolutionPhraseSet.READER);        
-//        SemevalCorpusExperiments.posRegexCoverage(Components.CLEAR_NLP, 
-//                SolutionPhraseSet.COBINED);                        
+//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
+//                SolutionPhraseSet.COBINED);                       
+        
+        //CorpusSemevalTests.coverageErrors();
+        
+        System.out.println("porter2: " + PhraseHelper.stemWord("criterium"));
+        System.out.println("porter: " + PhraseHelper.stemWordPorter("criterium"));
+        
         end(); // finalize environment
     }
 

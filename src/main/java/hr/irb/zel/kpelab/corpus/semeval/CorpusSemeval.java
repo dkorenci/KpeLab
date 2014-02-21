@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CorpusSemeval {
 
-    private static final String corpusLocation = KpeConfig.getProperty("corpus.semeval");            
+    public static final String corpusLocation = KpeConfig.getProperty("corpus.semeval");            
     
     /** Get "trial" subset of the dataset. */
     public static List<KpeDocument> getTrial(SolutionPhraseSet phSet) throws IOException {
@@ -29,6 +29,15 @@ public class CorpusSemeval {
     /** Get "trial" subset of the dataset. */
     public static List<KpeDocument> getTest(SolutionPhraseSet phSet) throws IOException {
         return getDataset("test", phSet);
+    }    
+    
+    /** Get the entire dataset. */
+    public static List<KpeDocument> getAll(SolutionPhraseSet phSet) throws IOException {
+        List<KpeDocument> docs = new ArrayList<KpeDocument>();
+        docs.addAll(getDataset("trial", phSet));
+        docs.addAll(getDataset("train", phSet));
+        docs.addAll(getDataset("test", phSet));
+        return docs;
     }    
     
     /** Get subset of the dataset from specified folder. */

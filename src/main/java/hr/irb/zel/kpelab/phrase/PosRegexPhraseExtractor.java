@@ -126,8 +126,11 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         for (int i = start; i <= end; ++i) {
             Token t = sentence.get(i);            
             tokens.add(t.getCoveredText());
-            if (config.canonic == CanonicForm.LEMMA) ctokens.add(t.getLemma().getValue());            
-            else ctokens.add(t.getStem().getValue());
+            String tokStr;
+            if (config.canonic == CanonicForm.LEMMA) tokStr = t.getLemma().getValue();            
+            else tokStr = t.getStem().getValue();
+            tokStr = tokStr.toLowerCase();
+            ctokens.add(tokStr);
         }
         phrase.setTokens(tokens);
         phrase.setCanonicTokens(ctokens);

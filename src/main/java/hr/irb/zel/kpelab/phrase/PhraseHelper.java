@@ -13,6 +13,7 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import java.util.ArrayList;
 import java.util.List;
+import hr.irb.zel.kpelab.util.Stemmer;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -67,6 +68,14 @@ public class PhraseHelper {
         // slow way of doing it with jcas
 //        List<TokenCanonic> c = getCanonicForms(word, CanonicForm.STEM);
 //        return c.get(0).canonic;
+    }
+    
+    // stem using standard (older) version of the porter stemmer
+    public static String stemWordPorter(String word) {
+        Stemmer st = new Stemmer();
+        st.add(word.toCharArray(), word.length());
+        st.stem();
+        return st.toString();
     }
 
     /** Return number of words in a document. */

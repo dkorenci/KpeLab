@@ -1,5 +1,6 @@
 package hr.irb.zel.kpelab.util;
 
+import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.Arrays;
@@ -31,6 +32,23 @@ public class VectorAggregator {
             }
         }        
         return vector;        
+    }
+    
+    /** Return sum of term vectors multiplied by term weights. */
+    public IRealVector sumWeighted(Collection<WeightedTerm> terms) throws Exception {
+        IRealVector vector = null;
+        for (WeightedTerm tw : terms) {
+            if (wordToVector.hasWord(tw.term)) {
+                if (vector == null) {
+                    vector = wordToVector.getWordVector(tw.term).clone();
+                    vector.multiply(tw.weight);
+                }
+                else {
+                    vector.add(wordToVector.getWordVector(tw.term).clone().multiply(tw.weight));
+                }
+            }
+        }        
+        return vector;            
     }
     
     /** Tokenize string by whitespace and aggregate. */

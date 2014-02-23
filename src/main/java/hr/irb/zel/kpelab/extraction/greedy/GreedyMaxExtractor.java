@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package hr.irb.zel.kpelab.extraction.greedy;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
@@ -22,6 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+/** Greedy algorithm that in each step adds best phrase to the solution,
+ * works with esa vectors, aggregates terms in the document and phrases 
+ * in solution set by max, compares with sumMinShared vector operation. */
 public class GreedyMaxExtractor implements IKpextractor {
 
     IPhraseExtractor phExtr;
@@ -52,7 +50,7 @@ public class GreedyMaxExtractor implements IKpextractor {
         TermExtractor textr = new TermExtractor(config);
         List<String> terms = textr.extract(doc.getText());
         VectorAggregator agg = new VectorAggregator(wordVec);
-        docVector = agg.aggregate(terms, VectorAggregator.Method.MAX);
+        docVector = agg.aggregate(terms, VectorAggregator.Method.MAX);        
     }
 
     private List<Phrase> constructPhraseSet() {

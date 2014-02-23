@@ -93,4 +93,9 @@ public class ArrayRealVector implements IRealVector, Serializable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public IRealVector multiply(double alpha) {
+        for (int i = 0; i < vector.length; ++i) vector[i] *= alpha;
+        return this;
+    }
+
 }

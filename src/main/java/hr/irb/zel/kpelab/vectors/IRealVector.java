@@ -53,4 +53,7 @@ public interface IRealVector extends Serializable {
     /** Get (coordinate, value) pairs where value is not zero. */
     public VectorEntry[] getNonZeroEntries();
     
+    /** Multiply every vector element by alpha. Return this. */
+    public IRealVector multiply(double alpha);
+    
 }

@@ -263,5 +263,14 @@ public class SparseRealVector implements IRealVector, Serializable {
         }
         return ent;
     }
+
+    public IRealVector multiply(double alpha) {        
+        TIntDoubleIterator iter = map.iterator();        
+        while (iter.hasNext()) {
+            iter.advance();
+            iter.setValue(iter.value()*alpha);
+        }        
+        return this;
+    }
     
 }

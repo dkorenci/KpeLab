@@ -17,6 +17,9 @@ wikilsi.vectors = /data/datasets/word_vectors/wiki_lsi/wiki-matrix.txt
 wikiesa.words = /data/datasets/word_vectors/wiki_esa/wiki-esa-terms.txt
 wikiesa.vectors = /data/datasets/word_vectors/wiki_esa/wiki-esa-vectors.txt
 
+# devel tests output folder
+devel.tests = /data/datasets/kpe/SemEval2010/devel/
+
 # qhull executable
 qhull.exec = /home/dam1root/software/qhull-2012.1/bin/qconvex
 

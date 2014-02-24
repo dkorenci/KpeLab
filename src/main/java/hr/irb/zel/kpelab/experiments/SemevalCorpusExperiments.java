@@ -15,6 +15,8 @@ import hr.irb.zel.kpelab.evaluation.F1Metric;
 import hr.irb.zel.kpelab.extraction.AllCandidatesExtractor;
 import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.esa.EsamaxSearchPhraseSet;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyMaxExtractor;
 import hr.irb.zel.kpelab.extraction.tabu.KpeTabuSearch;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
@@ -23,6 +25,9 @@ import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
+import hr.irb.zel.kpelab.term.TermExtractor;
+import hr.irb.zel.kpelab.util.Utils;
+import hr.irb.zel.kpelab.vectors.document.TermFrequencyVectorizer;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import java.util.List;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -122,5 +127,30 @@ public class SemevalCorpusExperiments {
         F1Metric metric = eval.evaluateDocuments(docs);
         System.out.println(metric);          
     }    
+
+    // evaluate performance of Greedy Extractor on a single semeval document
+    public static void esaGreedySingleDoc(String docName, 
+            GreedyExtractorConfig conf, int K) throws Exception {              
+        KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
+        GreedyExtractor greedy = new GreedyExtractor(K, conf);        
+        
+        List<Phrase> result = greedy.extract(doc);
+        List<Phrase> solution = doc.getKeyphrases();
+        
+        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        System.out.println(metric);
+        
+        System.out.println("---- soultion");
+        PhraseHelper.printPhraseSet(solution, 7);
+        System.out.println("---- result");
+        PhraseHelper.printPhraseSet(result, 7);        
+    }     
+    
+    public static void printTermFrequencies(String docName) throws Exception {
+        KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
+        TermExtractor textr = new TermExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+        Utils.printWeightedTerms(textr.extractWeighted(doc.getText()));
+    }
     
 }

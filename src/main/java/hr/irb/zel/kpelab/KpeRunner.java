@@ -13,6 +13,7 @@ import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SimilarityExperiments;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorMemMap;
 import hr.irb.zel.kpelab.extraction.TfidfKpextractor;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
@@ -63,11 +64,11 @@ public class KpeRunner {
 //        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
 //                SolutionPhraseSet.COBINED);                       
         
-        //CorpusSemevalTests.coverageErrors();
+        SemevalCorpusExperiments.esaGreedySingleDoc("train/C-79", 
+                GreedyExtractorFactory.getLSICosExtractor(), 10);
+        //SemevalCorpusExperiments.printTermFrequencies("train/C-79");
         
-        System.out.println("porter2: " + PhraseHelper.stemWord("criterium"));
-        System.out.println("porter: " + PhraseHelper.stemWordPorter("criterium"));
-        
+        //CorpusSemevalTests.coverageErrors();                
         end(); // finalize environment
     }
 

@@ -44,7 +44,9 @@ public class VectorAggregator {
                     vector.multiply(tw.weight);
                 }
                 else {
-                    vector.add(wordToVector.getWordVector(tw.term).clone().multiply(tw.weight));
+                    double factor = Math.log(tw.weight);
+                    IRealVector v = wordToVector.getWordVector(tw.term).clone();
+                    vector.add(v.multiply(factor));
                 }
             }
         }        

@@ -134,7 +134,7 @@ public class SemevalCorpusExperiments {
     }    
 
     // evaluate performance of Greedy Extractor on a single semeval document
-    public static void esaGreedySingleDoc(String docName, 
+    public static void greedySingleDoc(String docName, 
             GreedyExtractorConfig conf, int K) throws Exception {              
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
         GreedyExtractor greedy = new GreedyExtractor(K, conf);        
@@ -151,6 +151,16 @@ public class SemevalCorpusExperiments {
         System.out.println("---- result");
         PhraseHelper.printPhraseSet(result, 7);        
     }     
+
+    // evaluate performance of Greedy Extractor on a single subset of semeval documents
+    public static void greedyDataset(String setId, 
+            GreedyExtractorConfig conf, int K) throws Exception {
+        List<KpeDocument> docs = CorpusSemeval.getDataset(setId, SolutionPhraseSet.AUTHOR);
+        GreedyExtractor greedy = new GreedyExtractor(K, conf);         
+        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateDocuments(docs);
+        System.out.println(metric);         
+    }      
     
     public static void printTermFrequencies(String docName) throws Exception {
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);

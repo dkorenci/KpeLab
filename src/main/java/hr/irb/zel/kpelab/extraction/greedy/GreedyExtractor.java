@@ -44,7 +44,7 @@ public class GreedyExtractor implements IKpextractor {
     private void constructPhraseSet() throws Exception {
         phrases = new ArrayList<Phrase>();
         for (int i = 0; i < phraseSetSize; ++i) {
-            System.out.println(i);
+            //System.out.println(i);
             Phrase optPhrase = null; 
             double optQual = Double.MIN_VALUE;               
             for (Phrase ph : candidates)

@@ -113,7 +113,7 @@ public class HulthCorpusExperiments {
          System.out.println(metric);         
     }       
 
-    // evaluate performance of esa coverage extractor on the entire corpus
+    // evaluate performance of random extractor on the entire corpus
     public static void randomCorpus(int K) throws Exception {
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.STEM);
          RandomPhraseExtractor random = new RandomPhraseExtractor(extractor, K);

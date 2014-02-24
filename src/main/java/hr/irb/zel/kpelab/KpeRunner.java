@@ -64,8 +64,12 @@ public class KpeRunner {
 //        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
 //                SolutionPhraseSet.COBINED);                       
         
-        SemevalCorpusExperiments.esaGreedySingleDoc("train/C-79", 
+//        SemevalCorpusExperiments.greedySingleDoc("train/I-45", 
+//                GreedyExtractorFactory.getLSICosExtractor(), 10);
+
+        SemevalCorpusExperiments.greedyDataset("train", 
                 GreedyExtractorFactory.getLSICosExtractor(), 10);
+        
         //SemevalCorpusExperiments.printTermFrequencies("train/C-79");
         
         //CorpusSemevalTests.coverageErrors();                

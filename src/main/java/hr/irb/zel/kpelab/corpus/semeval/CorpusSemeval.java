@@ -40,8 +40,8 @@ public class CorpusSemeval {
         return docs;
     }    
     
-    /** Get subset of the dataset from specified folder. */
-    private static List<KpeDocument> getDataset(String folder, SolutionPhraseSet phSet) 
+    /** Get subset of the dataset from specified folder: trial, train or test. */
+    public static List<KpeDocument> getDataset(String folder, SolutionPhraseSet phSet) 
             throws IOException {
         
         DocumentToSolutionMap solMap = 

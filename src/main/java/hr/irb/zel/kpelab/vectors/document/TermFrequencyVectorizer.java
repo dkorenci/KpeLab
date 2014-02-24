@@ -17,18 +17,20 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class TermFrequencyVectorizer implements IDocumentVectorizer {
 
     private IWordToVectorMap wordToVector;
-    private String text;
     private CanonicForm cform; // canonic form of extracted words
+    private TermExtractor termExtr;
+    private VectorAggregator agg;
     
-    public TermFrequencyVectorizer(IWordToVectorMap wvm, CanonicForm cf)
-    { wordToVector = wvm; cform = cf; }
+    public TermFrequencyVectorizer(IWordToVectorMap wvm, CanonicForm cf) throws UIMAException
+    { 
+        wordToVector = wvm; cform = cf;
+        termExtr = new TermExtractor(new PosExtractorConfig(
+                PosExtractorConfig.Components.OPEN_NLP, cform));        
+        agg = new VectorAggregator(wordToVector);
+    }
     
     public IRealVector vectorize(String txt) throws Exception {
-        text = txt;
-        VectorAggregator agg = new VectorAggregator(wordToVector);
-        TermExtractor textr = new TermExtractor(new PosExtractorConfig(
-                PosExtractorConfig.Components.OPEN_NLP, cform));
-        List<WeightedTerm> wterms = textr.extractWeighted(txt);        
+        List<WeightedTerm> wterms = termExtr.extractWeighted(txt);        
         return agg.sumWeighted(wterms);
     }
 

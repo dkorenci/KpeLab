@@ -1,6 +1,8 @@
 package hr.irb.zel.kpelab.corpus.semeval;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality;
+import hr.irb.zel.kpelab.evaluation.SemevalPhraseEquality;
 import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
@@ -40,19 +42,26 @@ public class CorpusSemevalTests {
         final String outputFolder = CorpusSemeval.corpusLocation + "coverageErrors/";
         IPhraseExtractor phExtr = new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));        
+        IPhraseEquality phequal = new SemevalPhraseEquality();
         for (KpeDocument doc : docs) {
-            Set<Phrase> text = new TreeSet<Phrase>(phExtr.extractPhrases(doc.getText()));
+            List<Phrase> text = phExtr.extractPhrases(doc.getText());
             List<Phrase> gold = doc.getKeyphrases();
             BufferedWriter writer = new BufferedWriter(
-                    new FileWriter(outputFolder+doc.getId()+".coverr.txt"));
-            writer.write("---not covered:\n");
-            for (Phrase ph : gold) {
-                if (!text.contains(ph)) writer.write(ph.canonicForm()+"\n");
+                    new FileWriter(outputFolder+doc.getId()+".coverr.txt"));            
+            String covered = "", notcovered = "";
+            for (Phrase phg : gold) {
+                boolean contains = false;
+                for (Phrase pht : text) { 
+                    if (phequal.equal(pht, phg)) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains) notcovered += (phg.canonicForm()+"\n");
+                else covered += (phg.canonicForm()+"\n");                
             }
-            writer.write("---covered:\n");
-            for (Phrase ph : gold) {
-                if (text.contains(ph)) writer.write(ph.canonicForm()+"\n");
-            }
+            writer.write("---not covered:\n"); writer.write(notcovered);
+            writer.write("---covered:\n"); writer.write(covered);
             writer.write("---text phrases:\n");
             for (Phrase ph : text) writer.write(ph.canonicForm()+"\n");
             writer.close();

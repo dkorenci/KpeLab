@@ -12,6 +12,8 @@ import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.evaluation.F1Evaluator;
 import hr.irb.zel.kpelab.evaluation.F1Metric;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality.PhEquality;
 import hr.irb.zel.kpelab.extraction.AllCandidatesExtractor;
 import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.esa.EsamaxSearchPhraseSet;
@@ -67,7 +69,8 @@ public class SemevalCorpusExperiments {
         List<Phrase> result = tabuSearch.extract(doc);
         List<Phrase> solution = doc.getKeyphrases();
         
-        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateResult(result, solution);
         System.out.println(metric);
         
         System.out.println("---- soultion");
@@ -85,7 +88,8 @@ public class SemevalCorpusExperiments {
         List<Phrase> result = extractor.extract(doc);
         List<Phrase> solution = doc.getKeyphrases();
         
-        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateResult(result, solution);
         System.out.println(metric);
         
         System.out.println("---- soultion");
@@ -106,7 +110,8 @@ public class SemevalCorpusExperiments {
         List<Phrase> result = tabuSearch.extract(doc);
         List<Phrase> solution = doc.getKeyphrases();
         
-        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateResult(result, solution);
         System.out.println(metric);
         
         System.out.println("---- soultion");
@@ -123,7 +128,7 @@ public class SemevalCorpusExperiments {
                 new PosExtractorConfig(comp, CanonicForm.STEM));         
         List<KpeDocument> docs = CorpusSemeval.getTest(phset);         
         AllCandidatesExtractor extr = new AllCandidatesExtractor(phExtr);
-        F1Evaluator eval = new F1Evaluator(extr);
+        F1Evaluator eval = new F1Evaluator(extr, PhEquality.SEMEVAL);
         F1Metric metric = eval.evaluateDocuments(docs);
         System.out.println(metric);          
     }    
@@ -137,7 +142,8 @@ public class SemevalCorpusExperiments {
         List<Phrase> result = greedy.extract(doc);
         List<Phrase> solution = doc.getKeyphrases();
         
-        F1Metric metric = F1Evaluator.evaluateResult(result, solution);
+        F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateResult(result, solution);
         System.out.println(metric);
         
         System.out.println("---- soultion");

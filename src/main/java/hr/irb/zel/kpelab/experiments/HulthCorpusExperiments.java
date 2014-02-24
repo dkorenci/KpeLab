@@ -7,6 +7,8 @@ import hr.irb.zel.kpelab.coverage.phrase.IPhraseCoverage;
 import hr.irb.zel.kpelab.coverage.phrase.MaxWordSimilarityCoverage;
 import hr.irb.zel.kpelab.evaluation.F1Evaluator;
 import hr.irb.zel.kpelab.evaluation.F1Metric;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality.PhEquality;
 import hr.irb.zel.kpelab.extraction.MaxCoverageExtractor;
 import hr.irb.zel.kpelab.extraction.RandomPhraseExtractor;
 import hr.irb.zel.kpelab.extraction.TfidfKpextractor;
@@ -34,7 +36,7 @@ public class HulthCorpusExperiments {
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
          TfidfKpextractor tfidf = new TfidfKpextractor(extractor, counter, K);
          
-         F1Evaluator eval = new F1Evaluator(tfidf);
+         F1Evaluator eval = new F1Evaluator(tfidf, PhEquality.CANONIC);
          F1Metric metric = eval.evaluateDocument(doc);                
          System.out.println(metric);
          tfidf.printTfidfs();
@@ -51,7 +53,7 @@ public class HulthCorpusExperiments {
         PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
         MaxCoverageExtractor kpextr = new MaxCoverageExtractor(extractor, phrCov, K);
 
-        F1Evaluator eval = new F1Evaluator(kpextr);
+        F1Evaluator eval = new F1Evaluator(kpextr, PhEquality.CANONIC);
         F1Metric metric = eval.evaluateDocument(doc);
         System.out.println(metric);
     }   
@@ -64,7 +66,7 @@ public class HulthCorpusExperiments {
         KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
         KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.STEM).readDocument(docName);
 
-        F1Evaluator eval = new F1Evaluator(tabuSearch);
+        F1Evaluator eval = new F1Evaluator(tabuSearch, PhEquality.CANONIC);
         F1Metric metric = eval.evaluateDocument(doc);
         System.out.println(metric);
     }     
@@ -78,7 +80,7 @@ public class HulthCorpusExperiments {
          
          List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.LEMMA);
          
-         F1Evaluator eval = new F1Evaluator(tfidf);
+         F1Evaluator eval = new F1Evaluator(tfidf, PhEquality.CANONIC);
          F1Metric metric = eval.evaluateDocuments(docs);
          System.out.println(metric);         
     }        
@@ -94,7 +96,7 @@ public class HulthCorpusExperiments {
          
          List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.LEMMA);
          
-         F1Evaluator eval = new F1Evaluator(kpextr);
+         F1Evaluator eval = new F1Evaluator(kpextr, PhEquality.CANONIC);
          F1Metric metric = eval.evaluateDocuments(docs);
          System.out.println(metric);         
     }     
@@ -106,7 +108,7 @@ public class HulthCorpusExperiments {
          System.out.print("reading documents... ");
          List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.LEMMA);
          System.out.println("done.");
-         F1Evaluator eval = new F1Evaluator(tabuSearch);
+         F1Evaluator eval = new F1Evaluator(tabuSearch, PhEquality.CANONIC);
          F1Metric metric = eval.evaluateDocuments(docs);
          System.out.println(metric);         
     }       
@@ -118,7 +120,7 @@ public class HulthCorpusExperiments {
          System.out.print("reading documents... ");
          List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.STEM);
          System.out.println("done.");
-         F1Evaluator eval = new F1Evaluator(random);
+         F1Evaluator eval = new F1Evaluator(random, PhEquality.CANONIC);
          F1Metric metric = eval.evaluateDocuments(docs);
          System.out.println(metric);         
     }          

@@ -6,11 +6,13 @@
 package hr.irb.zel.kpelab.evaluation;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality.PhEquality;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import nu.xom.jaxen.expr.EqualityExpr;
 
 /**
  *
@@ -18,9 +20,13 @@ import java.util.TreeSet;
 public class F1Evaluator {
 
     private IKpextractor extractor;    
+    private IPhraseEquality equality;
     
-    public F1Evaluator(IKpextractor extractor) {
-        this.extractor = extractor;        
+    public F1Evaluator(IKpextractor extr, IPhraseEquality.PhEquality pheq) {
+        extractor = extr;  
+        if (pheq == PhEquality.CANONIC) equality = new CanonicPhraseEquality();
+        else if (pheq == PhEquality.SEMEVAL ) equality = new SemevalPhraseEquality();
+        else throw new UnsupportedOperationException("equality not defined");            
     }
     
     public F1Metric evaluateDocuments(List<KpeDocument> documents) throws Exception {       
@@ -60,14 +66,23 @@ public class F1Evaluator {
         return evaluateResult(result, solution);
     }
     
-    public static F1Metric evaluateResult(List<Phrase> result, List<Phrase> solution) 
-            throws Exception {
-        Set<Phrase> solSet = new TreeSet<Phrase>(solution);
-        Set<Phrase> resSet = new TreeSet<Phrase>(result);
-                
+    public F1Metric evaluateResult(List<Phrase> result, List<Phrase> solution) 
+            throws Exception {                
         double coveredSol = 0, coveredRes = 0;
-        for (Phrase sol : solution) if (resSet.contains(sol)) coveredSol++;
-        for (Phrase res : result) if (solSet.contains(res)) coveredRes++;
+        for (Phrase sol : solution) {
+            for (Phrase res : result)
+            if (equality.equal(res, sol)) { 
+                coveredSol++;
+                break;
+            }
+        }
+        for (Phrase res : result) {
+            for (Phrase sol : solution)
+            if (equality.equal(res, sol)) {
+                coveredRes++;
+                break;
+            }            
+        }        
         
         F1Metric f1 = new F1Metric();
         if (result.isEmpty())  f1.precision = 0;

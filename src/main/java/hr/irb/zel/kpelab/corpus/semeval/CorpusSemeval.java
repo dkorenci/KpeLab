@@ -60,16 +60,22 @@ public class CorpusSemeval {
     }
 
     /** Get a single document specified as folder/docId */
-    public static KpeDocument getDocument(String doc, SolutionPhraseSet phSet) 
+    public static KpeDocument getDocument(String doc, String phSetId) 
             throws IOException {        
         File docFile = new File(corpusLocation + doc + ".txt.final");
         String folder = doc.split("/")[0];
         DocumentToSolutionMap solMap = 
-                new DocumentToSolutionMap(solutionFileName(folder, phSet));                
+                new DocumentToSolutionMap(solutionFileName(folder, phSetId));                
         String docText = readDocument(docFile);
         String docId = getDocId(docFile);        
         List<Phrase> phrases = getPhrases(docText, solMap.getSolutions(docId));
         return new KpeDocument(docId, docText, phrases);
+    }    
+    
+    /** Get a single document specified as folder/docId */
+    public static KpeDocument getDocument(String doc, SolutionPhraseSet phSet) 
+            throws IOException {        
+        return getDocument(doc, getPhraseSetId(phSet));
     }
     
     private static String getDocId(File f) {        
@@ -86,14 +92,22 @@ public class CorpusSemeval {
         return Arrays.asList(new File(folder).listFiles(filter));
     }
     
-    private static String solutionFileName(String folder, SolutionPhraseSet phSet) {
-        String solId; 
-        if (phSet == SolutionPhraseSet.AUTHOR) solId = "author";
-        else if (phSet == SolutionPhraseSet.READER) solId = "reader";
-        else solId = "combined";        
-        return corpusLocation+folder+"/"+folder+"."+solId+".stem.final";
+    private static String solutionFileName(String folder, SolutionPhraseSet phSet) {  
+        return solutionFileName(folder, getPhraseSetId(phSet));
     }
 
+    private static String getPhraseSetId(SolutionPhraseSet phSet) {
+        String phSetId; 
+        if (phSet == SolutionPhraseSet.AUTHOR) phSetId = "author";
+        else if (phSet == SolutionPhraseSet.READER) phSetId = "reader";
+        else phSetId = "combined";      
+        return phSetId;
+    }
+    
+    private static String solutionFileName(String folder, String phSetId) {
+        return corpusLocation+folder+"/"+folder+"."+phSetId+".stem.final";
+    }
+    
     // From a list of solutions pick one of surface forms.
     private static List<Phrase> getPhrases(String docText, List<List<Phrase>> solutions) {
         List<Phrase> phrases = new ArrayList<Phrase>();

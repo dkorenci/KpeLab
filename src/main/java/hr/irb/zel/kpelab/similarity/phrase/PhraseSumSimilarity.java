@@ -4,7 +4,7 @@ import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.similarity.SimilarityCalculationException;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
-import hr.irb.zel.kpelab.vectors.similarity.IVectorSimilarity;
+import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 import java.util.List;
 
 /**
@@ -14,9 +14,9 @@ import java.util.List;
 public class PhraseSumSimilarity implements IPhraseSimilarityCalculator {
 
     IWordToVectorMap wordToVector;
-    IVectorSimilarity vectorSim;
+    IVectorComparison vectorSim;
     
-    public PhraseSumSimilarity(IWordToVectorMap wvm, IVectorSimilarity vsim) {
+    public PhraseSumSimilarity(IWordToVectorMap wvm, IVectorComparison vsim) {
         wordToVector = wvm; vectorSim = vsim;
     }
     
@@ -28,7 +28,7 @@ public class PhraseSumSimilarity implements IPhraseSimilarityCalculator {
         try {
             v1 = sumWordVectors(words1);
             v2 = sumWordVectors(words2);
-            return vectorSim.similarity(v1, v2);
+            return vectorSim.compare(v1, v2);
         }
         catch (Exception e) {
             throw new SimilarityCalculationException(e);

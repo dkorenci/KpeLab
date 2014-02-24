@@ -27,7 +27,7 @@ import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorDiskMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
-import hr.irb.zel.kpelab.vectors.similarity.VectorSimilarity;
+import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import java.util.List;
 
 public class KpeRunner {

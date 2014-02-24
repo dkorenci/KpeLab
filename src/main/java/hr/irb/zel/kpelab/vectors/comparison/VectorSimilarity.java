@@ -1,8 +1,9 @@
-package hr.irb.zel.kpelab.vectors.similarity;
+package hr.irb.zel.kpelab.vectors.comparison;
 
 import hr.irb.zel.kpelab.vectors.IRealVector;
 
-public class VectorSimilarity implements IVectorSimilarity {
+/** Basic measures of vector similarity. */
+public class VectorSimilarity implements IVectorComparison {
 
     public enum SimilarityMeasure { L2_NEGATE, COSINE_SCALED, COSINE_CUTOFF };
     
@@ -10,7 +11,7 @@ public class VectorSimilarity implements IVectorSimilarity {
     
     public VectorSimilarity(SimilarityMeasure m) { measure = m; }
     
-    public double similarity(IRealVector v1, IRealVector v2) {
+    public double compare(IRealVector v1, IRealVector v2) {
         switch (measure) {
             case L2_NEGATE : return l2negate(v1, v2);
             case COSINE_SCALED : return cosineScaled(v1, v2);

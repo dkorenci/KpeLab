@@ -20,7 +20,7 @@ import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.tfidf.CounterCreation;
 import hr.irb.zel.kpelab.tfidf.PhraseInDocumentsCounter;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
-import hr.irb.zel.kpelab.vectors.similarity.VectorSimilarity;
+import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import java.util.List;
 
 /** Experiments with keyphrase extraction. */

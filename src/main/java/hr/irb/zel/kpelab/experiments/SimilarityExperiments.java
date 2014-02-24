@@ -25,9 +25,9 @@ import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorDiskMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
-import hr.irb.zel.kpelab.vectors.similarity.IVectorSimilarity;
-import hr.irb.zel.kpelab.vectors.similarity.VectorSimilarity;
-import hr.irb.zel.kpelab.vectors.similarity.VectorSimilarity.SimilarityMeasure;
+import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
+import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
+import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity.SimilarityMeasure;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -127,7 +127,7 @@ public class SimilarityExperiments {
     // use agreggated word LSI-vectors cosine similarity 
     public static void phraseSimExp2() throws Exception {
         // construct phrase similairty calculators
-        IVectorSimilarity vectorSim = new VectorSimilarity(SimilarityMeasure.COSINE_CUTOFF);
+        IVectorComparison vectorSim = new VectorSimilarity(SimilarityMeasure.COSINE_CUTOFF);
         IPhraseSimilarityCalculator phSim = new PhraseSumSimilarity(
                 WordVectorMapFactory.getLSIVectors(), vectorSim);
         // get phrases from a document

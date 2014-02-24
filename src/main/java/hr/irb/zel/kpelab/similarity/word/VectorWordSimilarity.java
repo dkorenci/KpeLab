@@ -3,15 +3,15 @@ package hr.irb.zel.kpelab.similarity.word;
 import hr.irb.zel.kpelab.similarity.SimilarityCalculationException;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
-import hr.irb.zel.kpelab.vectors.similarity.IVectorSimilarity;
+import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 
 /** Calculates word similarity based on similarity of vector representation of words. */
 public class VectorWordSimilarity implements IWordSimilarityCalculator {
     
     private IWordToVectorMap wordVecMap;
-    private IVectorSimilarity vectorSim;
+    private IVectorComparison vectorSim;
     
-    public VectorWordSimilarity(IWordToVectorMap wvm, IVectorSimilarity vsim) {
+    public VectorWordSimilarity(IWordToVectorMap wvm, IVectorComparison vsim) {
         wordVecMap = wvm; vectorSim = vsim;
     } 
     
@@ -33,7 +33,7 @@ public class VectorWordSimilarity implements IWordSimilarityCalculator {
             throw new SimilarityCalculationException(message);
         }
         // calculate distance
-        return vectorSim.similarity(v1, v2);
+        return vectorSim.compare(v1, v2);
     }
 
 }

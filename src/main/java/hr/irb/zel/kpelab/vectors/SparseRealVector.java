@@ -21,7 +21,8 @@ import org.apache.commons.math3.util.FastMath;
  * Non-zero elements are kept in int-to-double map, all the other elements
  * are assumed to be equal to 0.0
  */
-public class SparseRealVector implements IRealVector, Serializable {
+public class SparseRealVector extends RealVectorBase 
+                implements IRealVector, Serializable {
     
     private static final long serialVersionUID = 2004194095001077736L;
 
@@ -94,7 +95,7 @@ public class SparseRealVector implements IRealVector, Serializable {
 
     public void setElement(int i, double val) {
         checkIndex(i);
-        map.put(i, val);
+        if (isZero(val) == false) map.put(i, val);
     }
 
     public IRealVector clone() {
@@ -105,11 +106,15 @@ public class SparseRealVector implements IRealVector, Serializable {
         checkDimension(v); checkType(v);
         SparseRealVector vec = (SparseRealVector)v;
         vec.map.forEachEntry(new TIntDoubleProcedure() {
-            public boolean execute(int i, double d) {
-                double val;
-                if (map.containsKey(i)) val = map.get(i);
-                else val = 0;                
-                map.put(i, val + d);                
+            public boolean execute(int i, double d) {                
+                if (map.containsKey(i)) { 
+                    double val = map.get(i) + d;
+                    if (isZero(val)) map.remove(i);
+                    else map.put(i, d);
+                }
+                else { 
+                    if (isZero(d) == false) map.put(i, d);                
+                }
                 return true;
             }
         });
@@ -138,12 +143,16 @@ public class SparseRealVector implements IRealVector, Serializable {
         checkDimension(v); checkType(v);
         SparseRealVector vec = (SparseRealVector)v;
         vec.map.forEachEntry(new TIntDoubleProcedure() {
-            public boolean execute(int i, double d) {
-                double val;
-                if (map.containsKey(i)) val = map.get(i);
-                else val = 0;                
-                map.put(i, val - d);                
-                return true;
+            public boolean execute(int i, double d) {                
+                if (map.containsKey(i)) {
+                    double val = map.get(i) - d;                    
+                    if (isZero(val)) map.remove(i);
+                    else map.put(i, val);
+                }
+                else { 
+                    if (isZero(-d) == false) map.put(i, -d);                
+                }
+                return true;                
             }
         });        
         return this;

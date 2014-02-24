@@ -2,6 +2,7 @@ package hr.irb.zel.kpelab;
 
 import hr.irb.zel.kpelab.analysis.PosTaggingAnalyser;
 import hr.irb.zel.kpelab.analysis.WS353CorrelationAnalysis;
+import hr.irb.zel.kpelab.analysis.devel.DevelTester;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.hulth.DocumentReaderHulth;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
@@ -67,8 +68,10 @@ public class KpeRunner {
 //        SemevalCorpusExperiments.greedySingleDoc("train/I-45", 
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);
 
-        SemevalCorpusExperiments.greedyDataset("train", 
-                GreedyExtractorFactory.getLSICosExtractor(), 10);
+//        SemevalCorpusExperiments.greedyDataset("train", 
+//                GreedyExtractorFactory.getLSICosExtractor(), 10);
+        
+        new DevelTester(GreedyExtractorFactory.getLSICosExtractor()).testPhraseSetOrder();
         
         //SemevalCorpusExperiments.printTermFrequencies("train/C-79");
         

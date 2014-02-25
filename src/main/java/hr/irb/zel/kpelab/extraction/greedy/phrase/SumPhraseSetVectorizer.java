@@ -9,6 +9,7 @@ import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,20 +22,18 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
         
     private IRealVector vector; // current vector    
     private Map<String, Integer> words; // word of the phrase set and their counts
-    private Phrase lastAdded;
-    private List<String> diffWords; // words that were added or removed by last operation
+    private Phrase lastAdded;    
     
     public SumPhraseSetVectorizer(IWordToVectorMap wvm) { 
         wordToVector = wvm; 
         words = new HashMap<String, Integer>();
         vector = null;       
-        lastAdded = null;
-        diffWords = new ArrayList<String>(10);       
+        lastAdded = null;        
     }
     
     public void addPhrase(Phrase ph) throws Exception {
-        boolean newWord = false;
-        diffWords.clear();
+        boolean newWord = false;        
+        List<String> diffWords = new ArrayList<String>(10);  
         for (String w : ph.getCanonicTokens()) {
             if (words.containsKey(w)) words.put(w, words.get(w)+1);
             else { 
@@ -42,7 +41,7 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
                 newWord = true;
                 diffWords.add(w);
             }
-        }
+        }         
         lastAdded = ph;
         if (newWord) {
             for (String w : diffWords) {
@@ -56,7 +55,7 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
 
     public void removeLastAdded() throws Exception {
         if (lastAdded == null) return;
-        diffWords.clear();
+        List<String> diffWords = new ArrayList<String>(10);  
         boolean removed = false;
         for (String w : lastAdded.getCanonicTokens()) {
             assert(words.containsKey(w));
@@ -80,7 +79,18 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
     public IRealVector vector() {
         return vector;
     }
-    
-    
+
+    public void clear() {        
+        words.clear();
+        vector = null;
+        lastAdded = null;
+    }        
+
+    public boolean isNull(Phrase ph) {
+        for (String w : ph.getCanonicTokens()) {
+            if (wordToVector.hasWord(w)) return false;
+        }
+        return true;
+    }
 
 }

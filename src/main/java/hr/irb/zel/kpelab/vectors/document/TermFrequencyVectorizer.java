@@ -12,7 +12,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
- * Sum vectors of text words weighted with their (modified) frequency.
+ * Sum vectors of adjectives and nouns weighted with function of their frequency.
  */
 public class TermFrequencyVectorizer implements IDocumentVectorizer {
 

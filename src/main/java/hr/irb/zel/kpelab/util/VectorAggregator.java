@@ -41,11 +41,12 @@ public class VectorAggregator {
             if (wordToVector.hasWord(tw.term)) {
                 if (vector == null) {
                     vector = wordToVector.getWordVector(tw.term).clone();
-                    vector.multiply(tw.weight);
+                    double factor = tw.weight == 1 ? 1 : Math.log(tw.weight+1);
+                    vector.multiply(factor);
                 }
                 else {
-                    double factor = tw.weight == 1 ? 1 : Math.log(tw.weight+1);
                     IRealVector v = wordToVector.getWordVector(tw.term).clone();
+                    double factor = tw.weight == 1 ? 1 : Math.log(tw.weight+1);                    
                     vector.add(v.multiply(factor));
                 }
             }

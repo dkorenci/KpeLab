@@ -12,5 +12,9 @@ public interface IPhraseSetVectorizer {
     public void removeLastAdded() throws Exception;
     // get vector representation of the phrase set
     public IRealVector vector() throws Exception;
+    // remove all phrases from the set
+    public void clear();    
+    // true if there is no mapping to vector for any word in the phrase
+    public boolean isNull(Phrase ph);
     
 }

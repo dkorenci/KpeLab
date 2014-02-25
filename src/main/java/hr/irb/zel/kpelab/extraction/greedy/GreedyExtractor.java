@@ -2,17 +2,10 @@ package hr.irb.zel.kpelab.extraction.greedy;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
-import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
-import hr.irb.zel.kpelab.phrase.CanonicForm;
-import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
-import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
-import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
-import hr.irb.zel.kpelab.util.VectorAggregator;
 import hr.irb.zel.kpelab.vectors.IRealVector;
-import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
-import hr.irb.zel.kpelab.vectors.document.IDocumentVectorizer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,12 +29,14 @@ public class GreedyExtractor implements IKpextractor {
 
     public List<Phrase> extract(KpeDocument doc) throws Exception {
         documentVector = c.docVectorizer.vectorize(doc.getText());
-        candidates = c.phraseExtractor.extractPhrases(doc.getText());
+        candidates = c.phraseExtractor.extractPhrases(doc.getText());     
+        removeNullCandidates();
         constructPhraseSet();
         return phrases;
     }
 
     private void constructPhraseSet() throws Exception {
+        c.phVectorizer.clear();
         phrases = new ArrayList<Phrase>();
         for (int i = 0; i < phraseSetSize; ++i) {
             //System.out.println(i);
@@ -61,6 +56,16 @@ public class GreedyExtractor implements IKpextractor {
             if (optPhrase != null) phrases.add(optPhrase);
         }
     }
-        
+
+    // remove from set of candidates phrases that cannot be vectorized
+    private void removeNullCandidates() {
+        Iterator<Phrase> it = candidates.iterator();
+        while(it.hasNext()) {
+            Phrase ph = it.next();
+            if (c.phVectorizer.isNull(ph)) {                 
+                it.remove();
+            }
+        }        
+    }        
     
 }

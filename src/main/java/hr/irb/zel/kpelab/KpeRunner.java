@@ -68,10 +68,10 @@ public class KpeRunner {
 //        SemevalCorpusExperiments.greedySingleDoc("train/I-45", 
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);
 
-        SemevalCorpusExperiments.greedyDataset("train", 
-                GreedyExtractorFactory.getLSICosExtractor(), 10);
+//        SemevalCorpusExperiments.greedyDataset("train", 
+//                GreedyExtractorFactory.getLSICosExtractor(), 10);
         
-//        new DevelTester(GreedyExtractorFactory.getLSICosExtractor()).testPhraseSetOrder();
+        new DevelTester(GreedyExtractorFactory.getLSICosExtractor()).testPhraseSets("single");
         
         //SemevalCorpusExperiments.printTermFrequencies("train/C-79");
         

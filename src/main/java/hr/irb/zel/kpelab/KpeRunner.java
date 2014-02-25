@@ -1,6 +1,7 @@
 package hr.irb.zel.kpelab;
 
 import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.morpha.MorphaStemmer;
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import hr.irb.zel.kpelab.analysis.CannonizationAnalyser;
@@ -75,24 +76,24 @@ public class KpeRunner {
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);
 
 //        SemevalCorpusExperiments.greedyDataset("train", 
-//                GreedyExtractorFactory.getLSICosExtractor(), 10);
+//                GreedyExtractorFactory.getLSICosExtractor(), 10);               
         
-        //new DevelTester(GreedyExtractorFactory.getLSICosExtractor()).testPhraseSets("single");        
-        //SemevalCorpusExperiments.printTermFrequencies("train/C-79");
+//        System.out.println(PhraseHelper.stemWordPorter("web"));
+//        System.out.println(PhraseHelper.stemWordPorter("framework"));
         
-        cannonizationAnalysis();
+        //cannonizationAnalysis();
         
-        //CorpusSemevalTests.coverageErrors();                
+        new DevelTester(GreedyExtractorFactory.getLSICosExtractor()).testPhraseSets("basic");                          
         end(); // finalize environment
     }
 
     private static void cannonizationAnalysis() throws Exception {        
         CannonizationAnalyser ca = 
-                new CannonizationAnalyser(CanonicForm.STEM, SnowballStemmer.class);
-//        KpeDocument doc = CorpusSemeval.getDocument("train/C-79", SolutionPhraseSet.AUTHOR);
-//        ca.printCanonicPhrases(doc);        
-        List<KpeDocument> docs = CorpusSemeval.getAll(SolutionPhraseSet.AUTHOR);
-        ca.testCanonicFormCoverage(WordVectorMapFactory.getESAVectors(), docs);
+                new CannonizationAnalyser(CanonicForm.LEMMA, StanfordLemmatizer.class);
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-35", SolutionPhraseSet.AUTHOR);
+        ca.printCanonicPhrases(doc);        
+//        List<KpeDocument> docs = CorpusSemeval.getAll(SolutionPhraseSet.AUTHOR);
+//        ca.testCanonicFormCoverage(WordVectorMapFactory.getLSIVectors(), docs);
     }
     
     private static void testMaxCoverage() {

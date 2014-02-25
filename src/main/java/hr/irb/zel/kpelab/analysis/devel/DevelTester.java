@@ -4,6 +4,7 @@ import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
+import hr.irb.zel.kpelab.evaluation.SemevalPhraseEquality;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
 import hr.irb.zel.kpelab.phrase.Phrase;
@@ -167,17 +168,34 @@ public class DevelTester {
         return instances;
     }
     
-    private void readDevelSet() throws IOException {
+    private void readDevelSet() throws IOException, Exception {
         List<KpeDocument> docs = CorpusSemeval.getDataset("devel", SolutionPhraseSet.AUTHOR);
         System.out.println(docs.size());
         develSet = new TreeMap<String, Map<String, List<Phrase>>>();
         docTexts = new TreeMap<String, String>();
+        SemevalPhraseEquality phEq = new SemevalPhraseEquality();
         for (KpeDocument d : docs) {
+            List<Phrase> extractedPhrases = c.phraseExtractor.extractPhrases(d.getText());            
             String id = d.getId();
             Map<String, List<Phrase>> m = new TreeMap<String, List<Phrase>>();
             for (String phSetId : phraseSets) {
                 KpeDocument tmp = CorpusSemeval.getDocument("devel/"+id, phSetId);
-                m.put(phSetId, tmp.getKeyphrases());
+                List<Phrase> matched = new ArrayList<Phrase>(5);
+                for (Phrase ph : tmp.getKeyphrases()) {
+                    Phrase match = null;
+                    for (Phrase eph : extractedPhrases) {
+                        if (phEq.equal(eph, ph)) {
+                            match = eph; 
+                            break;
+                        }
+                    }
+                    if (match == null) {
+                        throw new RuntimeException("unmatched: " + id + phSetId +" : "+ ph);
+                        //System.out.println("unmatched: " + id + phSetId +" : "+ ph);
+                    }
+                    else matched.add(match);
+                }                
+                m.put(phSetId, matched);
             }
             develSet.put(id, m);
             docTexts.put(id, d.getText());

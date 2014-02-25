@@ -70,9 +70,11 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
 //            CasDumpWriter.class,
 //            CasDumpWriter.PARAM_OUTPUT_FILE, "output.txt"));
         if (config.canonic == CanonicForm.LEMMA) 
-            runPipeline(jCas, config.segmenter, config.lemmatizer, config.posTagger);                        
+            runPipeline(jCas, config.segmenter, config.posTagger, config.lemmatizer);                        
         else if (config.canonic == CanonicForm.STEM)
-            runPipeline(jCas, config.segmenter, config.stemmer, config.posTagger);                        
+            runPipeline(jCas, config.segmenter, config.posTagger, config.stemmer);     
+        else if (config.canonic == CanonicForm.NO_CANNONIZATION)
+            runPipeline(jCas, config.segmenter, config.posTagger);
         else throw new IllegalArgumentException("canonic form not covered");
     }
 
@@ -128,8 +130,10 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
             tokens.add(t.getCoveredText());
             String tokStr;
             if (config.canonic == CanonicForm.LEMMA) tokStr = t.getLemma().getValue();                                      
-            else tokStr = t.getStem().getValue();            
-            // fallback to original text if canonization is unsuccessful
+            else if (config.canonic == CanonicForm.STEM) tokStr = t.getStem().getValue();            
+            else if (config.canonic == CanonicForm.NO_CANNONIZATION) tokStr = t.getCoveredText();
+            else throw new IllegalArgumentException("uncovered canonic form");
+            // fallback to original text if canonization was unsuccessful
             if (tokStr == null) tokStr = t.getCoveredText();
             tokStr = tokStr.toLowerCase();
             ctokens.add(tokStr);
@@ -173,6 +177,10 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
 
     private boolean isAdj(Token tok) {
         return (tok.getPos() instanceof ADJ);
+    }
+
+    private void IllegalArgumentException(String uncovered_canonic_form) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
    
 }

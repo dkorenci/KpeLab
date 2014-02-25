@@ -5,6 +5,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
+import hr.irb.zel.kpelab.util.Utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,7 @@ public class TermExtractor {
     private String text; // text from which to extract phrases
     private JCas jCas; // results from DKPro pipeline        
     List<WeightedTerm> wterms;
-    private static final Pattern wordPattern =
-        Pattern.compile("\\p{Alpha}+(\\-\\p{Alpha})?");
+
     
     
     public TermExtractor(PosExtractorConfig conf) { this.config = conf; }
@@ -65,7 +65,7 @@ public class TermExtractor {
         Map<String, Integer> terms = new HashMap<String, Integer>();       
         // iterate over all tokens in the document jCas
         for (Token tok : select(jCas, Token.class)) {
-            if (isWord(tok.getCoveredText()) == false) continue;
+            if (Utils.isWord(tok.getCoveredText()) == false) continue;
             if (isNoun(tok) == false && isAdj(tok) == false) continue;
             String term;            
             if (config.canonic == CanonicForm.LEMMA) term = tok.getLemma().getValue();
@@ -81,10 +81,6 @@ public class TermExtractor {
             wterms.add(new WeightedTerm(e.getKey(), e.getValue()));
         }
     }    
-
-    private static boolean isWord(String token) {
-        return wordPattern.matcher(token).matches();
-    }
 
     private static boolean isNoun(Token tok) {
         return (tok.getPos() instanceof N);

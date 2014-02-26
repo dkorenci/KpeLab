@@ -30,6 +30,7 @@ public class GreedyExtractor implements IKpextractor {
     public List<Phrase> extract(KpeDocument doc) throws Exception {
         documentVector = c.docVectorizer.vectorize(doc.getText());
         candidates = c.phraseExtractor.extractPhrases(doc.getText());     
+        System.out.println("numCandidates: "+candidates.size());
         removeNullCandidates();
         constructPhraseSet();
         return phrases;
@@ -39,7 +40,6 @@ public class GreedyExtractor implements IKpextractor {
         c.phVectorizer.clear();
         phrases = new ArrayList<Phrase>();
         for (int i = 0; i < phraseSetSize; ++i) {
-            //System.out.println(i);
             Phrase optPhrase = null; 
             double optQual = Double.MIN_VALUE;               
             for (Phrase ph : candidates)

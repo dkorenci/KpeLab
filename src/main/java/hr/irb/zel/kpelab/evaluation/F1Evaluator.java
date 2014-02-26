@@ -32,7 +32,8 @@ public class F1Evaluator {
     public F1Metric evaluateDocuments(List<KpeDocument> documents) throws Exception {       
         F1Metric result = new F1Metric();
         int stepCounter = 0;
-        for (KpeDocument doc : documents) {                 
+        for (KpeDocument doc : documents) {    
+            System.out.println(doc.getId());
             F1Metric docResult = null;
             try {
                 //System.out.print("extracting for: " + doc.getId() + " ...");
@@ -89,7 +90,9 @@ public class F1Evaluator {
         else f1.precision = coveredRes / result.size();        
         if (solution.isEmpty()) f1.recall = 0;
         else f1.recall = coveredSol / solution.size();        
-        f1.calculateF1();
+        f1.calculateF1();        
+        
+        f1.phrases = result;
         
         return f1;
     }    

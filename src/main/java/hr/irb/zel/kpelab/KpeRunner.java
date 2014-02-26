@@ -42,29 +42,7 @@ import org.tartarus.snowball.ext.PorterStemmer;
 public class KpeRunner {
 
     public static void main(String[] args) throws Exception {
-        start(); // init environment                
-        
-        //testStemming();       
-        //testWordStemming();
-        //ExtractionExperiments.esacovCorpus(10);
-        //ExtractionExperiments.randomCorpus(10);
-        //ExtractionExperiments.esacovSingleDoc("Test/1933.abstr", 10);
-        //ExtractionExperiments.esacovSingleDoc("Training/639.abstr", 10);        
-        //esaVectorsTest();
-        //printPhrases("Training/1078.abstr");
-        //printPhrases("Training/639.abstr");
-        //printPhrases("Training/90.abstr");
-        //ws353vectorSims();
-        //SemevalCorpusExperiments.singleDocOpenNLPPos();
-        
-        //SimilarityExperiments.expWS353ESA();
-        //SimilarityExperiments.expWS353LSI();        
-        //CorpusSemevalTests.printTerms("train/C-79");
-        //SemevalCorpusExperiments.esaMaxCovSingleDoc("train/C-79", 10);
-        //SemevalCorpusExperiments.esaCosCovSingleDoc("train/C-79", 10);
-        //SemevalCorpusExperiments.esaMaxCovSingleDocGreedy("train/C-79", 10);
-        //CorpusSemevalUtils.outputStemmedPhrases("devel/H-83");
-        
+        start(); // init environment                            
 //        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
 //                SolutionPhraseSet.AUTHOR);
 //        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
@@ -77,16 +55,22 @@ public class KpeRunner {
 
 //        SemevalCorpusExperiments.greedyDataset("train", 
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);               
+                
+        //cannonizationAnalysis();                           
+        develTests();
         
-//        System.out.println(PhraseHelper.stemWordPorter("web"));
-//        System.out.println(PhraseHelper.stemWordPorter("framework"));
-        
-        //cannonizationAnalysis();
-        
-        new DevelTester(GreedyExtractorFactory.getLSICosExtractor()).testPhraseSets("basic");                          
         end(); // finalize environment
     }
 
+    private static void develTests() throws Exception {
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESACosExtractor());
+//        dt.testPhraseSets("basic", 2);
+//        dt.testPhraseSets("mixed", 2);
+//        dt.testPhraseSets("single", 2);
+        dt.runOnSample(2, 5);
+        dt.close();
+    }
+    
     private static void cannonizationAnalysis() throws Exception {        
         CannonizationAnalyser ca = 
                 new CannonizationAnalyser(CanonicForm.LEMMA, StanfordLemmatizer.class);

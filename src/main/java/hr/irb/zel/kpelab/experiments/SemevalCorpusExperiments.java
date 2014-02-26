@@ -155,7 +155,7 @@ public class SemevalCorpusExperiments {
     // evaluate performance of Greedy Extractor on a single subset of semeval documents
     public static void greedyDataset(String setId, 
             GreedyExtractorConfig conf, int K) throws Exception {
-        List<KpeDocument> docs = CorpusSemeval.getDataset(setId, SolutionPhraseSet.AUTHOR);
+        List<KpeDocument> docs = CorpusSemeval.getDataset(setId, SolutionPhraseSet.COBINED);
         GreedyExtractor greedy = new GreedyExtractor(K, conf);         
         F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
         F1Metric metric = eval.evaluateDocuments(docs);

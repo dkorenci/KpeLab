@@ -4,10 +4,16 @@ import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
+import hr.irb.zel.kpelab.evaluation.F1Evaluator;
+import hr.irb.zel.kpelab.evaluation.F1Metric;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality;
+import hr.irb.zel.kpelab.evaluation.IPhraseEquality.PhEquality;
 import hr.irb.zel.kpelab.evaluation.SemevalPhraseEquality;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 import hr.irb.zel.kpelab.vectors.document.IDocumentVectorizer;
@@ -20,6 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.rosuda.JRI.REXP;
+import org.rosuda.JRI.Rengine;
 
 /**
  * Test of processing components on development set.
@@ -33,7 +41,8 @@ public class DevelTester {
     private final String [] phraseSets = {"bad","semi","gold"};
     private BufferedWriter writer;
     private final String outFolder;
-
+    private static Rengine rengine;
+    
     // test instance with relevant data
     private class TestInstance implements Comparable<TestInstance> {
         public String phSetId;
@@ -58,12 +67,14 @@ public class DevelTester {
         outFolder = KpeConfig.getProperty("devel.tests");
     }
     
-    public void testPhraseSets(String instanceSet) throws IOException, Exception {
+    /** For each document in developement set, sort phrase sets by quality, 
+     *  type of phrase set is set with instanceSet, can be: basic, mixed, single. */
+    public void testPhraseSets(String instanceSet, int numDocs) throws IOException, Exception {
         if (develSet == null) readDevelSet(); 
-        if (writer == null) writer = new BufferedWriter(
-                new FileWriter(outFolder+"_develTests_"+instanceSet+".txt"));
-                
+        writer = new BufferedWriter(new FileWriter(outFolder+"_develTests_"+instanceSet+".txt"));
+        int docCnt = 0;
         for (String docId : develSet.keySet()) {
+            System.out.println("testPhraseSets " + docId);
             List<TestInstance> instances = getInstances(instanceSet, docId);
             IRealVector docVec = c.docVectorizer.vectorize(docTexts.get(docId));
             for (TestInstance inst : instances) {                
@@ -75,11 +86,14 @@ public class DevelTester {
             //sortByRank(instances);
             sortByResult(instances);                       
             for (TestInstance inst : instances) {
-                writer.write(inst.phSetId+": "+inst.result+" ; "
+                writer.write(inst.phSetId+": "+Utils.doubleToString(inst.result)+" ; "
                         +phrasesToString(inst.phrases)+"\n");
             }
+            double s = calculateSpearman(instances);
+            writer.write("spearman: " + Utils.doubleToString(s) + "\n");
             writer.write("\n");
-        }
+            if (++docCnt == numDocs) break;
+        }        
         writer.close();
     }
         
@@ -88,6 +102,26 @@ public class DevelTester {
         for (Phrase ph : phrases) str += ph + ";";
         return str;
     }    
+    
+    // calculcate spearman correlation between expected rank and calculated result
+    // for test instances
+    public double calculateSpearman(List<TestInstance> instances) throws Exception {
+        initRengine();
+        double [] exp = new double[instances.size()];
+        double [] res = new double[instances.size()];
+        int i = 0;
+        for (TestInstance inst : instances) {
+            exp[i] = inst.expectedRank; res[i++] = inst.result;
+        }
+        rengine.assign("e", exp);
+        rengine.assign("r", res);
+        REXP result = rengine.eval("(cor(e,r,method=\"spearman\"))");        
+        return result.asDouble();
+    }
+    
+    public void close() {
+        closeREngine();
+    }
     
     private void sortByRank(List<TestInstance> instances) {
         Collections.sort(instances, new Comparator<TestInstance>() {
@@ -201,5 +235,46 @@ public class DevelTester {
             docTexts.put(id, d.getText());
         }
     }
+    
+    // run extraction on a subset of train documents
+    public void runOnSample(int sampleSize, int K) throws IOException, Exception {
+        System.out.println("run on sample of size " + sampleSize);
+        List<KpeDocument> docs = CorpusSemeval.getDataset("devel", SolutionPhraseSet.COBINED);
+        if (sampleSize < 0 || sampleSize > docs.size()) sampleSize = docs.size();
+        docs = docs.subList(0, sampleSize);
+        writer = new BufferedWriter(new FileWriter(outFolder+"_develTests_docExtract.txt"));
+        GreedyExtractor greedy = new GreedyExtractor(K, c);            
+        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
+        F1Metric result = new F1Metric();
+        for (KpeDocument doc : docs) {
+            System.out.println("processing " + doc.getId());
+            F1Metric r = eval.evaluateDocument(doc);
+            writer.write("*"+doc.getId()+"\n");
+            writer.write("correct   phrases: " +  phrasesToString(doc.getKeyphrases())+"\n");
+            writer.write("extracted phrases: " +  phrasesToString(r.phrases)+"\n");
+            writer.write("result: " + r);
+            writer.write("\n");
+            result.add(r);
+        }        
+        result.divide(docs.size());
+        writer.write("micro averaged result: " + result + "\n");
+        writer.close();
+    }
+
+    /** Initialize R. */
+    private static void initRengine() throws Exception {
+        if (rengine != null) return;
+        rengine = new Rengine (new String [] {"--vanilla"}, false, null);  
+        if (!rengine.waitForR()) {
+            throw new Exception("R engine did not initialize");
+        }
+    }    
+
+    /** Close R. */
+    private static void closeREngine() {
+        if (rengine == null) return;
+        rengine.end();
+        rengine = null;        
+    }    
     
 }

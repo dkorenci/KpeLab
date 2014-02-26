@@ -28,8 +28,19 @@ public class GreedyExtractorFactory {
         IPhraseExtractor phext = new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
-        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE_CUTOFF);     
         return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
     }
+    
+    public static GreedyExtractorConfig getESACosExtractor() throws Exception {
+        CanonicForm cform = CanonicForm.STEM;
+        IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
+        IDocumentVectorizer dvec = new TermFrequencyVectorizer(wvm, cform);
+        IPhraseExtractor phext = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, cform));           
+        IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
+        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+    }    
     
 }

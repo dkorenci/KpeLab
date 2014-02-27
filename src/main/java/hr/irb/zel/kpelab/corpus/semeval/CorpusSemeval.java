@@ -139,7 +139,7 @@ public class CorpusSemeval {
         while ((line = reader.readLine()) != null) {
             builder.append(line).append("\n");
         }
-        return builder.toString();
+        return DocumentCleaner.cleanDocument(builder.toString());
     }
     
 }

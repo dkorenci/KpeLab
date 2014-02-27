@@ -13,6 +13,7 @@ import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -34,9 +35,20 @@ public class CorpusSemevalTests {
         }
         System.out.println();
     }
+
+    // write to file lengths in tokens of all phrases in the dataset
+    public static void writePhraseLengths() throws IOException {
+        List<KpeDocument> docs = CorpusSemeval.getAll(SolutionPhraseSet.COBINED);
+        FileWriter fw = new FileWriter(CorpusSemeval.corpusLocation+"lengths.txt");
+        for (KpeDocument doc : docs) {
+            for (Phrase ph : doc.getKeyphrases()) {
+                fw.write(Integer.toString(ph.getCanonicTokens().size())+"\n");                
+            }
+        }
+        fw.close();
+    }
     
-    // for a set of documents, write phrases uncovered by the keyphrase extractor
-    
+    // for a set of documents, write phrases uncovered by the keyphrase extractor    
     public static void coverageErrors() throws Exception {        
         List<KpeDocument> docs = CorpusSemeval.getAll(SolutionPhraseSet.COBINED);
         final String outputFolder = CorpusSemeval.corpusLocation + "coverageErrors/";

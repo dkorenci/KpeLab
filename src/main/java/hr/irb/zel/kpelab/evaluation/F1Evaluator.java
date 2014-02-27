@@ -32,8 +32,7 @@ public class F1Evaluator {
     public F1Metric evaluateDocuments(List<KpeDocument> documents) throws Exception {       
         F1Metric result = new F1Metric();
         int stepCounter = 0;
-        for (KpeDocument doc : documents) {    
-            System.out.println(doc.getId());
+        for (KpeDocument doc : documents) {                
             F1Metric docResult = null;
             try {
                 //System.out.print("extracting for: " + doc.getId() + " ...");

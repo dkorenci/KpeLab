@@ -101,11 +101,22 @@ public class SimilarityExperiments {
     public static void expWS353ESA() throws Exception {
         IWordSimilarityCalculator sim =  new VectorWordSimilarity(
                 WordVectorMapFactory.getESAVectors(), 
-                new VectorSimilarity(SimilarityMeasure.COSINE_CUTOFF));        
+                new VectorSimilarity(SimilarityMeasure.COSINE));        
         WordSim353Helper.WordSimResult res = WordSim353Helper.testSpearmanCorrelation(sim, true);
         System.out.println("Spearman correlation: " + res.spearman);
         System.out.println("Pairs included : " + res.pairsIncluded);
     }      
+    
+    // calculate spearman correlation on ws353 dataset
+    // using coine measure and ESA vectors
+    public static void expWS353ESA01() throws Exception {
+        IWordSimilarityCalculator sim =  new VectorWordSimilarity(
+                WordVectorMapFactory.getESA01Vectors(), 
+                new VectorSimilarity(SimilarityMeasure.COSINE_CUTOFF));        
+        WordSim353Helper.WordSimResult res = WordSim353Helper.testSpearmanCorrelation(sim, true);
+        System.out.println("Spearman correlation: " + res.spearman);
+        System.out.println("Pairs included : " + res.pairsIncluded);
+    }         
     
     // calculate all pairwise phrases similarity, sort for each phrase
     // use average word-word LSI-vector cosine similarity 

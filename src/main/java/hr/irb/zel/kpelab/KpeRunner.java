@@ -13,6 +13,7 @@ import hr.irb.zel.kpelab.corpus.hulth.DocumentReaderHulth;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalTests;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalUtils;
+import hr.irb.zel.kpelab.corpus.semeval.DocumentCleaner;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
 import hr.irb.zel.kpelab.experiments.HulthCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
@@ -36,6 +37,8 @@ import hr.irb.zel.kpelab.vectors.SparseRealVector;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorDiskMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
+import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
+import java.io.IOException;
 import java.util.List;
 import org.tartarus.snowball.ext.PorterStemmer;
 
@@ -57,18 +60,39 @@ public class KpeRunner {
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);               
                 
         //cannonizationAnalysis();                           
+        //develTests();
+        //testCleaner();
+  
         develTests();
+        //SimilarityExperiments.expWS353ESA();
         
         end(); // finalize environment
     }
 
+    private static void vec01Tests() throws Exception {
+        IWordToVectorMap esa = WordVectorMapFactory.getESAVectors();
+        IWordToVectorMap esa01 = WordVectorMapFactory.getESA01Vectors();
+        System.out.println(esa.getWordVector("gener"));
+        System.out.println(esa01.getWordVector("gener"));
+    }
+    
     private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESACosExtractor());
-//        dt.testPhraseSets("basic", 2);
-//        dt.testPhraseSets("mixed", 2);
-//        dt.testPhraseSets("single", 2);
-        dt.runOnSample(2, 5);
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01EbeExtractor());
+        dt.testPhraseSets("basic", 5);
+        dt.testPhraseSets("mixed", 5);
+        dt.testPhraseSets("single", 5);
+        dt.runOnSample(5, 10);
         dt.close();
+    }
+    
+    public static void testCleaner() throws IOException {
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-43", SolutionPhraseSet.AUTHOR);
+        //DocumentCleaner.analyzeDocument(doc.getText());        
+        System.out.println(DocumentCleaner.cleanDocument(doc.getText()));
+//        System.out.println(DocumentCleaner.isAbstract(" ABSTRACT  "));
+//        System.out.println(DocumentCleaner.isAck(" ABSTRACT  "));
+//        System.out.println(DocumentCleaner.isAppendix(" ABSTRACT  "));
+//        System.out.println(DocumentCleaner.isRef(" ABSTRACT  "));
     }
     
     private static void cannonizationAnalysis() throws Exception {        

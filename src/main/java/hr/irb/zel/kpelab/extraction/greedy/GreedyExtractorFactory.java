@@ -43,4 +43,26 @@ public class GreedyExtractorFactory {
         return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
     }    
     
+    public static GreedyExtractorConfig getESA01CosExtractor() throws Exception {
+        CanonicForm cform = CanonicForm.STEM;
+        IWordToVectorMap wvm = WordVectorMapFactory.getESA01Vectors();
+        IDocumentVectorizer dvec = new TermFrequencyVectorizer(wvm, cform);
+        IPhraseExtractor phext = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, cform));           
+        IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
+        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+    }       
+    
+    public static GreedyExtractorConfig getESA01EbeExtractor() throws Exception {
+        CanonicForm cform = CanonicForm.STEM;
+        IWordToVectorMap wvm = WordVectorMapFactory.getESA01Vectors();
+        IDocumentVectorizer dvec = new TermFrequencyVectorizer(wvm, cform);
+        IPhraseExtractor phext = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, cform));           
+        IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);     
+        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+    }         
+    
 }

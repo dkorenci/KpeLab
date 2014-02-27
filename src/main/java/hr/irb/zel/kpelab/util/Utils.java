@@ -8,8 +8,11 @@ import java.util.regex.Pattern;
 /** Various utility methods. */
 public class Utils {
 
+    // either a sequence of alphabetic characters or sequence of chunks
+    // separated by a hyphen, where each chunk is a sequence of 
+    // alphabetic characters of length at least two
     private static final Pattern wordPattern =
-        Pattern.compile("\\p{Alpha}+(\\-\\p{Alpha})?");
+        Pattern.compile("(\\p{Alpha}+|\\p{Alpha}{2,}(\\-\\p{Alpha}{2,})+)");
     
     public static boolean isWord(String token) {
         return wordPattern.matcher(token).matches();

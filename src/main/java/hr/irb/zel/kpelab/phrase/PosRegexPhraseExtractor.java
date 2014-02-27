@@ -7,6 +7,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.ADJ;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
+import hr.irb.zel.kpelab.util.Utils;
 import java.util.ArrayList;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
@@ -60,6 +61,8 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     private PosExtractorConfig config;    
     
     private List<Phrase> phrases;       
+    
+    private static final int MAX_PHRASE_LENGTH = 4;
 
     private void preprocess() throws UIMAException {
         jCas = JCasFactory.createJCas();
@@ -93,6 +96,9 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
                 tokenCnt++;
                 Token tok = tokens.get(i);
                 boolean isNoun = isNoun(tok), isAdj = isAdj(tok);
+                // stop building a phrase is token is corrupt
+                if (isCorruptToken(tok)) { isNoun = false; isAdj = false; }
+                
                 if (isNoun) {                    
                     if (!adjs && !nouns) { // start new phrase
                         npSentStart = i;
@@ -119,12 +125,21 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         }
     }
 
+    private boolean isCorruptToken(Token tok) {
+        String txt = tok.getCoveredText();
+        return !Utils.isWord(txt) || txt.length() <= 1;
+    }    
+    
     private void processPhrase(List<Token> sentence, int start, int end, int docStart) {
         Phrase phrase = new Phrase();
         phrase.setFirstOccurence(docStart);
         phrase.setFrequency(1);
         List<String> tokens = new ArrayList<String>();
         List<String> ctokens = new ArrayList<String>();
+        // if phrase is too long, cut (tokens at start) to max. length
+        if (end - start + 1 > MAX_PHRASE_LENGTH) { 
+            start = end - MAX_PHRASE_LENGTH + 1;
+        }
         for (int i = start; i <= end; ++i) {
             Token t = sentence.get(i);            
             tokens.add(t.getCoveredText());

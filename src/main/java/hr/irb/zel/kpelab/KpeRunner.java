@@ -5,6 +5,7 @@ import de.tudarmstadt.ukp.dkpro.core.morpha.MorphaStemmer;
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import hr.irb.zel.kpelab.analysis.CannonizationAnalyser;
+import hr.irb.zel.kpelab.analysis.PhraseExtractionAnalyzer;
 import hr.irb.zel.kpelab.analysis.PosTaggingAnalyser;
 import hr.irb.zel.kpelab.analysis.WS353CorrelationAnalysis;
 import hr.irb.zel.kpelab.analysis.devel.DevelTester;
@@ -40,6 +41,7 @@ import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.io.IOException;
 import java.util.List;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.tartarus.snowball.ext.PorterStemmer;
 
 public class KpeRunner {
@@ -60,15 +62,29 @@ public class KpeRunner {
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);               
                 
         //cannonizationAnalysis();                           
-        //develTests();
+        develTests();
         //testCleaner();
   
-        develTests();
+        //develTests();
+        //extractionTests();
         //SimilarityExperiments.expWS353ESA();
+        //CorpusSemevalTests.writePhraseLengths();
         
         end(); // finalize environment
     }
 
+    private static void extractionTests() throws Exception {
+        PosExtractorConfig config = new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM);
+        PosTaggingAnalyser posAnalyzer = new PosTaggingAnalyser(config);
+        PosRegexPhraseExtractor phExtractor = new PosRegexPhraseExtractor(config);
+        PhraseExtractionAnalyzer phAnalyzer = new PhraseExtractionAnalyzer(phExtractor);
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-35", SolutionPhraseSet.AUTHOR);
+        phAnalyzer.printPhrases(doc);
+        System.out.println("--------------");
+        posAnalyzer.processDocument(doc);
+        posAnalyzer.printProcessedDocument();
+    }
+    
     private static void vec01Tests() throws Exception {
         IWordToVectorMap esa = WordVectorMapFactory.getESAVectors();
         IWordToVectorMap esa01 = WordVectorMapFactory.getESA01Vectors();
@@ -77,7 +93,7 @@ public class KpeRunner {
     }
     
     private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01EbeExtractor());
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01CosExtractor());
         dt.testPhraseSets("basic", 5);
         dt.testPhraseSets("mixed", 5);
         dt.testPhraseSets("single", 5);

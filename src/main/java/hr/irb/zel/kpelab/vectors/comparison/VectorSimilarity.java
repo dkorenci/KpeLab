@@ -5,7 +5,7 @@ import hr.irb.zel.kpelab.vectors.IRealVector;
 /** Basic measures of vector similarity. */
 public class VectorSimilarity implements IVectorComparison {
 
-    public enum SimilarityMeasure { L2_NEGATE, COSINE_SCALED, COSINE_CUTOFF, COSINE };
+    public enum SimilarityMeasure { L2_NEGATE, COSINE_SCALED, COSINE_CUTOFF, COSINE, EBE_MULTIPLY };
     
     private SimilarityMeasure measure; // measure for calculating similarity
     
@@ -16,6 +16,7 @@ public class VectorSimilarity implements IVectorComparison {
             case L2_NEGATE : return l2negate(v1, v2);
             case COSINE_SCALED : return cosineScaled(v1, v2);
             case COSINE_CUTOFF : return cosineCutoff(v1, v2);
+            case EBE_MULTIPLY : return v1.dotProduct(v2);
             case COSINE : return v1.cosine(v2);
             default: return Double.NaN;
         }

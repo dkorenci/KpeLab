@@ -31,7 +31,7 @@ import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.term.TermExtractor;
-import hr.irb.zel.kpelab.tfidf.PhraseInDocumentsCounter;
+import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
@@ -93,7 +93,7 @@ public class KpeRunner {
     }
     
     private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01CosExtractor());
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01EbeExtractor());
         dt.testPhraseSets("basic", 5);
         dt.testPhraseSets("mixed", 5);
         dt.testPhraseSets("single", 5);
@@ -216,7 +216,7 @@ public class KpeRunner {
     
     public static void printTopTfidfPhrases() throws Exception {
         PosRegexPhraseExtractor phExtractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-        PhraseInDocumentsCounter counter = new PhraseInDocumentsCounter("counts_hulthAllPhrases_StanfordNlpPos");
+        PhraseDocumentFrequency counter = new PhraseDocumentFrequency("counts_hulthAllPhrases_StanfordNlpPos");
         TfidfKpextractor extractor = new TfidfKpextractor(phExtractor, counter, 50);
         KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.LEMMA)
                 .readDocument("Training/639.abstr");
@@ -253,8 +253,8 @@ public class KpeRunner {
     }
     
      public static void testTfIdf() throws Exception {                  
-         PhraseInDocumentsCounter counter = 
-                 new PhraseInDocumentsCounter("counts_hulthAllPhrases_StanfordNlpPos");
+         PhraseDocumentFrequency counter = 
+                 new PhraseDocumentFrequency("counts_hulthAllPhrases_StanfordNlpPos");
          KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.LEMMA)
                  .readDocument("Training/1037.abstr");
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);

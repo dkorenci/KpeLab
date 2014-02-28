@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package hr.irb.zel.kpelab.tfidf;
+package hr.irb.zel.kpelab.df;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.hulth.CorpusHulth;
@@ -17,7 +17,7 @@ import java.util.List;
  * Methods that create and persist PhraseInDocumentsCounter for 
  * various datasets and settings.
  */
-public class CounterCreation {
+public class DfFactory {
 
     public static final String DF_COUNTER_HULTH_ALL = "counts_hulthAllPhrases_StanfordNlpPos";
     public static final String DF_COUNTER_HULTH_TRAIN = "counts_hulthTrainPhrases_StanfordNlpPos";
@@ -27,7 +27,7 @@ public class CounterCreation {
     public static void testCounterPersistence() throws Exception {
          List<KpeDocument> docs = CorpusHulth.getDocuments("Training", false, CanonicForm.LEMMA);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-         PhraseInDocumentsCounter counter = new PhraseInDocumentsCounter(docs, extractor);
+         PhraseDocumentFrequency counter = new PhraseDocumentFrequency(docs, extractor);
          String file = "hulthAllPhrases_OpenNlpPos";
          counter.saveToFile(file);
          
@@ -36,14 +36,14 @@ public class CounterCreation {
          List<Phrase> phrases = extractor.extractPhrases(doc.getText());
          for (Phrase ph : phrases) System.out.println(ph + " : " + counter.countOccurences(ph));
                                  
-         counter = new PhraseInDocumentsCounter(file);
+         counter = new PhraseDocumentFrequency(file);
          for (Phrase ph : phrases) System.out.println(ph + " : " + counter.countOccurences(ph));
      }   
 
      public static void createCounterHulthAllDocs() throws Exception {
          List<KpeDocument> docs = CorpusHulth.getAllDocuments(false, CanonicForm.LEMMA);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-         PhraseInDocumentsCounter counter = new PhraseInDocumentsCounter(docs, extractor);
+         PhraseDocumentFrequency counter = new PhraseDocumentFrequency(docs, extractor);
          String file = DF_COUNTER_HULTH_ALL;
          counter.saveToFile(file);         
      }      
@@ -51,7 +51,7 @@ public class CounterCreation {
      public static void createCounterHulthTrainingDocs() throws Exception {
          List<KpeDocument> docs = CorpusHulth.getDocuments("Training", false, CanonicForm.LEMMA);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-         PhraseInDocumentsCounter counter = new PhraseInDocumentsCounter(docs, extractor);
+         PhraseDocumentFrequency counter = new PhraseDocumentFrequency(docs, extractor);
          String file = DF_COUNTER_HULTH_TRAIN;
          counter.saveToFile(file);         
      }      

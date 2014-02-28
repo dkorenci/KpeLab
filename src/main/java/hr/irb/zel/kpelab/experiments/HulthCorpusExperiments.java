@@ -19,8 +19,8 @@ import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.similarity.phrase.IPhraseSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
-import hr.irb.zel.kpelab.tfidf.CounterCreation;
-import hr.irb.zel.kpelab.tfidf.PhraseInDocumentsCounter;
+import hr.irb.zel.kpelab.df.DfFactory;
+import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import java.util.List;
@@ -30,8 +30,8 @@ public class HulthCorpusExperiments {
 
    // evaluate performance of tfidf extractor on single document
     public static void tfidfSingleDoc(String docName, int K) throws Exception {
-         PhraseInDocumentsCounter counter = 
-                 new PhraseInDocumentsCounter("counts_hulthAllPhrases_StanfordNlpPos");
+         PhraseDocumentFrequency counter = 
+                 new PhraseDocumentFrequency("counts_hulthAllPhrases_StanfordNlpPos");
          KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.LEMMA).readDocument(docName);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
          TfidfKpextractor tfidf = new TfidfKpextractor(extractor, counter, K);
@@ -73,8 +73,8 @@ public class HulthCorpusExperiments {
     
     /** Evaluate performance of tfidf extractor on the entire corpus. */    
     public static void tfidfCorpus(int K, String docFreqCounter) throws Exception {
-         PhraseInDocumentsCounter counter = 
-                 new PhraseInDocumentsCounter(docFreqCounter);         
+         PhraseDocumentFrequency counter = 
+                 new PhraseDocumentFrequency(docFreqCounter);         
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
          TfidfKpextractor tfidf = new TfidfKpextractor(extractor, counter, K);
          

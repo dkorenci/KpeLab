@@ -4,7 +4,7 @@ import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
-import hr.irb.zel.kpelab.tfidf.PhraseInDocumentsCounter;
+import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,13 +15,13 @@ import org.apache.uima.UIMAException;
  */
 public class TfidfKpextractor implements IKpextractor {
 
-    PhraseInDocumentsCounter counter;
+    PhraseDocumentFrequency counter;
     PosRegexPhraseExtractor extractor;
     private int numPhrases;
     private List<TfidfPhrase> tfidfphrases;
     
     public TfidfKpextractor(PosRegexPhraseExtractor extractor, 
-            PhraseInDocumentsCounter counter, int K) {
+            PhraseDocumentFrequency counter, int K) {
         this.counter = counter;
         this.extractor = extractor;
         this.numPhrases = K;

@@ -1,4 +1,4 @@
-package hr.irb.zel.kpelab.tfidf;
+package hr.irb.zel.kpelab.df;
 
 import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
@@ -19,7 +19,7 @@ import org.apache.uima.UIMAException;
 /**
  * Counts the number of phrase occurences in a set of documents.
  */
-public class PhraseInDocumentsCounter {
+public class PhraseDocumentFrequency {
 
     private Collection<KpeDocument> documents;
     private IPhraseExtractor phraseExtractor;
@@ -30,14 +30,14 @@ public class PhraseInDocumentsCounter {
     private static final String repositoryFolder = KpeConfig.getProperty("cache.folder"); 
     
     /** Create counter by extracting phrases from collection and counting occurrences. */
-    public PhraseInDocumentsCounter(Collection<KpeDocument> docs, IPhraseExtractor phExtr) throws Exception {
+    public PhraseDocumentFrequency(Collection<KpeDocument> docs, IPhraseExtractor phExtr) throws Exception {
         documents = docs; numDocuments = docs.size();
         phraseExtractor = phExtr;
         createPhraseCount();                
     }
     
     /** Create counter by reading phrase -> count map from file. */
-    public PhraseInDocumentsCounter(String counterId) throws Exception {
+    public PhraseDocumentFrequency(String counterId) throws Exception {
         String fileName = repositoryFolder + counterId;
         FileInputStream file = new FileInputStream(fileName);
         ObjectInputStream ois = new ObjectInputStream(file);

@@ -96,6 +96,10 @@ public class SparseRealVector extends RealVectorBase
     public void setElement(int i, double val) {
         checkIndex(i);
         if (isZero(val) == false) map.put(i, val);
+        else {
+            // zero at coord i == i is not in the map
+            map.remove(i);
+        }
     }
 
     public IRealVector clone() {

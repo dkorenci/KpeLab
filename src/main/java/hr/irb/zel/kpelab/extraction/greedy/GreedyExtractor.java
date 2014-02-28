@@ -42,7 +42,7 @@ public class GreedyExtractor implements IKpextractor {
         for (int i = 0; i < phraseSetSize; ++i) {
             Phrase optPhrase = null; 
             double optQual = Double.MIN_VALUE;               
-            for (Phrase ph : candidates)
+            for (Phrase ph : candidates) {
             if (!phrases.contains(ph)) {
                 c.phVectorizer.addPhrase(ph);
                 IRealVector phVec = c.phVectorizer.vector();
@@ -53,7 +53,12 @@ public class GreedyExtractor implements IKpextractor {
                 }
                 c.phVectorizer.removeLastAdded();
             }
-            if (optPhrase != null) phrases.add(optPhrase);
+            }
+            if (optPhrase != null) { 
+                phrases.add(optPhrase);
+                c.phVectorizer.addPhrase(optPhrase);
+            }            
+            //System.out.println("*******************************************");
         }
     }
 

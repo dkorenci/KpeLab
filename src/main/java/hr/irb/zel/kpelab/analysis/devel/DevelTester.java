@@ -75,6 +75,7 @@ public class DevelTester {
         int docCnt = 0;
         for (String docId : develSet.keySet()) {
             System.out.println("testPhraseSets " + docId);
+            c.adaptToDocument(docTexts.get(docId));
             List<TestInstance> instances = getInstances(instanceSet, docId);
             IRealVector docVec = c.docVectorizer.vectorize(docTexts.get(docId));
             for (TestInstance inst : instances) {                

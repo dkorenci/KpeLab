@@ -32,6 +32,8 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
         lastAdded = null;        
     }
     
+    public void setVectors(IWordToVectorMap wvmap) { wordToVector = wvmap; }    
+    
     public void addPhrase(Phrase ph) throws Exception {
         boolean newWord = false;        
 //        System.out.println("* adding phrase: " + ph);

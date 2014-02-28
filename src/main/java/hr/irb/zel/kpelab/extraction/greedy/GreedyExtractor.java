@@ -2,11 +2,19 @@ package hr.irb.zel.kpelab.extraction.greedy;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
+import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
+import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.vectors.IRealVector;
+import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
+import hr.irb.zel.kpelab.vectors.input.TermSetPruneFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.uima.UIMAException;
+import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Generic greedy extractor.
@@ -18,7 +26,7 @@ public class GreedyExtractor implements IKpextractor {
     
     private IRealVector documentVector;
     private List<Phrase> candidates;
-    private List<Phrase> phrases; // result    
+    private List<Phrase> phrases; // result        
     
     /** Initialize with processing components. Comparison must be a 
      * measure of quality of a phrase set for the document, first argument 
@@ -28,14 +36,15 @@ public class GreedyExtractor implements IKpextractor {
     }
 
     public List<Phrase> extract(KpeDocument doc) throws Exception {
+        c.adaptToDocument(doc.getText());
         documentVector = c.docVectorizer.vectorize(doc.getText());
         candidates = c.phraseExtractor.extractPhrases(doc.getText());     
         System.out.println("numCandidates: "+candidates.size());
         removeNullCandidates();
         constructPhraseSet();
         return phrases;
-    }
-
+    }   
+    
     private void constructPhraseSet() throws Exception {
         c.phVectorizer.clear();
         phrases = new ArrayList<Phrase>();

@@ -21,15 +21,20 @@ public class TermFrequencyVectorizer implements IDocumentVectorizer {
     private TermExtractor termExtr;
     private VectorAggregator agg;
     
+    public void setVectors(IWordToVectorMap wvmap) { 
+        wordToVector = wvmap; 
+    }    
+    
     public TermFrequencyVectorizer(IWordToVectorMap wvm, CanonicForm cf) throws UIMAException
     { 
         wordToVector = wvm; cform = cf;
         termExtr = new TermExtractor(new PosExtractorConfig(
                 PosExtractorConfig.Components.OPEN_NLP, cform));        
-        agg = new VectorAggregator(wordToVector);
+        agg = null;
     }
     
     public IRealVector vectorize(String txt) throws Exception {
+        if (agg == null) agg = new VectorAggregator(wordToVector);
         List<WeightedTerm> wterms = termExtr.extractWeighted(txt);        
         return agg.sumWeighted(wterms);
     }

@@ -2,6 +2,7 @@ package hr.irb.zel.kpelab.extraction.greedy;
 
 import hr.irb.zel.kpelab.df.DfFactory;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.SumPhraseSetVectorizer;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
@@ -85,6 +86,28 @@ public class GreedyExtractorFactory {
         return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
     }    
     
-    
+    public static GreedyExtractorConfig getESAPrunedTfCosExtractor() throws Exception {
+        CanonicForm cform = CanonicForm.STEM;
+        IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
+        IDocumentVectorizer dvec = new TermFrequencyVectorizer(null, cform);
+        IPhraseExtractor phext = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, cform));           
+        IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(null);
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
+        return new GreedyExtractorConfig(wvm, VectorMod.PRUNE_UNIQUE, cform , 
+                                            dvec, phext, phvec, cmp);
+    }       
+
+    public static GreedyExtractorConfig getESA01PrunedTfCosExtractor() throws Exception {
+        CanonicForm cform = CanonicForm.STEM;
+        IWordToVectorMap wvm = WordVectorMapFactory.getESA01Vectors();
+        IDocumentVectorizer dvec = new TermFrequencyVectorizer(null, cform);
+        IPhraseExtractor phext = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, cform));           
+        IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(null);
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
+        return new GreedyExtractorConfig(wvm, VectorMod.PRUNE_UNIQUE, cform , 
+                                            dvec, phext, phvec, cmp);
+    }     
     
 }

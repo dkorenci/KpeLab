@@ -36,6 +36,8 @@ public class TfIdfVectorizer implements IDocumentVectorizer {
         tdf = df;
     }
     
+    public void setVectors(IWordToVectorMap wvmap) { wordToVector = wvmap; }        
+    
     public IRealVector vectorize(String txt) throws Exception {
         List<WeightedTerm> wterms = termExtr.extractWeighted(txt); 
         List<String> terms = new ArrayList<String>(wterms.size());

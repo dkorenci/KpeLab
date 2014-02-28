@@ -16,6 +16,7 @@ import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalTests;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemevalUtils;
 import hr.irb.zel.kpelab.corpus.semeval.DocumentCleaner;
 import hr.irb.zel.kpelab.corpus.semeval.SolutionPhraseSet;
+import hr.irb.zel.kpelab.df.DfFactory;
 import hr.irb.zel.kpelab.experiments.HulthCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SemevalCorpusExperiments;
 import hr.irb.zel.kpelab.experiments.SimilarityExperiments;
@@ -32,6 +33,7 @@ import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
+import hr.irb.zel.kpelab.df.TermDocumentFrequency;
 import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
@@ -62,13 +64,15 @@ public class KpeRunner {
 //                GreedyExtractorFactory.getLSICosExtractor(), 10);               
                 
         //cannonizationAnalysis();                           
-        develTests();
+        //develTests();
         //testCleaner();
   
-        //develTests();
+        develTests();
         //extractionTests();
         //SimilarityExperiments.expWS353ESA();
         //CorpusSemevalTests.writePhraseLengths();
+        
+        //DfFactory.createDfSemevalStemOpenNlp();
         
         end(); // finalize environment
     }
@@ -93,7 +97,7 @@ public class KpeRunner {
     }
     
     private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01EbeExtractor());
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01TfCosExtractor());
         dt.testPhraseSets("basic", 5);
         dt.testPhraseSets("mixed", 5);
         dt.testPhraseSets("single", 5);

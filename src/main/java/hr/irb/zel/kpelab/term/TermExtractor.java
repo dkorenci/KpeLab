@@ -69,7 +69,9 @@ public class TermExtractor {
             if (isNoun(tok) == false && isAdj(tok) == false) continue;
             String term;            
             if (config.canonic == CanonicForm.LEMMA) term = tok.getLemma().getValue();
-            else term = tok.getStem().getValue();   
+            else if (config.canonic == CanonicForm.STEM) term = tok.getStem().getValue();   
+            else if (config.canonic == CanonicForm.NO_CANNONIZATION) term = tok.getCoveredText();
+            else throw new IllegalArgumentException("unsupported canonic form");
             term = term.toLowerCase();
             if (terms.containsKey(term)) { // increse freq by 1
                 terms.put(term, terms.get(term)+1);

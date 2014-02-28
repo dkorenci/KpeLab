@@ -97,7 +97,7 @@ public class KpeRunner {
     }
     
     private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01TfCosExtractor());
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01PrunedTfCosExtractor());
         dt.testPhraseSets("basic", 5);
         dt.testPhraseSets("mixed", 5);
         dt.testPhraseSets("single", 5);

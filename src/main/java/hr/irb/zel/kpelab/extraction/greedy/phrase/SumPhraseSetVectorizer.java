@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /** Vectorizes the phrase set as sum of vectors of cannonic word 
  representations (stems or lemmas). Each word is counted once. */
@@ -26,13 +27,16 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
     
     public SumPhraseSetVectorizer(IWordToVectorMap wvm) { 
         wordToVector = wvm; 
-        words = new HashMap<String, Integer>();
+        words = new TreeMap<String, Integer>();
         vector = null;       
         lastAdded = null;        
     }
     
     public void addPhrase(Phrase ph) throws Exception {
         boolean newWord = false;        
+//        System.out.println("* adding phrase: " + ph);
+//        System.out.println("wordsBefore");
+//        printWords();
         List<String> diffWords = new ArrayList<String>(10);  
         for (String w : ph.getCanonicTokens()) {
             if (words.containsKey(w)) words.put(w, words.get(w)+1);
@@ -50,9 +54,18 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
                 if (vector == null) vector = v.clone(); // init vector as a copy of v                                
                 else vector.add(v);                
             }
-        }        
+        }      
+//        System.out.println("wordsAfter");
+//        printWords();        
     }
 
+    // for debug
+    private void printWords() {
+        System.out.print("-words: ");
+        for (String w : words.keySet()) System.out.print(w+" ");
+        System.out.println();
+    }
+    
     public void removeLastAdded() throws Exception {
         if (lastAdded == null) return;
         List<String> diffWords = new ArrayList<String>(10);  

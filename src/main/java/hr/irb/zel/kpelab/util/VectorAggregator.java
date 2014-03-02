@@ -55,19 +55,19 @@ public class VectorAggregator {
         return vector;        
     }    
     
-    /** Return sum of term vectors multiplied by term weights. */
+    /** Return sum of term vectors multiplied by log term frequencies. */
     public IRealVector sumWeighted(Collection<WeightedTerm> terms) throws Exception {
         IRealVector vector = null;
         for (WeightedTerm tw : terms) {
             if (wordToVector.hasWord(tw.term)) {
                 if (vector == null) {
                     vector = wordToVector.getWordVector(tw.term).clone();
-                    double factor = tw.weight == 1 ? 1 : Math.log(tw.weight+1);
+                    double factor = 1 + Math.log(tw.weight);
                     vector.multiply(factor);
                 }
                 else {
                     IRealVector v = wordToVector.getWordVector(tw.term).clone();
-                    double factor = tw.weight == 1 ? 1 : Math.log(tw.weight+1);                    
+                    double factor = 1 + Math.log(tw.weight);                    
                     vector.add(v.multiply(factor));
                 }
             }

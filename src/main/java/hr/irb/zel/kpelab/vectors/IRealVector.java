@@ -20,6 +20,9 @@ public interface IRealVector extends Serializable {
     /** Return exact copy of the vector. */
     public IRealVector clone();
     
+    /** True if values at all coordinates are zero. */
+    public boolean isZero();
+    
     @Override
     public boolean equals(Object o);
     

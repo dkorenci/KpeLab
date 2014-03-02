@@ -25,6 +25,8 @@ public class TermFrequencyVectorizer implements IDocumentVectorizer {
         wordToVector = wvmap; 
     }    
     
+    public String getId() { return "tfsum"; }
+    
     public TermFrequencyVectorizer(IWordToVectorMap wvm, CanonicForm cf) throws UIMAException
     { 
         wordToVector = wvm; cform = cf;

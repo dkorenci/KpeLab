@@ -34,6 +34,8 @@ import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
@@ -49,30 +51,16 @@ import org.tartarus.snowball.ext.PorterStemmer;
 public class KpeRunner {
 
     public static void main(String[] args) throws Exception {
-        start(); // init environment                            
-//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
-//                SolutionPhraseSet.AUTHOR);
-//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
-//                SolutionPhraseSet.READER);        
-//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
-//                SolutionPhraseSet.COBINED);                       
+        start(); // init environment                              
         
-//        SemevalCorpusExperiments.greedySingleDoc("train/I-45", 
-//                GreedyExtractorFactory.getLSICosExtractor(), 10);
-
-//        SemevalCorpusExperiments.greedyDataset("train", 
-//                GreedyExtractorFactory.getLSICosExtractor(), 10);               
-                
-        //cannonizationAnalysis();                           
-        //develTests();
-        //testCleaner();
-  
-        develTests();
         //extractionTests();
         //SimilarityExperiments.expWS353ESA();
         //CorpusSemevalTests.writePhraseLengths();
         
         //DfFactory.createDfSemevalStemOpenNlp();
+        
+        //singleDocGreedy();                
+        develTests();
         
         end(); // finalize environment
     }
@@ -89,6 +77,15 @@ public class KpeRunner {
         posAnalyzer.printProcessedDocument();
     }
     
+    private static void coverageTests() throws Exception {
+        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
+                SolutionPhraseSet.AUTHOR);
+        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
+                SolutionPhraseSet.READER);        
+        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
+                SolutionPhraseSet.COBINED);          
+    }
+    
     private static void vec01Tests() throws Exception {
         IWordToVectorMap esa = WordVectorMapFactory.getESAVectors();
         IWordToVectorMap esa01 = WordVectorMapFactory.getESA01Vectors();
@@ -96,11 +93,19 @@ public class KpeRunner {
         System.out.println(esa01.getWordVector("gener"));
     }
     
+    private static void singleDocGreedy() throws Exception {
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.COBINED);        
+        GreedyExtractorConfig conf = GreedyExtractorFactory.getESA01PrunedTfCosExtractor();        
+        GreedyExtractor extr = new GreedyExtractor(10, conf);        
+        List<Phrase> res = extr.extract(doc);
+        System.out.println(res.size());        
+    }
+    
     private static void develTests() throws Exception {
         DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01PrunedTfCosExtractor());
-        dt.testPhraseSets("basic", 5);
-        dt.testPhraseSets("mixed", 5);
-        dt.testPhraseSets("single", 5);
+//        dt.testPhraseSets("basic", 5);
+//        dt.testPhraseSets("mixed", 5);
+//        dt.testPhraseSets("single", 5);
         dt.runOnSample(5, 10);
         dt.close();
     }
@@ -135,6 +140,18 @@ public class KpeRunner {
         System.out.println(sv1);
     }
     
+    private static void testSubtract() {
+        double [] v1 = {0,2,0,2,0,2},
+                  v2 = {1,1,1,1,1,1};
+        SparseRealVector sv1 = new SparseRealVector(v1), 
+                         sv2 = new SparseRealVector(v2);
+        IRealVector sv3 = sv1.clone();
+        sv3.subtract(sv2);
+        System.out.println(sv1);
+        System.out.println(sv2);           
+        System.out.println(sv3); 
+    }
+        
     private static void testSemevalCorpus() throws Exception {
         List<KpeDocument> docs = CorpusSemeval.getTest(SolutionPhraseSet.COBINED);
         for (KpeDocument doc : docs) {
@@ -229,20 +246,6 @@ public class KpeRunner {
             System.out.println(ph);
         }
     }
-    
-    public static void testVectors() throws Exception {
-        WordToVectorMemMap wvf = new WordToVectorMemMap(
-                "/data/datasets/word_vectors/senna3.0_embeddings/words.lst", 
-                "/data/datasets/word_vectors/senna3.0_embeddings/embeddings.txt");
-    }    
-
-    public static void testDiskVectors() throws Exception {
-        WordToVectorDiskMap wvf = new WordToVectorDiskMap(
-                "/data/datasets/word_vectors/wiki_lsi/wiki-words.txt", 
-                "/data/datasets/word_vectors/wiki_lsi/wiki-matrix.txt", true, false);
-        wvf.getWordVector("car");
-        wvf.getWordVector("cat");
-    }       
     
     public static void printPhrases(String docFile) throws Exception {
         KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.LEMMA)

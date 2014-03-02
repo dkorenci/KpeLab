@@ -27,6 +27,8 @@ public class TfidfKpextractor implements IKpextractor {
         this.numPhrases = K;
     }
     
+    public String getId() { return "tfidf"; }
+    
     public List<Phrase> extract(KpeDocument doc) throws UIMAException {
         List<Phrase> phrases = extractor.extractPhrases(doc.getText());
         int numWords = PhraseHelper.countWords(doc.getText());        

@@ -25,7 +25,7 @@ public class CoverageExperiments {
 //                "/data/datasets/word_vectors/senna3.0_embeddings/embeddings.txt");
         WordToVectorDiskMap wvf = new WordToVectorDiskMap(
                 "/data/datasets/word_vectors/wiki_lsi/wiki-words.txt", 
-                "/data/datasets/word_vectors/wiki_lsi/wiki-matrix.txt", true, false);        
+                "/data/datasets/word_vectors/wiki_lsi/wiki-matrix.txt", "lsi", true, false);        
         List<List<IRealVector>> sets = new ArrayList<List<IRealVector>>();
         IRealVector zero = new ArrayRealVector(50);
         

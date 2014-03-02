@@ -35,6 +35,8 @@ public class GreedyMaxExtractor implements IKpextractor {
         K = k;
     }
     
+    public String getId() { return "greedyMax"; }
+    
     public List<Phrase> extract(KpeDocument d) throws Exception {
         doc = d;
         config = new PosExtractorConfig(

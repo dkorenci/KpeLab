@@ -32,6 +32,8 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
         lastAdded = null;        
     }
     
+     public String getId() { return "sumPhSetVect"; }
+    
     public void setVectors(IWordToVectorMap wvmap) { 
         wordToVector = wvmap; 
         clear();

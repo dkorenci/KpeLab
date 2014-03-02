@@ -48,6 +48,8 @@ public class MaxCoverageExtractor implements IKpextractor {
         return solution;
     }
 
+    public String getId() { return "maxCov"; }
+    
     private void tabuSearch() throws Exception {
         List<Phrase> phraseSet = getRandomPhraseSet(phraseSetSize);
         solution = phraseSet; solQual = calculateSolutionQuality(solution);        

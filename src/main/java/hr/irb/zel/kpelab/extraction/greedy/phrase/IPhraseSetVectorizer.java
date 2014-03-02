@@ -1,11 +1,12 @@
 package hr.irb.zel.kpelab.extraction.greedy.phrase;
 
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.util.IComponent;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 
 /**  Interface for manipulating a phrase set from a greedy algorithm.  */
-public interface IPhraseSetVectorizer {
+public interface IPhraseSetVectorizer extends IComponent {
 
     public void setVectors(IWordToVectorMap wvmap);
     // add phrase to the set

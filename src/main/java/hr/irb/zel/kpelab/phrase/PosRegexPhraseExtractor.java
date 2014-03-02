@@ -34,7 +34,8 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         config = conf;
     }
     
-
+    public String getId() { return "posRegexPhext"; }
+ 
     private void createEngines() throws UIMAException {
 //        segmenter = createEngine(createEngineDescription(StanfordSegmenter.class));    
 //        lemmatizer = createEngine(createEngineDescription(StanfordLemmatizer.class));        

@@ -44,6 +44,8 @@ public class RandomPhraseExtractor implements IKpextractor {
         }             
     }    
 
+    public String getId() { return "random"; }
+    
     private List<Phrase> getRandomPhraseSet(int size) {
         List<Phrase> ph = new ArrayList<Phrase>();
         List<Phrase> allPhrases = new ArrayList<Phrase>(phrases);        

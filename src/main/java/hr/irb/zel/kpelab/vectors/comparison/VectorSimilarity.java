@@ -18,10 +18,21 @@ public class VectorSimilarity implements IVectorComparison {
             case COSINE_CUTOFF : return cosineCutoff(v1, v2);
             case EBE_MULTIPLY : return v1.dotProduct(v2);
             case COSINE : return v1.cosine(v2);
-            default: return Double.NaN;
+            default: throw new UnsupportedOperationException("unsupported measure");
         }
     }
 
+     public String getId() { 
+        switch (measure) {
+            case L2_NEGATE : return "l2neg";
+            case COSINE_SCALED : return "cosScaled";
+            case COSINE_CUTOFF : return "cosCutoff";
+            case EBE_MULTIPLY : return "ebeMult";
+            case COSINE : return "cos";
+            default: throw new UnsupportedOperationException("unsupported measure");
+        }         
+     }
+    
     // - l2 distance
     private double l2negate(IRealVector v1, IRealVector v2) {
         return -1.0 * v1.subtract(v2).l2Norm();

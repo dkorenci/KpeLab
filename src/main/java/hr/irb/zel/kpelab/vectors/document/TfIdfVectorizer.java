@@ -36,6 +36,8 @@ public class TfIdfVectorizer implements IDocumentVectorizer {
         tdf = df;
     }
     
+     public String getId() { return "tfidfsum"; }
+    
     public void setVectors(IWordToVectorMap wvmap) { wordToVector = wvmap; }        
     
     public IRealVector vectorize(String txt) throws Exception {

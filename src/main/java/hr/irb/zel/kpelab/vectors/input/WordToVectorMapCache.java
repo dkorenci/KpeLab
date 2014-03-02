@@ -96,5 +96,9 @@ public class WordToVectorMapCache implements Serializable, IWordToVectorMap {
     }
     
     private int size() { return words.size(); }
+
+    public String getId() {
+        return "cache";
+    }
     
 }

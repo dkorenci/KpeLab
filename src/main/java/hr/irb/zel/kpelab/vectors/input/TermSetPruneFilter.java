@@ -26,6 +26,8 @@ public class TermSetPruneFilter implements IWordToVectorMap {
         createCoordFreqs();
     }
     
+    public String getId() { return wordToVector.getId(); }
+    
     private void createCoordFreqs() throws Exception {
         Map<Integer, Integer> coordFreq = new TreeMap<Integer, Integer>();
         for (String t : terms) {

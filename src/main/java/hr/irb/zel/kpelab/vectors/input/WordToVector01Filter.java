@@ -16,6 +16,8 @@ public class WordToVector01Filter implements IWordToVectorMap {
         cache = new WordToVectorMapCache(CACHE_SIZE);
     }
     
+    public String getId() { return wordToVector.getId()+"01"; }
+    
     public IRealVector getWordVector(String word) throws Exception {
         if (cache.hasWord(word)) return cache.getWordVector(word);
         else {

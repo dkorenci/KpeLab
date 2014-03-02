@@ -29,9 +29,9 @@ public class WordToVectorMemMap extends WordToVectorMapBase implements IWordToVe
     protected List<double[]> vectors;
     
     /** Create word to line map and read vectors into memory. */
-    public WordToVectorMemMap(String wordFile, String vectorFile) 
+    public WordToVectorMemMap(String wordFile, String vectorFile, String id) 
             throws IOException, VectorDataFormatException, ClassNotFoundException {
-        super(wordFile, vectorFile);
+        super(wordFile, vectorFile, id);
         createWordToLineMap();
         readVectors();                
     }

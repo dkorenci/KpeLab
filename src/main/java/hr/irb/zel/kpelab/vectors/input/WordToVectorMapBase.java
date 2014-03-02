@@ -29,15 +29,18 @@ public class WordToVectorMapBase {
     protected String wordFile, vectorFile;
     protected Map<String, Long> wordToLine;
     protected static final String cacheFolder = KpeConfig.getProperty("cache.folder");        
+    private final String id;
 
     public boolean hasWord(String word) {
         return this.wordToLine.containsKey(word);
     }    
     
-    protected WordToVectorMapBase(String wordFile, String vectorFile) 
+    public String getId() { return id; }
+    
+    protected WordToVectorMapBase(String wordFile, String vectorFile, String id) 
             throws FileNotFoundException, IOException, ClassNotFoundException, 
             VectorDataFormatException {
-        this.wordFile = wordFile; this.vectorFile = vectorFile;    
+        this.wordFile = wordFile; this.vectorFile = vectorFile; this.id = id;
         createWordToLineMap();
     }
     

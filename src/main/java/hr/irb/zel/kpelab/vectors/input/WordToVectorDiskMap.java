@@ -47,10 +47,10 @@ public class WordToVectorDiskMap extends WordToVectorMapBase implements IWordToV
     private static final int cacheCapacity = 1000;
     
     /** Create word to line map and read vectors into memory. */
-    public WordToVectorDiskMap(String wordFile, String vectorFile, boolean cch, boolean sparse) 
+    public WordToVectorDiskMap(String wordFile, String vectorFile, String id, boolean cch, boolean sparse) 
             throws FileNotFoundException, VectorDataFormatException, IOException, 
             ClassNotFoundException {
-        super(wordFile, vectorFile);
+        super(wordFile, vectorFile, id);
         cached = cch;
         sparseVectors = sparse;
         if (cached) createCache();          

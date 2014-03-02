@@ -10,7 +10,7 @@ public class WordVectorMapFactory {
     
     public static WordToVectorMemMap getCwEmbeddings() throws Exception {
         WordToVectorMemMap wvm = new WordToVectorMemMap(
-                KpeConfig.getProperty("cwe.words"), KpeConfig.getProperty("cwe.vectors"));        
+                KpeConfig.getProperty("cwe.words"), KpeConfig.getProperty("cwe.vectors"), "cwe");        
         return wvm;
     }
     
@@ -18,7 +18,7 @@ public class WordVectorMapFactory {
         if (wikiLSIvectors == null) {            
             wikiLSIvectors = new WordToVectorDiskMap(
                     KpeConfig.getProperty("wikilsi.words"), 
-                    KpeConfig.getProperty("wikilsi.vectors"), true, false);            
+                    KpeConfig.getProperty("wikilsi.vectors"),"lsi", true, false);            
         }
         return wikiLSIvectors;
     }
@@ -27,7 +27,7 @@ public class WordVectorMapFactory {
         if (wikiESAvectors == null) {            
             wikiESAvectors = new WordToVectorDiskMap(
                     KpeConfig.getProperty("wikiesa.words"), 
-                    KpeConfig.getProperty("wikiesa.vectors"), true, true);            
+                    KpeConfig.getProperty("wikiesa.vectors"),"esa", true, true);            
         }
         return wikiESAvectors;
     }    

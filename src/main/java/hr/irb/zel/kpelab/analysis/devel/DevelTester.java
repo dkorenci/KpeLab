@@ -18,6 +18,7 @@ import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 import hr.irb.zel.kpelab.vectors.document.IDocumentVectorizer;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.swing.plaf.metal.MetalIconFactory;
 import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.Rengine;
 
@@ -40,6 +42,7 @@ public class DevelTester {
     Map< String, String > docTexts;
     private final String [] phraseSets = {"bad","semi","gold"};
     private BufferedWriter writer;
+    private BufferedWriter summary;
     private final String outFolder;
     private static Rengine rengine;
     
@@ -64,8 +67,23 @@ public class DevelTester {
     
     public DevelTester(GreedyExtractorConfig conf) {
         c = conf;        
-        outFolder = KpeConfig.getProperty("devel.tests");
+        outFolder = KpeConfig.getProperty("devel.tests")+c.getId()+"/";
     }
+    
+    /** Init empty folder for results. */
+    public void init() throws IOException {
+        File rfolder = new File(outFolder);        
+        if (!rfolder.exists()) rfolder.mkdir();
+    }
+    
+    private void openSummary() throws IOException {
+        String fname = "summary."+c.getId()+".txt";
+         summary = new BufferedWriter(new FileWriter(outFolder+fname, true));
+    }
+    
+    private void closeSummary() throws IOException {
+         summary.close();
+    }    
     
     /** For each document in developement set, sort phrase sets by quality, 
      *  type of phrase set is set with instanceSet, can be: basic, mixed, single. */
@@ -73,6 +91,7 @@ public class DevelTester {
         if (develSet == null) readDevelSet(); 
         writer = new BufferedWriter(new FileWriter(outFolder+"_develTests_"+instanceSet+".txt"));
         int docCnt = 0;
+        double spearmanAvg = 0;
         for (String docId : develSet.keySet()) {
             System.out.println("testPhraseSets " + docId);
             c.adaptToDocument(docTexts.get(docId));
@@ -91,11 +110,18 @@ public class DevelTester {
                         +phrasesToString(inst.phrases)+"\n");
             }
             double s = calculateSpearman(instances);
+            spearmanAvg += s;
             writer.write("spearman: " + Utils.doubleToString(s) + "\n");
             writer.write("\n");
             if (++docCnt == numDocs) break;
         }        
+        spearmanAvg /= numDocs;
         writer.close();
+        
+        openSummary();
+        summary.write("spearman avg. " + instanceSet + " : " 
+                + Utils.doubleToString(spearmanAvg) + "\n");
+        closeSummary();
     }
         
     private String phrasesToString(List<Phrase> phrases) {
@@ -121,7 +147,7 @@ public class DevelTester {
     }
     
     public void close() {
-        closeREngine();
+        //closeREngine();
     }
     
     private void sortByRank(List<TestInstance> instances) {
@@ -260,12 +286,19 @@ public class DevelTester {
         result.divide(docs.size());
         writer.write("micro averaged result: " + result + "\n");
         writer.close();
+        
+        openSummary();
+        summary.write("micro averaged result: " + result + "\n");
+        closeSummary();        
     }
 
     /** Initialize R. */
-    private static void initRengine() throws Exception {
-        if (rengine != null) return;
-        rengine = new Rengine (new String [] {"--vanilla"}, false, null);  
+    private static void initRengine() throws Exception {        
+        if (rengine != null) return;        
+        rengine = Rengine.getMainEngine();
+        if (rengine == null) { // no engine initialized, create new
+            rengine = new Rengine (new String [] {"--vanilla"}, false, null);             
+        }
         if (!rengine.waitForR()) {
             throw new Exception("R engine did not initialize");
         }

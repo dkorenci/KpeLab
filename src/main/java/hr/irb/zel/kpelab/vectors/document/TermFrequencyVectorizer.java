@@ -30,11 +30,10 @@ public class TermFrequencyVectorizer implements IDocumentVectorizer {
         wordToVector = wvm; cform = cf;
         termExtr = new TermExtractor(new PosExtractorConfig(
                 PosExtractorConfig.Components.OPEN_NLP, cform));        
-        agg = null;
     }
     
     public IRealVector vectorize(String txt) throws Exception {
-        if (agg == null) agg = new VectorAggregator(wordToVector);
+        agg = new VectorAggregator(wordToVector);
         List<WeightedTerm> wterms = termExtr.extractWeighted(txt);        
         return agg.sumWeighted(wterms);
     }

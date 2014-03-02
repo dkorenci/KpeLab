@@ -93,6 +93,8 @@ public class SparseRealVector extends RealVectorBase
 
     public int dimension() { return dim; }
 
+    public boolean isZero() { return map.isEmpty(); }
+    
     public void setElement(int i, double val) {
         checkIndex(i);
         if (isZero(val) == false) map.put(i, val);
@@ -102,6 +104,7 @@ public class SparseRealVector extends RealVectorBase
         }
     }
 
+    @Override
     public IRealVector clone() {
         return new SparseRealVector(dim, new TIntDoubleHashMap(map));
     }
@@ -114,7 +117,7 @@ public class SparseRealVector extends RealVectorBase
                 if (map.containsKey(i)) { 
                     double val = map.get(i) + d;
                     if (isZero(val)) map.remove(i);
-                    else map.put(i, d);
+                    else map.put(i, val);
                 }
                 else { 
                     if (isZero(d) == false) map.put(i, d);                
@@ -164,6 +167,7 @@ public class SparseRealVector extends RealVectorBase
 
     public double dotProduct(IRealVector v) {
         checkDimension(v); checkType(v);
+        if (this.isZero() || v.isZero()) return 0;
         SparseRealVector vec = (SparseRealVector)v;
         int [] thiskeys = map.keys();
         int [] vkeys = vec.map.keys();
@@ -200,7 +204,8 @@ public class SparseRealVector extends RealVectorBase
     }
 
     public double cosine(IRealVector v) {
-        checkDimension(v); checkType(v);       
+        checkDimension(v); checkType(v);   
+        if (this.isZero() || v.isZero()) return 0;
         double dot = dotProduct(v), n1 = l2Norm(), n2 = v.l2Norm();
         if (n1 == 0 || n2 == 0) return 0;
         return dot / (n1 * n2);

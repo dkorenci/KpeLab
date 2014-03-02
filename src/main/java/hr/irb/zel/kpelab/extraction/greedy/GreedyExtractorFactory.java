@@ -18,12 +18,24 @@ import hr.irb.zel.kpelab.vectors.document.TermFrequencyVectorizer;
 import hr.irb.zel.kpelab.vectors.document.TfIdfVectorizer;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Methods for creating various GreedExtractor configurations. */
 public class GreedyExtractorFactory {
 
 //    public GreedyExtractorConfig(IDocumentVectorizer dvec, IPhraseExtractor phext, 
 //            IPhraseSetVectorizer phvec, IVectorComparison cmp) {    
+    
+    public static GreedyExtractorConfig[] getAllExtractors() throws Exception {
+        GreedyExtractorConfig[] exts = {
+            getLSICosExtractor(), 
+            getESATfCosExtractor(),getESA01TfCosExtractor(),
+            getESA01TfEbeExtractor(), getESA01TfIdfCosExtractor(), 
+            getESAPrunedTfCosExtractor(), getESA01PrunedTfCosExtractor()
+        };
+        return exts;
+    }
     
     public static GreedyExtractorConfig getLSICosExtractor() throws Exception {
         CanonicForm cform = CanonicForm.LEMMA;
@@ -32,8 +44,8 @@ public class GreedyExtractorFactory {
         IPhraseExtractor phext = new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
-        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE_CUTOFF);     
-        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+        IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
+        return new GreedyExtractorConfig(wvm, VectorMod.NONE, cform, dvec, phext, phvec, cmp);
     }
     
     public static GreedyExtractorConfig getESATfCosExtractor() throws Exception {
@@ -44,7 +56,8 @@ public class GreedyExtractorFactory {
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
         IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
-        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+        return new GreedyExtractorConfig(wvm, VectorMod.NONE, cform,
+                dvec, phext, phvec, cmp);
     }    
     
     public static GreedyExtractorConfig getESA01TfCosExtractor() throws Exception {
@@ -55,7 +68,7 @@ public class GreedyExtractorFactory {
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
         IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
-        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+        return new GreedyExtractorConfig(wvm, VectorMod.NONE, cform, dvec, phext, phvec, cmp);
     }       
     
     public static GreedyExtractorConfig getESA01TfEbeExtractor() throws Exception {
@@ -66,7 +79,7 @@ public class GreedyExtractorFactory {
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
         IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);     
-        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+        return new GreedyExtractorConfig(wvm, VectorMod.NONE, cform, dvec, phext, phvec, cmp);
     }         
     
     public static GreedyExtractorConfig getESA01TfIdfCosExtractor() throws Exception {
@@ -83,7 +96,7 @@ public class GreedyExtractorFactory {
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(wvm);
         // vector comparison
         IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
-        return new GreedyExtractorConfig(dvec, phext, phvec, cmp);
+        return new GreedyExtractorConfig(wvm, VectorMod.NONE, cform, dvec, phext, phvec, cmp);
     }    
     
     public static GreedyExtractorConfig getESAPrunedTfCosExtractor() throws Exception {

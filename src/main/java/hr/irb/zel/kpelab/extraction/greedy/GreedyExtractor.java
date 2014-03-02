@@ -36,13 +36,7 @@ public class GreedyExtractor implements IKpextractor {
     }
 
     public String getId() {
-        String id = "greedy";
-        if (c.modification == VectorMod.NONE) id += "."+c.wordToVector.getId();
-        else if (c.modification == VectorMod.PRUNE_UNIQUE) id += "."+c.wordToVector.getId()+"Pr";
-        id += "."+c.docVectorizer.getId();
-        id += "."+c.phVectorizer.getId();
-        id += "."+c.phraseSetQuality.getId();        
-        return id;
+        return c.getId();
     }
     
     public List<Phrase> extract(KpeDocument doc) throws Exception {
@@ -66,8 +60,7 @@ public class GreedyExtractor implements IKpextractor {
             if (!phrases.contains(ph)) {
                 c.phVectorizer.addPhrase(ph);
                 IRealVector phVec = c.phVectorizer.vector();
-                double phQuality = c.phraseSetQuality.compare(phVec, documentVector);
-                System.out.println(phQuality);
+                double phQuality = c.phraseSetQuality.compare(phVec, documentVector);                
                 if (phQuality > optQual) {
                     optQual = phQuality;
                     optPhrase = ph;
@@ -79,7 +72,7 @@ public class GreedyExtractor implements IKpextractor {
                 phrases.add(optPhrase);
                 c.phVectorizer.addPhrase(optPhrase);
             }            
-            System.out.println("*******************************************");
+            //System.out.println("*******************************************");
         }
     }
 

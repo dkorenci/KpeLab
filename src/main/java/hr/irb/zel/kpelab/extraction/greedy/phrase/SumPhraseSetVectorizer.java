@@ -32,7 +32,7 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
         lastAdded = null;        
     }
     
-     public String getId() { return "sumPhSetVect"; }
+     public String getId() { return "uwordsum"; }
     
     public void setVectors(IWordToVectorMap wvmap) { 
         wordToVector = wvmap; 
@@ -41,7 +41,7 @@ public class SumPhraseSetVectorizer implements IPhraseSetVectorizer {
     
     public void addPhrase(Phrase ph) throws Exception {
         boolean newWord = false;        
-        System.out.println("* adding phrase: " + ph);
+//        System.out.println("* adding phrase: " + ph);
 //        System.out.println("wordsBefore");
 //        printWords();
         List<String> diffWords = new ArrayList<String>(10);  

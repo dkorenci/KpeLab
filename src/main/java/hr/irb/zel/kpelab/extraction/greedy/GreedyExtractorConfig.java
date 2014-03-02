@@ -6,6 +6,7 @@ import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.term.TermExtractor;
+import hr.irb.zel.kpelab.util.IComponent;
 import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 import hr.irb.zel.kpelab.vectors.document.IDocumentVectorizer;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
@@ -17,7 +18,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 /**
  * Processing components of GreedyExtractor and other configuration.
  */
-public class GreedyExtractorConfig {
+public class GreedyExtractorConfig implements IComponent {
     
     public IDocumentVectorizer docVectorizer;
     public IPhraseSetVectorizer phVectorizer;
@@ -49,6 +50,16 @@ public class GreedyExtractorConfig {
         docVectorizer = dvec; phVectorizer = phvec; 
         phraseSetQuality = cmp; phraseExtractor = phext;        
         termExtractor = null;
+    }
+    
+    public String getId() {
+        String id = "greedy";
+        if (modification == VectorMod.NONE) id += "."+wordToVector.getId();
+        else if (modification == VectorMod.PRUNE_UNIQUE) id += "."+wordToVector.getId()+"Pr";
+        id += "."+docVectorizer.getId();
+        id += "."+phVectorizer.getId();
+        id += "."+phraseSetQuality.getId();        
+        return id;        
     }
     
     // adapt vectorizers to document text

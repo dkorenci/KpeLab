@@ -27,3 +27,28 @@ SimilarityExperiments.expWS353LSI();
 Kada se pokrenu eksperimenti, ovim redom, dolazi do interferencije, 
 vjerojatno u klasama za učitavanje vektora. 
 
+- različite vrijednosti vektorskih operacija ovisno o prethodnim dokumentima
+Rezultati operacija se razlikuju ovisno o prethodnim operacijama.
+Za devel/H-83, se za esa01Prun.tfsum.uwordsum.cos rezultati 
+(similarity scoreovi u GreedyExtractoru) razlikuju kada se ekstraktor pokrene za
+samo taj dokument i za sve devel dokumente (H-83 se obradi zadnji).
+
+Problem se ne javlja sa esa.tfsum.uwordsum.com, što indicira da 
+je problem u komponentama koje rada 0-1 i prunning.
+Ne javlja se ni za getESA01TfCosExtractor, što znači da je problem u prunningu.
+
+Problem je bio u TermFrequencyVectorizer, nije se kreirao novi agregator
+za svaki extract() pa je ostala mapa od prvog dokumenta.
+
+- negativne vrijednosti cos-a sa ESA vektorima
+Pri računanju kosinusne sličnosti javljaju se negativne vrijednosti, 
+čak i za ESA01 vektore, što je greška jer su sve koordinate pozitivne.
+Problem je bio u add() vektorskoj operaciji: prilikom 
+dodavanja dodana je samo vrijednost vektora koji se pribraja
+na koordinatu, umjesto njena suma sa starom vrijednošću.
+
+
+
+
+
+

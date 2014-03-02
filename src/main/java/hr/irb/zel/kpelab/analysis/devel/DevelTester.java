@@ -244,10 +244,11 @@ public class DevelTester {
         if (sampleSize < 0 || sampleSize > docs.size()) sampleSize = docs.size();
         docs = docs.subList(0, sampleSize);
         writer = new BufferedWriter(new FileWriter(outFolder+"_develTests_docExtract.txt"));
-        GreedyExtractor greedy = new GreedyExtractor(K, c);            
-        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
         F1Metric result = new F1Metric();
         for (KpeDocument doc : docs) {
+            c.adaptToDocument(doc.getText());
+            GreedyExtractor greedy = new GreedyExtractor(K, c);            
+            F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);            
             System.out.println("processing " + doc.getId());
             F1Metric r = eval.evaluateDocument(doc);
             writer.write("*"+doc.getId()+"\n");

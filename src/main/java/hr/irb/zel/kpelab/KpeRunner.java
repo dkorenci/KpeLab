@@ -61,10 +61,37 @@ public class KpeRunner {
         
         //singleDocGreedy();                
         develTests();
+        //develTestsAll();
         
         end(); // finalize environment
     }
 
+    // run devel tests on a single extractor
+    private static void develTests() throws Exception {
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.getLSICosExtractor());
+        dt.init();
+        dt.testPhraseSets("basic", 5);
+        dt.testPhraseSets("mixed", 5);
+        dt.testPhraseSets("single", 5);
+        dt.runOnSample(5, 10);
+        dt.close();
+    }
+    
+    // run devel tests on all extractors
+    private static void develTestsAll() throws Exception {  
+        for (GreedyExtractorConfig config : GreedyExtractorFactory.getAllExtractors()) {
+            if (config != null)
+            System.out.println(config.getId());
+            DevelTester dt = new DevelTester(config);
+            dt.init();
+            dt.testPhraseSets("basic", 5);
+            dt.testPhraseSets("mixed", 5);
+            dt.testPhraseSets("single", 5);
+            dt.runOnSample(5, 10);
+            dt.close();        
+        }
+    }      
+    
     private static void extractionTests() throws Exception {
         PosExtractorConfig config = new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM);
         PosTaggingAnalyser posAnalyzer = new PosTaggingAnalyser(config);
@@ -99,15 +126,6 @@ public class KpeRunner {
         GreedyExtractor extr = new GreedyExtractor(10, conf);        
         List<Phrase> res = extr.extract(doc);
         System.out.println(res.size());        
-    }
-    
-    private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getESA01PrunedTfCosExtractor());
-//        dt.testPhraseSets("basic", 5);
-//        dt.testPhraseSets("mixed", 5);
-//        dt.testPhraseSets("single", 5);
-        dt.runOnSample(5, 10);
-        dt.close();
     }
     
     public static void testCleaner() throws IOException {

@@ -63,7 +63,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     
     private List<Phrase> phrases;       
     
-    private static final int MAX_PHRASE_LENGTH = 4;
+    private static final int MAX_PHRASE_LENGTH = 3;
 
     private void preprocess() throws UIMAException {
         jCas = JCasFactory.createJCas();

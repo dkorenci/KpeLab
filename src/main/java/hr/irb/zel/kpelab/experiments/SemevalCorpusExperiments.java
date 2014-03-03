@@ -162,6 +162,18 @@ public class SemevalCorpusExperiments {
         System.out.println(metric);         
     }      
     
+    // evalueate greedy extractor on a subsample of size S of train
+    public static void greedyDatasetTrainSubsample(GreedyExtractorConfig conf, int K, int S) 
+            throws Exception {
+        List<KpeDocument> docs = CorpusSemeval.getDataset("train", SolutionPhraseSet.COBINED);
+        List<KpeDocument> sample = Utils.getRandomSubsample(docs, S);
+        for (KpeDocument d : sample) System.out.println(d.getId());
+        GreedyExtractor greedy = new GreedyExtractor(K, conf);         
+        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateDocuments(sample);
+        System.out.println(metric);         
+    }     
+    
     public static void printTermFrequencies(String docName) throws Exception {
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
         TermExtractor textr = new TermExtractor(

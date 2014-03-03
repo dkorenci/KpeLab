@@ -21,11 +21,12 @@ dodati pomoću maven_install_local_jar.sh
 
 rJava konfiguracija:
 Instalirati R i rJava paket R naredbom install.packages("rJava")
-Postaviti varijablu R_HOME (u /etc/environment se doda linija R_HOME="path") 
+Postaviti varijablu R_HOME (npr. u /etc/environment se doda linija R_HOME="path" + 
+log-in log-out za enforcanje promjene) 
 na vrijednost koja se dobiva izvršavanjem R naredbe Sys.getenv("R_HOME")
 Dodati putanju od JRI.jar ("locate JRI.jar") u Maven lokalni repozitorij 
 pomoću skripte maven_install_local_jar.sh.
-Postaviti java path varijablu na folder od libjri.so ("locate libjri.so"):
+Postaviti java path varijablu na *folder* u kojem je libjri.so ("locate libjri.so"):
 u NetBeansu, desni klik na projekt -> properties -> run, pod VM options nadodati
 -Djava.library.path="putanja"
 

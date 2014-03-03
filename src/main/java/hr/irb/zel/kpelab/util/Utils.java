@@ -34,13 +34,17 @@ public class Utils {
         return String.format("%.3f", d);
     }
     
-    // get random subsample of size S
     public static <T> List<T> getRandomSubsample(List<T> list, int S) {
+        return getRandomSubsample(list, S, 567771);
+    }
+    
+    // get random subsample of size S
+    public static <T> List<T> getRandomSubsample(List<T> list, int S, int seed) {
         if (S >= list.size() || S < 0) return list;
         List<T> res = new ArrayList<T>(S);
         if (S == 0) return res;
         Set<Integer> sampled = new TreeSet<Integer>(); // already sampled indexes
-        Random r = new Random(567771);
+        Random r = new Random(seed);
         for (int i = 0; i < S; ++i) {
             int s;
             do {

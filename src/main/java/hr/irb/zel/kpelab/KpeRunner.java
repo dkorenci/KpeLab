@@ -5,6 +5,7 @@ import de.tudarmstadt.ukp.dkpro.core.morpha.MorphaStemmer;
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import hr.irb.zel.kpelab.analysis.CannonizationAnalyser;
+import hr.irb.zel.kpelab.analysis.EsaGraph;
 import hr.irb.zel.kpelab.analysis.PhraseExtractionAnalyzer;
 import hr.irb.zel.kpelab.analysis.PosTaggingAnalyser;
 import hr.irb.zel.kpelab.analysis.WS353CorrelationAnalysis;
@@ -36,12 +37,20 @@ import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.DocAgg;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
+import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
+import hr.irb.zel.kpelab.util.REngineManager;
 import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorDiskMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
+import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity.SimilarityMeasure;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.io.IOException;
 import java.util.List;
@@ -59,27 +68,40 @@ public class KpeRunner {
         
         //DfFactory.createDfSemevalStemOpenNlp();
         
-        //singleDocGreedy();                
-        develTests();
-        //develTestsAll();
-        
+        //singleDocGreedy();                        
+        //develTests();
+        //esaGraph();
+        SemevalCorpusExperiments.greedyDatasetTrainSubsample(
+                GreedyExtractorFactory.create(Vec.ESA, false, VectorMod.PRUNE, 
+                DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS), 10, 30);
         end(); // finalize environment
     }
 
+    private static void esaGraph() throws Exception {
+        IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
+        VectorSimilarity vsim = new VectorSimilarity(SimilarityMeasure.COSINE);                
+        EsaGraph eg = new EsaGraph(wvm, vsim);
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);
+        eg.processDocument(doc.getText(), doc.getId());
+        eg.outputMatrix();
+        eg.outputTerms();
+    }   
+    
     // run devel tests on a single extractor
-    private static void develTests() throws Exception {
-        DevelTester dt = new DevelTester(GreedyExtractorFactory.getLSICosExtractor());
+    private static void develTest() throws Exception {
+        DevelTester dt = new DevelTester(GreedyExtractorFactory.create(
+                Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS));
         dt.init();
-        dt.testPhraseSets("basic", 5);
-        dt.testPhraseSets("mixed", 5);
-        dt.testPhraseSets("single", 5);
-        dt.runOnSample(5, 10);
+//        dt.testPhraseSets("basic", 5);
+//        dt.testPhraseSets("mixed", 5);
+//        dt.testPhraseSets("single", 5);
+        dt.runOnSample(1, 10);
         dt.close();
     }
     
-    // run devel tests on all extractors
-    private static void develTestsAll() throws Exception {  
-        for (GreedyExtractorConfig config : GreedyExtractorFactory.getAllExtractors()) {
+    // run devel tests on a set of extractors
+    private static void develTests() throws Exception {          
+        for (GreedyExtractorConfig config : GreedyExtractorFactory.getCombinations()) {
             if (config != null)
             System.out.println(config.getId());
             DevelTester dt = new DevelTester(config);
@@ -231,6 +253,7 @@ public class KpeRunner {
     // finalization and cleanup
     private static void end() throws Exception {
         WordVectorMapFactory.closeFactory();
+        REngineManager.closeRengine();
     }
     
     // initialization

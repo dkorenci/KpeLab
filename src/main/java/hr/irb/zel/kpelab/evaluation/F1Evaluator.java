@@ -45,6 +45,8 @@ public class F1Evaluator {
             }
             result.precision += docResult.precision;
             result.recall += docResult.recall;
+            result.f1 += docResult.f1;
+            
             stepCounter++;
             if (stepCounter % 100 == 0) {                
                 F1Metric tmpResult = new F1Metric(result);
@@ -56,7 +58,7 @@ public class F1Evaluator {
         }
         double N = documents.size();
         result.precision /= N; result.recall /= N;
-        result.calculateF1();
+        result.f1 /= N;
         return result;
     }
     

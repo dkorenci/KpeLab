@@ -46,13 +46,44 @@ public class GreedyExtractorFactory {
     // get combinations of various esa vectors all with tfidf-sum, uw-sum and cos
     public static GreedyExtractorConfig[] getCombinations() throws Exception {
         GreedyExtractorConfig[] exts = {
-            create(Vec.ESA, false, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
-            create(Vec.ESA, true, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
+    //        create(Vec.ESA, false, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
+    //        create(Vec.ESA, true, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
             create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),            
             create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),            
         };
         return exts;
     }    
+    
+    // return a list of all reasonable combinations
+    public static List<GreedyExtractorConfig> getAllCombinations() throws Exception {
+        List<GreedyExtractorConfig> combinations = new ArrayList<GreedyExtractorConfig>();
+        // options that showed more promise go first
+        Vec [] vec = { Vec.ESA };
+        boolean [] vec01 = {false, true};
+        // first prune modes, since they run quicker
+        VectorMod [] vecMod = { VectorMod.PRUNE, VectorMod.NONE };
+        DocAgg [] doc = { DocAgg.TFIDF_SUM, DocAgg.TFIDF_MAX, DocAgg.TF_SUM };
+        PhAgg [] ph = { PhAgg.UW_SUM, PhAgg.UW_SUM };
+        VecQ [] vecq = { VecQ.COS, VecQ.EBE };
+        
+        for (Vec v : vec) {
+            for (boolean v01 : vec01) {
+                for (VectorMod vm : vecMod) {
+                    for (DocAgg d : doc) {
+                        for (PhAgg p : ph) {
+                            for (VecQ vq : vecq) {                                
+                                GreedyExtractorConfig conf = 
+                                        create(v, v01, vm, d, p, vq);
+                                combinations.add(conf);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return combinations;
+    }      
     
     // options for configuration creation
     public enum Vec { LSI, ESA }

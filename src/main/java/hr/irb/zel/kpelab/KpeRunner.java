@@ -64,16 +64,12 @@ public class KpeRunner {
         
         //extractionTests();
         //SimilarityExperiments.expWS353ESA();
-        //CorpusSemevalTests.writePhraseLengths();
-        
-        //DfFactory.createDfSemevalStemOpenNlp();
-        
+        //CorpusSemevalTests.writePhraseLengths();        
+        //DfFactory.createDfSemevalStemOpenNlp();        
         //singleDocGreedy();                        
-        //develTests();
+        develTests();               
         //esaGraph();
-        SemevalCorpusExperiments.greedyDatasetTrainSubsample(
-                GreedyExtractorFactory.create(Vec.ESA, false, VectorMod.PRUNE, 
-                DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS), 10, 30);
+
         end(); // finalize environment
     }
 
@@ -101,7 +97,7 @@ public class KpeRunner {
     
     // run devel tests on a set of extractors
     private static void develTests() throws Exception {          
-        for (GreedyExtractorConfig config : GreedyExtractorFactory.getCombinations()) {
+        for (GreedyExtractorConfig config : GreedyExtractorFactory.getAllCombinations()) {
             if (config != null)
             System.out.println(config.getId());
             DevelTester dt = new DevelTester(config);
@@ -110,9 +106,16 @@ public class KpeRunner {
             dt.testPhraseSets("mixed", 5);
             dt.testPhraseSets("single", 5);
             dt.runOnSample(5, 10);
+            dt.runOnTrainSubsample(10);
             dt.close();        
         }
     }      
+    
+    private static void greedySubsample() throws Exception {        
+        SemevalCorpusExperiments.greedyDatasetTrainSubsample(
+                GreedyExtractorFactory.create(Vec.ESA, false, VectorMod.PRUNE, 
+                DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS), 10, 30);        
+    }
     
     private static void extractionTests() throws Exception {
         PosExtractorConfig config = new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM);

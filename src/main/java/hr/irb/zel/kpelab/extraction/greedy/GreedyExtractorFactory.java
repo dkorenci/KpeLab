@@ -4,12 +4,15 @@ import hr.irb.zel.kpelab.df.DfFactory;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
+import hr.irb.zel.kpelab.extraction.greedy.phrase.MaxPhraseSetVectorizer;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.SumPhraseSetVectorizer;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
+import hr.irb.zel.kpelab.util.VectorAggregator;
+import hr.irb.zel.kpelab.util.VectorAggregator.Method;
 import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity.SimilarityMeasure;
@@ -41,12 +44,12 @@ public class GreedyExtractorFactory {
 //            DocAgg doc, PhAgg ph, VecQ vecq) throws Exception {    
         
     // get combinations of various esa vectors all with tfidf-sum, uw-sum and cos
-    public static GreedyExtractorConfig[] getTfIdfEsaExtractors() throws Exception {
+    public static GreedyExtractorConfig[] getCombinations() throws Exception {
         GreedyExtractorConfig[] exts = {
-            create(Vec.ESA, false, VectorMod.NONE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),
-            create(Vec.ESA, true, VectorMod.NONE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),
-            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),            
-            create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),            
+            create(Vec.ESA, false, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
+            create(Vec.ESA, true, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
+            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),            
+            create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),            
         };
         return exts;
     }    
@@ -61,11 +64,13 @@ public class GreedyExtractorFactory {
     // document to vector aggregation method
     public enum DocAgg {
         TF_SUM, // sum content words mult. by tf
-        TFIDF_SUM // sum content words mult. by tfidf
+        TFIDF_SUM, // sum content words mult. by tfidf
+        TFIDF_MAX // coordinatewise max. of words mult. by tfidf
     }
     // phrase set to vector aggregation method
     public enum PhAgg { 
-        UW_SUM // sum of vectors of unique words
+        UW_SUM, // sum of vectors of unique words
+        UW_MAX // max of vectors of unique words
     }
     // quality measure that compares phrase set and document vectors
     public enum VecQ { COS, COS_CUT, EBE }
@@ -104,9 +109,11 @@ public class GreedyExtractorFactory {
         
         // document vectorization
         IDocumentVectorizer dvec;
-        if (doc == DocAgg.TFIDF_SUM) {   
+        if (doc == DocAgg.TFIDF_SUM || doc == DocAgg.TFIDF_MAX) {   
             TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
-            dvec = new TfIdfVectorizer(compWvm, cform, tdf);
+            Method m; // aggregation method
+            if (doc == DocAgg.TFIDF_SUM) m = Method.SUM; else m = Method.MAX;
+            dvec = new TfIdfVectorizer(compWvm, cform, tdf, m);
         }
         else if (doc == DocAgg.TF_SUM) {
             dvec = new TermFrequencyVectorizer(compWvm, cform);
@@ -116,7 +123,10 @@ public class GreedyExtractorFactory {
         // phrase set vectorization
         IPhraseSetVectorizer phvec;
         if (ph == PhAgg.UW_SUM) {
-            phvec = new SumPhraseSetVectorizer(wvm);
+            phvec = new SumPhraseSetVectorizer(compWvm);
+        }
+        else if (ph == PhAgg.UW_MAX) {
+            phvec = new MaxPhraseSetVectorizer(compWvm);
         }
         else throw new UnsupportedOperationException();
         
@@ -187,7 +197,7 @@ public class GreedyExtractorFactory {
         IWordToVectorMap wvm = WordVectorMapFactory.getESA01Vectors();
         // document vetorization
         TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
-        IDocumentVectorizer dvec = new TfIdfVectorizer(wvm, cform, tdf);
+        IDocumentVectorizer dvec = new TfIdfVectorizer(wvm, cform, tdf, Method.SUM);
         // phrase extractor
         IPhraseExtractor phext = new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, cform));   

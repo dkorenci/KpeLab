@@ -25,18 +25,25 @@ public class TfIdfVectorizer implements IDocumentVectorizer {
     private TermExtractor termExtr;
     private VectorAggregator agg;
     private TermDocumentFrequency tdf;
+    private Method aggMethod;
     
     public TfIdfVectorizer(IWordToVectorMap wvm, CanonicForm cf, 
-            TermDocumentFrequency df) throws UIMAException
+            TermDocumentFrequency df, Method aggm) throws UIMAException
     { 
         wordToVector = wvm; cform = cf;
         termExtr = new TermExtractor(new PosExtractorConfig(
                 PosExtractorConfig.Components.OPEN_NLP, cform));        
         agg = new VectorAggregator(wordToVector);
         tdf = df;
+        aggMethod = aggm;
     }
     
-     public String getId() { return "tfidfsum"; }
+     public String getId() { 
+         String m;
+         if (aggMethod == Method.SUM) m = "sum";
+         else m = "max";
+         return "tfidf"+m; 
+     }
     
     public void setVectors(IWordToVectorMap wvmap) { 
         wordToVector = wvmap; 
@@ -48,7 +55,7 @@ public class TfIdfVectorizer implements IDocumentVectorizer {
         List<String> terms = new ArrayList<String>(wterms.size());
         for (WeightedTerm wt : wterms) { terms.add(wt.term); }                   
         TfIdfTermWeight tfidf = new TfIdfTermWeight(wterms, tdf);
-        return agg.aggregateWeighted(terms, tfidf, Method.SUM);
+        return agg.aggregateWeighted(terms, tfidf, aggMethod);
     }
 
 }

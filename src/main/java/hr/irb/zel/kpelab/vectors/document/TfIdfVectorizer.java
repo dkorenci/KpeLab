@@ -38,7 +38,10 @@ public class TfIdfVectorizer implements IDocumentVectorizer {
     
      public String getId() { return "tfidfsum"; }
     
-    public void setVectors(IWordToVectorMap wvmap) { wordToVector = wvmap; }        
+    public void setVectors(IWordToVectorMap wvmap) { 
+        wordToVector = wvmap; 
+        agg = new VectorAggregator(wordToVector);
+    }        
     
     public IRealVector vectorize(String txt) throws Exception {
         List<WeightedTerm> wterms = termExtr.extractWeighted(txt); 

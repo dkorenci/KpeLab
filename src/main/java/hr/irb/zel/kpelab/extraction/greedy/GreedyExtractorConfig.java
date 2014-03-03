@@ -32,8 +32,10 @@ public class GreedyExtractorConfig implements IComponent {
     // vector modification to be applied before extraction starts
     public enum VectorMod { 
         NONE, 
-        PRUNE_UNIQUE // remove from vectors those components that are not
+        PRUNE, // remove from vectors those components that are not        
         // shared with at least another word from document
+        PRUNE_ADD_UNIQUE // same as PRUNE, accept for each word
+        // one coordinate unique for that word is added after prunning        
     }
     
     public GreedyExtractorConfig(IDocumentVectorizer dvec, IPhraseExtractor phext, 
@@ -55,7 +57,11 @@ public class GreedyExtractorConfig implements IComponent {
     public String getId() {
         String id = "greedy";
         if (modification == VectorMod.NONE) id += "."+wordToVector.getId();
-        else if (modification == VectorMod.PRUNE_UNIQUE) id += "."+wordToVector.getId()+"Pr";
+        else if (modification == VectorMod.PRUNE) id += "."+wordToVector.getId()+"Pr";
+        else if (modification == VectorMod.PRUNE_ADD_UNIQUE)
+            id += "."+wordToVector.getId()+"PrAu";
+        else throw new UnsupportedOperationException();
+        
         id += "."+docVectorizer.getId();
         id += "."+phVectorizer.getId();
         id += "."+phraseSetQuality.getId();        
@@ -71,7 +77,13 @@ public class GreedyExtractorConfig implements IComponent {
                 PosExtractorConfig.Components.OPEN_NLP, cform));            
         }
         List<String> terms = termExtractor.extract(text);
-        IWordToVectorMap pruneFilter = new TermSetPruneFilter(wordToVector, terms);
+        
+        boolean unique;
+        if (modification == VectorMod.PRUNE) unique = false;
+        else if (modification == VectorMod.PRUNE_ADD_UNIQUE) unique = true;
+        else throw new UnsupportedOperationException();
+        
+        IWordToVectorMap pruneFilter = new TermSetPruneFilter(wordToVector, terms, unique);
         docVectorizer.setVectors(pruneFilter);
         phVectorizer.setVectors(pruneFilter);        
     }

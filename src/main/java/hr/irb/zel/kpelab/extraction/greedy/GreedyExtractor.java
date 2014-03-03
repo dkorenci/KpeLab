@@ -60,7 +60,8 @@ public class GreedyExtractor implements IKpextractor {
             if (!phrases.contains(ph)) {
                 c.phVectorizer.addPhrase(ph);
                 IRealVector phVec = c.phVectorizer.vector();
-                double phQuality = c.phraseSetQuality.compare(phVec, documentVector);                
+                double phQuality = c.phraseSetQuality.compare(phVec, documentVector);
+                //System.out.println(phQuality);
                 if (phQuality > optQual) {
                     optQual = phQuality;
                     optPhrase = ph;

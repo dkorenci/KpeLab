@@ -36,6 +36,20 @@ public class GreedyExtractorFactory {
         };
         return exts;
     }
+
+//    public static GreedyExtractorConfig create(Vec vec, boolean vec01, VectorMod vecMod, 
+//            DocAgg doc, PhAgg ph, VecQ vecq) throws Exception {    
+        
+    // get combinations of various esa vectors all with tfidf-sum, uw-sum and cos
+    public static GreedyExtractorConfig[] getTfIdfEsaExtractors() throws Exception {
+        GreedyExtractorConfig[] exts = {
+            create(Vec.ESA, false, VectorMod.NONE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),
+            create(Vec.ESA, true, VectorMod.NONE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),
+            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),            
+            create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS),            
+        };
+        return exts;
+    }    
     
     // options for configuration creation
     public enum Vec { LSI, ESA }
@@ -57,7 +71,7 @@ public class GreedyExtractorFactory {
     public enum VecQ { COS, COS_CUT, EBE }
     
     // creates extractor config based on options
-    public static GreedyExtractorConfig create(Vec vec, boolean vec01, boolean vecPr, 
+    public static GreedyExtractorConfig create(Vec vec, boolean vec01, VectorMod vecMod, 
             DocAgg doc, PhAgg ph, VecQ vecq) throws Exception {
         // canonic form
         CanonicForm cform;
@@ -85,7 +99,8 @@ public class GreedyExtractorFactory {
         // with initialization, since word to vector maps for these components
         // have to be initialized before each document processing        
         IWordToVectorMap compWvm;
-        if (vecPr) compWvm = null; else compWvm = wvm;        
+        if (vecMod == VectorMod.PRUNE || vecMod == VectorMod.PRUNE_ADD_UNIQUE) compWvm = null; 
+        else compWvm = wvm;        
         
         // document vectorization
         IDocumentVectorizer dvec;
@@ -116,14 +131,9 @@ public class GreedyExtractorFactory {
         else if (vecq == VecQ.EBE) {
             cmp = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);  
         }
-        else throw new UnsupportedOperationException(); 
-        
-        // vector modification flag
-        VectorMod vmod;
-        if (vecPr == false) vmod = VectorMod.NONE;
-        else vmod = VectorMod.PRUNE_UNIQUE;
-                    
-        return new GreedyExtractorConfig(wvm, vmod, cform, dvec, phext, phvec, cmp);        
+        else throw new UnsupportedOperationException();         
+                   
+        return new GreedyExtractorConfig(wvm, vecMod, cform, dvec, phext, phvec, cmp);        
     }
     
     public static GreedyExtractorConfig getLSICosExtractor() throws Exception {
@@ -196,7 +206,7 @@ public class GreedyExtractorFactory {
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(null);
         IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
-        return new GreedyExtractorConfig(wvm, VectorMod.PRUNE_UNIQUE, cform , 
+        return new GreedyExtractorConfig(wvm, VectorMod.PRUNE, cform , 
                                             dvec, phext, phvec, cmp);
     }       
 
@@ -208,7 +218,7 @@ public class GreedyExtractorFactory {
                 new PosExtractorConfig(Components.OPEN_NLP, cform));           
         IPhraseSetVectorizer phvec = new SumPhraseSetVectorizer(null);
         IVectorComparison cmp = new VectorSimilarity(SimilarityMeasure.COSINE);     
-        return new GreedyExtractorConfig(wvm, VectorMod.PRUNE_UNIQUE, cform , 
+        return new GreedyExtractorConfig(wvm, VectorMod.PRUNE, cform , 
                                             dvec, phext, phvec, cmp);
     }     
     

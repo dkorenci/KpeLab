@@ -172,6 +172,20 @@ public class DevelTester {
         summary.write("micro averaged result: " + result + "\n");
         overview.write("\nmicro averaged result: " + result + "\n");
     }    
+
+    // evalueate extractor on a subsample of size S of train
+    public void runOnTrainSubsample(int K) 
+            throws Exception {
+        final int SAMPLE_SIZE = 20;
+        final int SEED = 889123;
+        List<KpeDocument> docs = CorpusSemeval.getDataset("train", SolutionPhraseSet.COBINED);
+        List<KpeDocument> sample = Utils.getRandomSubsample(docs, SAMPLE_SIZE, SEED);        
+        GreedyExtractor greedy = new GreedyExtractor(K, c);         
+        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateDocuments(sample);
+        summary.write("train subsample of size " + SAMPLE_SIZE + ": " + metric + "\n");
+        overview.write("train subsample of size " + SAMPLE_SIZE + ": " + metric + "\n");                
+    }      
     
     private String phrasesToString(List<Phrase> phrases) {
         String str = "";

@@ -83,7 +83,7 @@ public class KpeRunner {
         //esaGraph();
                 
         //pageRankTests();                        
-        develTest();               
+        develTests();               
 
         end(); // finalize environment
     }
@@ -141,17 +141,16 @@ public class KpeRunner {
     
     // run devel tests on a set of extractors
     private static void develTests() throws Exception {          
-        for (GreedyExtractorConfig config : GreedyExtractorFactory.getAllCombinations()) {
-            if (config != null)
+        for (GreedyExtractorConfig config : GreedyExtractorFactory.getPrankCombinations()) {
             System.out.println(config.getId());
-            DevelTester dt = new DevelTester(config);
-            dt.init();
-            dt.testPhraseSets("basic", 5);
-            dt.testPhraseSets("mixed", 5);
-            dt.testPhraseSets("single", 5);
-            dt.runOnSample(5, 10);
-            dt.runOnTrainSubsample(10);
-            dt.close();        
+//            DevelTester dt = new DevelTester(config);
+//            dt.init();
+//            dt.testPhraseSets("basic", 5);
+//            dt.testPhraseSets("mixed", 5);
+//            dt.testPhraseSets("single", 5);
+//            dt.runOnSample(5, 10);
+//            dt.runOnTrainSubsample(10);
+//            dt.close();        
         }
     }      
     

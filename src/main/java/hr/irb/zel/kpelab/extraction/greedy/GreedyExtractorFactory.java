@@ -120,6 +120,56 @@ public class GreedyExtractorFactory {
         
         return combinations;
     }      
+
+    // return a list of all reasonable combinations
+    public static List<GreedyExtractorConfig> getPrankCombinations() throws Exception {
+        List<GreedyExtractorConfig> combinations = new ArrayList<GreedyExtractorConfig>();
+        // options that showed more promise go first
+        Vec [] vec = { Vec.ESA };
+        boolean [] vec01 = {false, true}; // 2
+        // only pruned vectors!
+        VectorMod [] vecMod = { VectorMod.PRUNE }; // 2
+        DocAgg [] doc = { DocAgg.PRANK }; // 1
+        PageRank [] prank = { PageRank.SIMCOS, PageRank.SIM01EBE }; // 2
+        SimMod [] prSmod = { SimMod.NONE, SimMod.EXP }; // 2
+        double [] prDf = {0.7, 0.85}; // 2
+        Method [] method = { Method.SUM, Method.MAX }; // 2
+        PhAgg [] ph = { PhAgg.UW_SUM, PhAgg.UW_SUM }; // 2
+        VecQ [] vecq = { VecQ.COS, VecQ.EBE }; // 2
+        // 128 combinations
+        
+//    public static GreedyExtractorConfig create(
+//            Vec vec, boolean vec01, VectorMod vecMod, DocAgg doc, 
+//            PageRank pr, double prDf, SimMod prSm, 
+//            Method aggMeth, PhAgg ph, VecQ vecq) throws Exception {
+
+        
+        for (Vec v : vec) {
+            for (boolean v01 : vec01) {
+                for (VectorMod vm : vecMod) {
+                    for (DocAgg d : doc) {
+                        for (PageRank pr : prank) {
+                            for (double df : prDf) {
+                            for (SimMod sm : prSmod) {                                
+                            for (Method m : method) {
+                                for (PhAgg p : ph) {
+                                    for (VecQ vq : vecq) {                                
+                                        GreedyExtractorConfig conf = 
+                                                create(v, v01, vm, d, pr ,df, sm ,m, p, vq);
+                                        combinations.add(conf);
+                                    }
+                                }                                    
+                            }
+                            }
+                            }
+                        }                        
+                    }
+                }
+            }
+        }
+        
+        return combinations;
+    }          
     
     // options for configuration creation
     public enum Vec { LSI, ESA }

@@ -227,7 +227,16 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
     
     public String getId() {
         String id = "prank";        
-        id += vectorSim.getId();        
+        id += vectorSim.getId();
+        
+        id += "df"+Utils.doubleStr(dampingFactor,2);
+        
+        if (simMod == SimMod.EXP) id += "E";
+        else if (simMod == SimMod.NONE) id += "N";
+        else if (simMod == SimMod.SQRT) id += "S";           
+        else if (simMod == SimMod.ZERO_ONE) id += "01";
+        else throw new UnsupportedOperationException();                
+            
         if (aggMethod == Method.SUM) id += "sum";
         else if (aggMethod == Method.MAX) id += "max";
         else throw new UnsupportedOperationException();

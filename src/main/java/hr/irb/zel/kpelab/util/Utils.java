@@ -30,8 +30,18 @@ public class Utils {
     }
     
     // convert double to string, rounded to 3 decimal places 
-    public static String doubleToString(double d) {
+    public static String doubleStr(double d) {
         return String.format("%.3f", d);
+    }
+    
+    // convert double to string, rounded to prec decimal places 
+    public static String doubleStr(double d, int prec) {
+        return String.format("%."+prec+"f", d);
+    }
+    
+    // fill string to fixed width with left blanks 
+    public static String fixw(String s, int width) { 
+        return String.format("%1$"+width+"s", s);
     }
     
     public static <T> List<T> getRandomSubsample(List<T> list, int S) {

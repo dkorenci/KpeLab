@@ -27,7 +27,7 @@ public class VectorSimilarity implements IVectorComparison {
             case L2_NEGATE : return "l2neg";
             case COSINE_SCALED : return "cosScaled";
             case COSINE_CUTOFF : return "cosCutoff";
-            case EBE_MULTIPLY : return "ebeMult";
+            case EBE_MULTIPLY : return "ebe";
             case COSINE : return "cos";
             default: throw new UnsupportedOperationException("unsupported measure");
         }         

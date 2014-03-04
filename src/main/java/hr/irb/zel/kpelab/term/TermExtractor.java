@@ -61,6 +61,7 @@ public class TermExtractor {
     }    
     
     // extract canonic forms of word tokens that are nouns or adjectives    
+    // together with their frequencies. store result in wterms field.
     private void extract() {        
         Map<String, Integer> terms = new HashMap<String, Integer>();       
         // iterate over all tokens in the document jCas

@@ -83,8 +83,8 @@ public class CannonizationAnalyser {
         }
         microAverage /= docs.size();
         double macroAverage = (double)coveredTokens/totalTokens;   
-        System.out.println("microAverage: " + Utils.doubleToString(microAverage));
-        System.out.println("macroAverage: " + Utils.doubleToString(macroAverage));
+        System.out.println("microAverage: " + Utils.doubleStr(microAverage));
+        System.out.println("macroAverage: " + Utils.doubleStr(macroAverage));
         System.out.println("covered tokens: " + coveredTokens + " , " 
                 + "total tokens: " + totalTokens);        
     }

@@ -18,6 +18,7 @@ import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity.SimilarityMeasure;
 import hr.irb.zel.kpelab.vectors.document.IDocumentVectorizer;
 import hr.irb.zel.kpelab.vectors.document.TermFrequencyVectorizer;
+import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer;
 import hr.irb.zel.kpelab.vectors.document.TfIdfVectorizer;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
@@ -41,15 +42,21 @@ public class GreedyExtractorFactory {
     }
 
 //    public static GreedyExtractorConfig create(Vec vec, boolean vec01, VectorMod vecMod, 
-//            DocAgg doc, PhAgg ph, VecQ vecq) throws Exception {    
+//            DocAgg doc, PageRank pr, Method aggMeth, PhAgg ph, VecQ vecq) throws Exception {
         
     // get combinations of various esa vectors all with tfidf-sum, uw-sum and cos
     public static GreedyExtractorConfig[] getCombinations() throws Exception {
         GreedyExtractorConfig[] exts = {
     //        create(Vec.ESA, false, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
     //        create(Vec.ESA, true, VectorMod.NONE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),
-            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),            
-            create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS),            
+            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.PRANK, 
+                PageRank.SIMCOS , Method.SUM, PhAgg.UW_SUM, VecQ.COS),            
+            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.PRANK, 
+                PageRank.SIMCOS , Method.MAX, PhAgg.UW_SUM, VecQ.COS),            
+            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.PRANK, 
+                PageRank.SIM01EBE , Method.SUM, PhAgg.UW_SUM, VecQ.COS),                        
+            create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.PRANK, 
+                PageRank.SIM01EBE , Method.MAX, PhAgg.UW_SUM, VecQ.COS),                                    
         };
         return exts;
     }    
@@ -63,6 +70,8 @@ public class GreedyExtractorFactory {
         // first prune modes, since they run quicker
         VectorMod [] vecMod = { VectorMod.PRUNE, VectorMod.NONE };
         DocAgg [] doc = { DocAgg.TFIDF_SUM, DocAgg.TFIDF_MAX, DocAgg.TF_SUM };
+        PageRank [] prank = { PageRank.SIMCOS, PageRank.SIM01EBE };
+        Method [] method = { Method.SUM, Method.MAX };
         PhAgg [] ph = { PhAgg.UW_SUM, PhAgg.UW_SUM };
         VecQ [] vecq = { VecQ.COS, VecQ.EBE };
         
@@ -70,11 +79,26 @@ public class GreedyExtractorFactory {
             for (boolean v01 : vec01) {
                 for (VectorMod vm : vecMod) {
                     for (DocAgg d : doc) {
-                        for (PhAgg p : ph) {
-                            for (VecQ vq : vecq) {                                
-                                GreedyExtractorConfig conf = 
-                                        create(v, v01, vm, d, p, vq);
-                                combinations.add(conf);
+                        if (d != DocAgg.PRANK) {
+                            for (PhAgg p : ph) {
+                                for (VecQ vq : vecq) {                                
+                                    GreedyExtractorConfig conf = 
+                                            create(v, v01, vm, d, null , null, p, vq);
+                                    combinations.add(conf);
+                                }
+                            }
+                        }
+                        else {
+                            for (PageRank pr : prank) {
+                                for (Method m : method) {
+                                    for (PhAgg p : ph) {
+                                        for (VecQ vq : vecq) {                                
+                                            GreedyExtractorConfig conf = 
+                                                    create(v, v01, vm, d, pr ,m, p, vq);
+                                            combinations.add(conf);
+                                        }
+                                    }                                    
+                                }
                             }
                         }
                     }
@@ -96,8 +120,14 @@ public class GreedyExtractorFactory {
     public enum DocAgg {
         TF_SUM, // sum content words mult. by tf
         TFIDF_SUM, // sum content words mult. by tfidf
-        TFIDF_MAX // coordinatewise max. of words mult. by tfidf
-    }
+        TFIDF_MAX, // coordinatewise max. of words mult. by tfidf
+        PRANK // aggregate content words mult. by pagerank        
+    }    
+    // pagerank aggregation options
+    public enum PageRank {
+        SIM01EBE, // similarity using esa01 + ebeMultiply (number of common coordinates)
+        SIMCOS // similarity using esa + cosine
+    }    
     // phrase set to vector aggregation method
     public enum PhAgg { 
         UW_SUM, // sum of vectors of unique words
@@ -105,10 +135,11 @@ public class GreedyExtractorFactory {
     }
     // quality measure that compares phrase set and document vectors
     public enum VecQ { COS, COS_CUT, EBE }
-    
+            
     // creates extractor config based on options
+    // argume aggMeth is aggregation method, valid for page rank
     public static GreedyExtractorConfig create(Vec vec, boolean vec01, VectorMod vecMod, 
-            DocAgg doc, PhAgg ph, VecQ vecq) throws Exception {
+            DocAgg doc, PageRank pr, Method aggMeth, PhAgg ph, VecQ vecq) throws Exception {
         // canonic form
         CanonicForm cform;
         if (vec == Vec.LSI) cform = CanonicForm.LEMMA;
@@ -145,6 +176,20 @@ public class GreedyExtractorFactory {
             Method m; // aggregation method
             if (doc == DocAgg.TFIDF_SUM) m = Method.SUM; else m = Method.MAX;
             dvec = new TfIdfVectorizer(compWvm, cform, tdf, m);
+        }
+        else if (doc == DocAgg.PRANK) {            
+            IWordToVectorMap wvmSim; IVectorComparison vSim;
+            if (pr == PageRank.SIM01EBE) {
+                wvmSim = WordVectorMapFactory.getESA01Vectors();                 
+                vSim = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);
+            }
+            else if (pr == PageRank.SIMCOS) {
+                wvmSim = WordVectorMapFactory.getESAVectors();                 
+                vSim = new VectorSimilarity(SimilarityMeasure.COSINE);                
+            }
+            else throw new UnsupportedOperationException();             
+            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+            dvec = new TermPageRankVectorizer(compWvm, wvmSim, vSim, cform, tdf, aggMeth);                    
         }
         else if (doc == DocAgg.TF_SUM) {
             dvec = new TermFrequencyVectorizer(compWvm, cform);

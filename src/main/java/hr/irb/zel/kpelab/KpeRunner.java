@@ -10,6 +10,7 @@ import hr.irb.zel.kpelab.analysis.PhraseExtractionAnalyzer;
 import hr.irb.zel.kpelab.analysis.PosTaggingAnalyser;
 import hr.irb.zel.kpelab.analysis.WS353CorrelationAnalysis;
 import hr.irb.zel.kpelab.analysis.devel.DevelTester;
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.hulth.DocumentReaderHulth;
 import hr.irb.zel.kpelab.corpus.semeval.CorpusSemeval;
@@ -39,19 +40,25 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.DocAgg;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PageRank;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
 import hr.irb.zel.kpelab.util.REngineManager;
 import hr.irb.zel.kpelab.util.Utils;
+import hr.irb.zel.kpelab.util.VectorAggregator;
+import hr.irb.zel.kpelab.util.VectorAggregator.Method;
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.SparseRealVector;
+import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorDiskMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity.SimilarityMeasure;
+import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -66,13 +73,28 @@ public class KpeRunner {
         //SimilarityExperiments.expWS353ESA();
         //CorpusSemevalTests.writePhraseLengths();        
         //DfFactory.createDfSemevalStemOpenNlp();        
-        //singleDocGreedy();                        
-        develTests();               
+        //singleDocGreedy();                                
         //esaGraph();
+        
+//        pageRankTests();                        
+        develTest();               
 
         end(); // finalize environment
     }
 
+    // 
+    private static void pageRankTests() throws Exception {
+        IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
+        IWordToVectorMap wvmSim = WordVectorMapFactory.getESA01Vectors();     
+        //IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.COSINE);
+        IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);
+        CanonicForm cf = CanonicForm.STEM;
+        TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+        TermPageRankVectorizer pageRank = new TermPageRankVectorizer(wvm, wvmSim, vSim, cf, tdf, Method.SUM);        
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);
+        pageRank.vectorize(doc.getText());
+    }
+    
     private static void esaGraph() throws Exception {
         IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
         VectorSimilarity vsim = new VectorSimilarity(SimilarityMeasure.COSINE);                
@@ -86,12 +108,14 @@ public class KpeRunner {
     // run devel tests on a single extractor
     private static void develTest() throws Exception {
         DevelTester dt = new DevelTester(GreedyExtractorFactory.create(
-                Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_MAX, PhAgg.UW_MAX, VecQ.COS));
+                Vec.ESA, true, VectorMod.PRUNE, DocAgg.PRANK, 
+                PageRank.SIM01EBE, Method.SUM, PhAgg.UW_SUM, VecQ.COS));            
+
         dt.init();
 //        dt.testPhraseSets("basic", 5);
 //        dt.testPhraseSets("mixed", 5);
 //        dt.testPhraseSets("single", 5);
-        dt.runOnSample(1, 10);
+        dt.runOnSample(5, 10);        
         dt.close();
     }
     
@@ -114,7 +138,7 @@ public class KpeRunner {
     private static void greedySubsample() throws Exception {        
         SemevalCorpusExperiments.greedyDatasetTrainSubsample(
                 GreedyExtractorFactory.create(Vec.ESA, false, VectorMod.PRUNE, 
-                DocAgg.TFIDF_SUM, PhAgg.UW_SUM, VecQ.COS), 10, 30);        
+                DocAgg.TFIDF_SUM, null, null, PhAgg.UW_SUM, VecQ.COS), 10, 30);        
     }
     
     private static void extractionTests() throws Exception {

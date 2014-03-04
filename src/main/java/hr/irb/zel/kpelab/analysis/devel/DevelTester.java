@@ -127,12 +127,12 @@ public class DevelTester {
             //sortByRank(instances);
             sortByResult(instances);                       
             for (TestInstance inst : instances) {
-                writer.write(inst.phSetId+": "+Utils.doubleToString(inst.result)+" ; "
+                writer.write(inst.phSetId+": "+Utils.doubleStr(inst.result)+" ; "
                         +phrasesToString(inst.phrases)+"\n");
             }
             double s = calculateSpearman(instances);
             spearmanAvg += s;
-            writer.write("spearman: " + Utils.doubleToString(s) + "\n");
+            writer.write("spearman: " + Utils.doubleStr(s) + "\n");
             writer.write("\n");
             if (++docCnt == numDocs) break;
         }        
@@ -140,9 +140,9 @@ public class DevelTester {
         writer.close();
         
         summary.write("spearman avg. " + instanceSet + " : " 
-                + Utils.doubleToString(spearmanAvg) + "\n");        
+                + Utils.doubleStr(spearmanAvg) + "\n");        
         
-        overview.write(instanceSet + " : " + Utils.doubleToString(spearmanAvg) + " ");
+        overview.write(instanceSet + " : " + Utils.doubleStr(spearmanAvg) + " ");
     }
 
    // run extraction on a subset of train documents
@@ -195,7 +195,7 @@ public class DevelTester {
     
     // calculcate spearman correlation between expected rank and calculated result
     // for test instances
-    public double calculateSpearman(List<TestInstance> instances) throws Exception {
+    private double calculateSpearman(List<TestInstance> instances) throws Exception {
         Rengine rengine = REngineManager.getRengine();
         double [] exp = new double[instances.size()];
         double [] res = new double[instances.size()];

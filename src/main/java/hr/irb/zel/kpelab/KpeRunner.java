@@ -45,6 +45,7 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
+import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.util.REngineManager;
 import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.util.VectorAggregator;
@@ -57,9 +58,14 @@ import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity.SimilarityMeasure;
 import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer;
+import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer.SimMod;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.tartarus.snowball.ext.PorterStemmer;
@@ -75,8 +81,8 @@ public class KpeRunner {
         //DfFactory.createDfSemevalStemOpenNlp();        
         //singleDocGreedy();                                
         //esaGraph();
-        
-//        pageRankTests();                        
+                
+        //pageRankTests();                        
         develTest();               
 
         end(); // finalize environment
@@ -85,14 +91,29 @@ public class KpeRunner {
     // 
     private static void pageRankTests() throws Exception {
         IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
-        IWordToVectorMap wvmSim = WordVectorMapFactory.getESA01Vectors();     
-        //IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.COSINE);
-        IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);
+        IWordToVectorMap wvmSim = WordVectorMapFactory.getESAVectors();     
+        //IWordToVectorMap wvmSim = WordVectorMapFactory.getESA01Vectors();     
+        IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.COSINE);
+        //IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);
         CanonicForm cf = CanonicForm.STEM;
         TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
-        TermPageRankVectorizer pageRank = new TermPageRankVectorizer(wvm, wvmSim, vSim, cf, tdf, Method.SUM);        
-        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);
-        pageRank.vectorize(doc.getText());
+        TermPageRankVectorizer pageRank = new TermPageRankVectorizer(wvm, wvmSim, 
+                vSim, cf, tdf, Method.SUM, 0.7, SimMod.SQRT);        
+        //KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);
+        //List<KpeDocument> docs = CorpusSemeval.getDataset("devel", SolutionPhraseSet.AUTHOR);
+        List<KpeDocument> docs = new ArrayList<KpeDocument>();
+        docs.add(CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR));
+        for (KpeDocument doc : docs) {
+            BufferedWriter w = new BufferedWriter(
+                    new FileWriter(KpeConfig.getProperty("devel.tests")+doc.getId()+".prank.txt"));
+            List<WeightedTerm> prank = pageRank.getRanks(doc.getText());
+            Collections.sort(prank);
+            for (WeightedTerm t : prank) {
+                w.write(Utils.fixw(t.term, 15) + Utils.fixw(Utils.doubleStr(t.weight, 10),15)); 
+                w.write("\n");
+            }
+            w.close();
+        }        
     }
     
     private static void esaGraph() throws Exception {
@@ -109,8 +130,7 @@ public class KpeRunner {
     private static void develTest() throws Exception {
         DevelTester dt = new DevelTester(GreedyExtractorFactory.create(
                 Vec.ESA, true, VectorMod.PRUNE, DocAgg.PRANK, 
-                PageRank.SIM01EBE, Method.SUM, PhAgg.UW_SUM, VecQ.COS));            
-
+                PageRank.SIMCOS, 0.7, SimMod.NONE ,Method.SUM, PhAgg.UW_SUM, VecQ.COS));            
         dt.init();
 //        dt.testPhraseSets("basic", 5);
 //        dt.testPhraseSets("mixed", 5);
@@ -138,7 +158,7 @@ public class KpeRunner {
     private static void greedySubsample() throws Exception {        
         SemevalCorpusExperiments.greedyDatasetTrainSubsample(
                 GreedyExtractorFactory.create(Vec.ESA, false, VectorMod.PRUNE, 
-                DocAgg.TFIDF_SUM, null, null, PhAgg.UW_SUM, VecQ.COS), 10, 30);        
+                DocAgg.TFIDF_SUM, null, 0, null, null, PhAgg.UW_SUM, VecQ.COS), 10, 30);        
     }
     
     private static void extractionTests() throws Exception {

@@ -48,14 +48,21 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
     private IVectorComparison vectorSim;
     private VectorAggregator agg;
     private Method aggMethod;
+    private double dampingFactor;
+    private SimMod simMod;
+    
+    // modification of similarity
+    public enum SimMod { ZERO_ONE, EXP, NONE, SQRT }
         
     public TermPageRankVectorizer(IWordToVectorMap wvm, IWordToVectorMap wvmSim, 
             IVectorComparison vsim, CanonicForm cf, TermDocumentFrequency df, 
-            Method aggMeth) {
+            Method aggMeth, double d, SimMod sm) {
         wordToVector = wvm; wordToVectorSim = wvmSim; vectorSim = vsim;
         tdf = df; cform = cf;
         agg = new VectorAggregator(wordToVector);
         aggMethod = aggMeth;
+        dampingFactor = d;
+        simMod = sm;
     }   
 
     private void initTermExtractor() throws UIMAException {
@@ -69,21 +76,40 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
         wordToVector = wvmap;
         agg = new VectorAggregator(wordToVector);
     }    
-    
+       
     public IRealVector vectorize(String txt) throws Exception {
-        text = txt;
+        text = txt;       
+        process();
+        return constructVector();
+    }
+    
+    public void print(String txt) throws Exception {
+        text = txt;        
+        process();
+        printRanks();        
+    }
+
+    public List<WeightedTerm> getRanks(String txt) throws Exception {
+        text = txt;        
+        process();
+        return prTerms;
+    }    
+    
+    // do every operation up to and including pagerank
+    private void process() throws Exception {
         initTermExtractor();
         createTermList();
         createAdjMatrix();
         if (tdf != null) calculateTfidf();
-        calculatePageRank();
-        //printRanks();
-        return constructVector();
+        calculatePageRank();        
     }
 
+    
     private IRealVector constructVector() throws Exception {
         ITermWeight pagerw = new WeightedList(prTerms);
-        return agg.aggregateWeighted(terms, pagerw, aggMethod);
+        IRealVector vec = agg.aggregateWeighted(terms, pagerw, aggMethod);
+        System.out.println(vec);
+        return vec;
     }
     
     private void printRanks() {        
@@ -91,12 +117,12 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
         if (tdf != null) Collections.sort(tfidfTerms);
         Collections.sort(prTerms);        
         for (int i = 0; i < N; ++i) {
-            System.out.print(Utils.fixw(fTerms.get(i).term, 15) +  
-                    Utils.fixw(Utils.doubleStr(fTerms.get(i).weight),10));
-            if (tdf != null) {
-            System.out.print(Utils.fixw(tfidfTerms.get(i).term, 15) +  
-                    Utils.fixw(Utils.doubleStr(tfidfTerms.get(i).weight),10));
-            }
+//            System.out.print(Utils.fixw(fTerms.get(i).term, 15) +  
+//                    Utils.fixw(Utils.doubleStr(fTerms.get(i).weight),10));
+//            if (tdf != null) {
+//            System.out.print(Utils.fixw(tfidfTerms.get(i).term, 15) +  
+//                    Utils.fixw(Utils.doubleStr(tfidfTerms.get(i).weight),10));
+//            }
             System.out.print(Utils.fixw(prTerms.get(i).term, 15) +  
                     Utils.fixw(Utils.doubleStr(prTerms.get(i).weight, 10),15)); 
             System.out.println();
@@ -125,10 +151,11 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
             for (int j = 0; j < N; ++j) 
             if (i < j)
             {
-                simMatrix[i][j] = vectorSim.compare(
+                simMatrix[i][j] =
+                        modifySim(vectorSim.compare(
                         wordToVectorSim.getWordVector(fTerms.get(i).term), 
                         wordToVectorSim.getWordVector(fTerms.get(j).term)
-                        );
+                        ));
             }
             else {
                 if (i == j) simMatrix[i][j] = 1;
@@ -136,6 +163,17 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
             }
         }
         
+    }
+    
+    private double modifySim(double sim) {
+        if (Math.abs(sim) < 0.0000001) return 0;
+        else { 
+            if (simMod == SimMod.EXP) return Math.exp(sim);
+            else if (simMod == SimMod.NONE) return sim;
+            else if (simMod == SimMod.SQRT) return Math.sqrt(sim);
+            else if (simMod == SimMod.ZERO_ONE) return 1;
+            else throw new UnsupportedOperationException();
+        }
     }
     
     private void calculateTfidf() {
@@ -173,6 +211,8 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
         }        
         rengine.assign("flatMatrix", flatMatrix);
         rengine.eval(String.format("N <- %d", N));
+        // assign damping factor
+        rengine.eval(String.format("dampingF <- %f", dampingFactor));
         // run script
         rengine.eval( String.format("source(\"%s\")",prScript.getName()) );
         // read result from variable "result"
@@ -181,7 +221,7 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
         // populate prTerms with page rank values
         prTerms = new ArrayList<WeightedTerm>(N);        
         for (int i = 0; i < pageRank.length; ++i) {
-            prTerms.add(new WeightedTerm(fTerms.get(i).term, pageRank[i] * N * 10 ));            
+            prTerms.add(new WeightedTerm(fTerms.get(i).term, pageRank[i]));            
         }                 
     }
     

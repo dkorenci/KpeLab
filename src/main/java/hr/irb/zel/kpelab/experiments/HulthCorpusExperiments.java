@@ -21,6 +21,16 @@ import hr.irb.zel.kpelab.similarity.word.IWordSimilarityCalculator;
 import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.df.DfFactory;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
+import hr.irb.zel.kpelab.extraction.IKpextractor;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.DocAgg;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
+import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
 import java.util.List;
@@ -123,5 +133,21 @@ public class HulthCorpusExperiments {
          F1Evaluator eval = new F1Evaluator(random, PhEquality.CANONIC);
          F1Metric metric = eval.evaluateDocuments(docs);
          System.out.println(metric);         
-    }          
+    } 
+    
+    // evaluate performance of esa coverage extractor on the entire corpus
+    public static void greedyCorpus(int K) throws Exception {
+        GreedyExtractorConfig config = 
+            GreedyExtractorFactory.create(
+                    Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_MAX, 
+                    null, -1, null , null, PhAgg.UW_MAX, VecQ.COS);
+        IKpextractor extr = new GreedyExtractor(K, config);               
+        System.out.print("reading documents... ");
+        List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.STEM);    
+        System.out.println("done.");
+        F1Evaluator eval = new F1Evaluator(extr, PhEquality.CANONIC);
+        F1Metric metric = eval.evaluateDocuments(docs);
+        System.out.println(metric);         
+    }     
+    
 }

@@ -17,7 +17,7 @@ import java.util.List;
  *
  */
 public class CorpusHulth {
-    public static final String corpusLocation = KpeConfig.getProperty("corpus.semeval");
+    public static final String corpusLocation = KpeConfig.getProperty("corpus.hulth");
     
     /** Get all documents form one of the 'Test','Training' or 'Validation' folders.       
      * @param readPhrases weather to read solution keyphrases for a document or not

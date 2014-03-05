@@ -14,6 +14,7 @@ import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
+import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import java.io.IOException;
 import java.util.List;
@@ -63,8 +64,8 @@ public class DfFactory {
      
      public static void createDfSemevalStemOpenNlp() throws Exception {
          List<KpeDocument> docs = CorpusSemeval.getAll(SolutionPhraseSet.AUTHOR);
-         TermExtractor extractor = new TermExtractor(new PosExtractorConfig(
-                 PosExtractorConfig.Components.OPEN_NLP, CanonicForm.STEM));
+         TermExtractor extractor = new TermExtractor(
+                 new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
          TermDocumentFrequency df = new TermDocumentFrequency(extractor);
          df.createTermFrequency(docs, "df_semeval_stem_opennlp");
      }
@@ -72,5 +73,17 @@ public class DfFactory {
      public static TermDocumentFrequency loadDfSemevalStemOpenNlp() throws Exception {
          return new TermDocumentFrequency("df_semeval_stem_opennlp");
      }
+
+     public static void createDfHulthStemOpenNlp() throws Exception {
+         List<KpeDocument> docs = CorpusHulth.getAllDocuments(false, CanonicForm.STEM);
+         TermExtractor extractor = new TermExtractor(
+                 new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+         TermDocumentFrequency df = new TermDocumentFrequency(extractor);
+         df.createTermFrequency(docs, "df_hulth_stem_opennlp");
+     }
+     
+     public static TermDocumentFrequency loadDfHulthStemOpenNlp() throws Exception {
+         return new TermDocumentFrequency("df_hulth_stem_opennlp");
+     }     
      
 }

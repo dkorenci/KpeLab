@@ -66,4 +66,34 @@ public class Utils {
         return res;
     }
     
+    // sorts two lists of the same length according to order in the second list
+    public static <T, C extends Comparable<? super C>> void sort(
+            List<T> list, List<C> order, boolean reverse) {        
+        if (list.size() != order.size()) 
+            throw new IllegalArgumentException("lists must be of same size");
+        int N = list.size();
+        // util class for sorting, that groups types from both lists and sorts by 
+        // values from second list
+        class TC implements Comparable<TC> {
+            T t; C c;
+            public int compareTo(TC o) {                
+                return c.compareTo(o.c);
+            }            
+        }
+        List<TC> clist = new ArrayList<TC>(N);
+        for (int i = 0; i < N; ++i) {
+            TC e = new TC(); e.t = list.get(i); e.c = order.get(i);
+            clist.add(e);
+        }
+        Collections.sort(clist);
+        for (int i = 0; i < N; ++i) {
+            list.set(i, clist.get(i).t);
+            order.set(i, clist.get(i).c);
+        }        
+        if (reverse) {
+            Collections.reverse(list);
+            Collections.reverse(order);
+        }
+    }
+    
 }

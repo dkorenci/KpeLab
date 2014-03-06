@@ -14,6 +14,7 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import java.util.ArrayList;
 import java.util.List;
 import hr.irb.zel.kpelab.util.Stemmer;
+import java.io.PrintStream;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -119,21 +120,22 @@ public class PhraseHelper {
     }
 
     public static void printPhraseSet(List<Phrase> phrases, int phrasesPerRow) {
+        printPhraseSet(System.out, phrases, phrasesPerRow);
+    }
+        
+    // if phrasesPerRow == -1, print all phrases in the same row
+    public static void printPhraseSet(PrintStream pstream, List<Phrase> phrases, int phrasesPerRow) {
         int ppr = 0;
         for (int i = 0; i < phrases.size(); ++i) {
             Phrase ph = phrases.get(i);
-            System.out.print(ph + " ; ");
+            pstream.print(ph + " ; ");
             if (++ppr == phrasesPerRow) {
                 ppr = 0;
-                if (i == phrases.size() - 1) {
-                    System.out.println();
-                } else {
-                    System.out.println();
-                }
+                pstream.println();                
             }
         }
-        if (ppr > 0) {
-            System.out.println();
+        if (ppr > 0 || phrasesPerRow == -1) {
+            pstream.println();
         }
     }
     

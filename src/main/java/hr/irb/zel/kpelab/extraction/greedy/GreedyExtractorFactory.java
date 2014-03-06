@@ -7,6 +7,7 @@ import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.MaxPhraseSetVectorizer;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.SumPhraseSetVectorizer;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
+import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
@@ -211,9 +212,11 @@ public class GreedyExtractorFactory {
         else throw new UnsupportedOperationException(); 
         
         // phrase extractor
+//        IPhraseExtractor phext = new FirstOccurenceExtractor(new PosRegexPhraseExtractor(
+//                new PosExtractorConfig(Components.OPEN_NLP, cform)), 0.2);    
         IPhraseExtractor phext = new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, cform));    
-        
+                
         // word to vector mapping
         IWordToVectorMap wvm;
         if (vec == Vec.LSI) {
@@ -236,7 +239,7 @@ public class GreedyExtractorFactory {
         // document vectorization
         IDocumentVectorizer dvec;
         if (doc == DocAgg.TFIDF_SUM || doc == DocAgg.TFIDF_MAX) {   
-            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+            TermDocumentFrequency tdf = DfFactory.loadDfHulthStemOpenNlp();
             Method m; // aggregation method
             if (doc == DocAgg.TFIDF_SUM) m = Method.SUM; else m = Method.MAX;
             dvec = new TfIdfVectorizer(compWvm, cform, tdf, m);

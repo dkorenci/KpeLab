@@ -103,16 +103,25 @@ public class DocumentReaderHulth {
         String[] phraseTokens = phraseStr.split(";");
         for (String tok : phraseTokens) {
             Phrase phrase = new Phrase();            
-            List<TokenCanonic> toklemmas = 
-                    PhraseHelper.getCanonicForms(tok, canonic);
-            List<String> tokens = new ArrayList<String>();
-            List<String> lemmas = new ArrayList<String>();
-            for (TokenCanonic tl : toklemmas) {
-                tokens.add(tl.token);
-                lemmas.add(tl.canonic);
+            List<TokenCanonic> tokenCannonic;
+            if (canonic == CanonicForm.LEMMA) {
+                    tokenCannonic = PhraseHelper.getCanonicForms(tok, canonic);
             }
+            else if (canonic == CanonicForm.STEM) {
+                    tokenCannonic = PhraseHelper.stemWords(tok);
+            }
+            else throw new UnsupportedOperationException();
+            
+            List<String> tokens = new ArrayList<String>();
+            List<String> ctokens = new ArrayList<String>();
+            for (TokenCanonic tl : tokenCannonic) {
+                System.out.print(tl.canonic+";");
+                tokens.add(tl.token);
+                ctokens.add(tl.canonic);
+            }
+            System.out.println();
             phrase.setTokens(tokens);
-            phrase.setCanonicTokens(lemmas);            
+            phrase.setCanonicTokens(ctokens);            
             phrase.setFrequency(-1);
             phrase.setFrequency(-1);            
             phrases.add(phrase);

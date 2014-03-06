@@ -35,9 +35,9 @@ public class F1Evaluator {
         for (KpeDocument doc : documents) {                
             F1Metric docResult = null;
             try {
-                //System.out.print("extracting for: " + doc.getId() + " ...");
+                System.out.print("extracting for: " + doc.getId() + " ...");
                 docResult = evaluateDocument(doc);
-                //System.out.println("done");
+                System.out.println("done: " + docResult);
             }
             catch (Exception e) {
                 Exception newe = new Exception("document: " + doc.getId(), e);    

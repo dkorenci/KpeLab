@@ -45,6 +45,8 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
+import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
+import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.util.REngineManager;
 import hr.irb.zel.kpelab.util.Utils;
@@ -83,11 +85,54 @@ public class KpeRunner {
         //esaGraph();
                 
         //pageRankTests();                        
-        develTests();               
+                      
+                    
+//        SemevalCorpusExperiments.posRegexCoverage(Components.OPEN_NLP, 
+//                SolutionPhraseSet.READER);
 
+        //semevalCoverage();
+        //develTest();
+        //DfFactory.createDfHulthStemOpenNlp();
+        //HulthCorpusExperiments.greedyCorpus(10);
+        //testCandidates();    
+        pageRankTests();
+        
         end(); // finalize environment
     }
-
+    
+    private static void semevalCoverage() throws Exception {
+        IPhraseExtractor extr = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+        double [] perc = { 0.1, 0.2, 0.3 };
+        SolutionPhraseSet solPhSet = SolutionPhraseSet.READER;
+        for (double p : perc) {
+            IPhraseExtractor filter = new FirstOccurenceExtractor(extr, p);
+            System.out.println("*** percentage: " + p);
+            SemevalCorpusExperiments.testCoverage(filter, solPhSet);
+        }        
+    }
+    
+    // tests extraction of candidates
+    private static void testCandidates() throws Exception {
+        IPhraseExtractor extr = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+        List<KpeDocument> docs = CorpusSemeval.getDataset("devel", SolutionPhraseSet.AUTHOR);
+//        List<KpeDocument> docs = new ArrayList<KpeDocument>();
+//        docs.add(CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR));
+        for (KpeDocument doc : docs) {
+            BufferedWriter w = new BufferedWriter(
+                    new FileWriter(KpeConfig.getProperty("devel.tests")+doc.getId()+".cand.txt"));
+            List<Phrase> phrases = extr.extractPhrases(doc.getText());            
+            for (Phrase ph : phrases) {
+                w.write(Utils.fixw(Integer.toString(ph.getFirstOccurence()),6)); 
+                w.write(Utils.fixw(Integer.toString(ph.getFrequency()),6)); 
+                w.write(" " + ph.toString() + " ; " + ph.canonicForm());
+                w.write("\n");
+            }
+            w.close();
+        }         
+    }
+    
     // 
     private static void pageRankTests() throws Exception {
         IWordToVectorMap wvm = WordVectorMapFactory.getESAVectors();
@@ -98,22 +143,25 @@ public class KpeRunner {
         CanonicForm cf = CanonicForm.STEM;
         TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
         TermPageRankVectorizer pageRank = new TermPageRankVectorizer(wvm, wvmSim, 
-                vSim, cf, tdf, Method.SUM, 0.7, SimMod.SQRT);        
-        //KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);
-        //List<KpeDocument> docs = CorpusSemeval.getDataset("devel", SolutionPhraseSet.AUTHOR);
-        List<KpeDocument> docs = new ArrayList<KpeDocument>();
-        docs.add(CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR));
-        for (KpeDocument doc : docs) {
-            BufferedWriter w = new BufferedWriter(
-                    new FileWriter(KpeConfig.getProperty("devel.tests")+doc.getId()+".prank.txt"));
-            List<WeightedTerm> prank = pageRank.getRanks(doc.getText());
-            Collections.sort(prank);
-            for (WeightedTerm t : prank) {
-                w.write(Utils.fixw(t.term, 15) + Utils.fixw(Utils.doubleStr(t.weight, 10),15)); 
-                w.write("\n");
-            }
-            w.close();
-        }        
+                vSim, cf, tdf, Method.SUM, 0.85, SimMod.NONE);        
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);
+        System.out.println(pageRank.getId());
+        pageRank.print(doc.getText());
+                
+//        List<KpeDocument> docs = new ArrayList<KpeDocument>();
+//        List<KpeDocument> docs = CorpusSemeval.getDataset("devel", SolutionPhraseSet.AUTHOR);
+//        docs.add(CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR));        
+//        for (KpeDocument doc : docs) {            
+//            BufferedWriter w = new BufferedWriter(
+//                    new FileWriter(KpeConfig.getProperty("devel.tests")+doc.getId()+".prank.txt"));
+//            List<WeightedTerm> prank = pageRank.getRanks(doc.getText());
+//            Collections.sort(prank);
+//            for (WeightedTerm t : prank) {
+//                w.write(Utils.fixw(t.term, 15) + Utils.fixw(Utils.doubleStr(t.weight, 10),15)); 
+//                w.write("\n");
+//            }
+//            w.close();
+//        }        
     }
     
     private static void esaGraph() throws Exception {
@@ -129,13 +177,14 @@ public class KpeRunner {
     // run devel tests on a single extractor
     private static void develTest() throws Exception {
         DevelTester dt = new DevelTester(GreedyExtractorFactory.create(
-                Vec.ESA, true, VectorMod.PRUNE, DocAgg.PRANK, 
-                PageRank.SIMCOS, 0.7, SimMod.NONE ,Method.SUM, PhAgg.UW_SUM, VecQ.COS));            
+                Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+                null, -1, null , null, PhAgg.UW_SUM, VecQ.COS));            
         dt.init();
 //        dt.testPhraseSets("basic", 5);
 //        dt.testPhraseSets("mixed", 5);
 //        dt.testPhraseSets("single", 5);
-        dt.runOnSample(5, 10);        
+//        dt.runOnSample(5, 10);        
+        dt.runOnTrainSubsample(10);
         dt.close();
     }
     

@@ -117,12 +117,12 @@ public class TermPageRankVectorizer implements IDocumentVectorizer {
         if (tdf != null) Collections.sort(tfidfTerms);
         Collections.sort(prTerms);        
         for (int i = 0; i < N; ++i) {
-//            System.out.print(Utils.fixw(fTerms.get(i).term, 15) +  
-//                    Utils.fixw(Utils.doubleStr(fTerms.get(i).weight),10));
-//            if (tdf != null) {
-//            System.out.print(Utils.fixw(tfidfTerms.get(i).term, 15) +  
-//                    Utils.fixw(Utils.doubleStr(tfidfTerms.get(i).weight),10));
-//            }
+            System.out.print(Utils.fixw(fTerms.get(i).term, 15) +  
+                    Utils.fixw(Utils.doubleStr(fTerms.get(i).weight),10));
+            if (tdf != null) {
+            System.out.print(Utils.fixw(tfidfTerms.get(i).term, 15) +  
+                    Utils.fixw(Utils.doubleStr(tfidfTerms.get(i).weight),10));
+            }
             System.out.print(Utils.fixw(prTerms.get(i).term, 15) +  
                     Utils.fixw(Utils.doubleStr(prTerms.get(i).weight, 10),15)); 
             System.out.println();

@@ -27,12 +27,17 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.DocAgg;
+import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PageRank;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
+import hr.irb.zel.kpelab.util.VectorAggregator;
+import hr.irb.zel.kpelab.util.VectorAggregator.Method;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
+import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer;
+import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer.SimMod;
 import java.util.List;
 
 /** Experiments with keyphrase extraction. */
@@ -139,11 +144,11 @@ public class HulthCorpusExperiments {
     public static void greedyCorpus(int K) throws Exception {
         GreedyExtractorConfig config = 
             GreedyExtractorFactory.create(
-                    Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_MAX, 
-                    null, -1, null , null, PhAgg.UW_MAX, VecQ.COS);
+                    Vec.ESA, false, VectorMod.PRUNE, DocAgg.PRANK, 
+                    PageRank.SIMCOS, 0.85, SimMod.EXP, Method.SUM, PhAgg.UW_SUM, VecQ.COS);
         IKpextractor extr = new GreedyExtractor(K, config);               
         System.out.print("reading documents... ");
-        List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, CanonicForm.STEM);    
+        List<KpeDocument> docs = CorpusHulth.getDocuments("Training", true, CanonicForm.STEM);    
         System.out.println("done.");
         F1Evaluator eval = new F1Evaluator(extr, PhEquality.CANONIC);
         F1Metric metric = eval.evaluateDocuments(docs);

@@ -58,6 +58,7 @@ public class PhraseHelper {
         return result;
     }
     
+    // stem word using english porter2 stemmer (from snowball library)
     public static String stemWord(String word) {
         if (word.matches(".*\\s.*")) throw 
                 new IllegalArgumentException("argument is not a single word: " + word);        
@@ -68,6 +69,19 @@ public class PhraseHelper {
         // slow way of doing it with jcas
 //        List<TokenCanonic> c = getCanonicForms(word, CanonicForm.STEM);
 //        return c.get(0).canonic;
+    }
+    
+    // stem whitespace-separated list of words
+    public static List<TokenCanonic> stemWords(String wordList) {
+        List<TokenCanonic> result = new ArrayList<TokenCanonic>();        
+        String [] tokens = wordList.split("\\s+");
+        for (String t : tokens) {
+            if (t.trim().equals("")) continue;
+            TokenCanonic tc = new TokenCanonic(); 
+            tc.token = t; tc.canonic = stemWord(t);
+            result.add(tc);
+        }
+        return result;
     }
     
     // stem using standard (older) version of the porter stemmer

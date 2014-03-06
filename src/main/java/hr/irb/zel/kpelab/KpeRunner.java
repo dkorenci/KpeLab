@@ -95,7 +95,8 @@ public class KpeRunner {
         //DfFactory.createDfHulthStemOpenNlp();
         //HulthCorpusExperiments.greedyCorpus(10);
         //testCandidates();    
-        pageRankTests();
+        //pageRankTests();
+        verboseGreedy();
         
         end(); // finalize environment
     }
@@ -131,6 +132,17 @@ public class KpeRunner {
             }
             w.close();
         }         
+    }
+    
+    private static void verboseGreedy() throws Exception {
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.COBINED);        
+        GreedyExtractorConfig conf = GreedyExtractorFactory.
+                create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+                    null, 0, null, null, PhAgg.UW_MAX, VecQ.EBE);        
+        GreedyExtractor extr = new GreedyExtractor(10, conf);        
+        String outFolder = KpeConfig.getProperty("devel.tests") + "measure/";
+        extr.makeVerbose(outFolder);
+        extr.extract(doc);        
     }
     
     // 

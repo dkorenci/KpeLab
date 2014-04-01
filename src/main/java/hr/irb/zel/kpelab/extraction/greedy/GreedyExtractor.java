@@ -56,16 +56,21 @@ public class GreedyExtractor implements IKpextractor {
     }
     
     public List<Phrase> extract(KpeDocument doc) throws Exception {
-        document = doc;
-        c.adaptToDocument(doc.getText());
-        documentVector = c.docVectorizer.vectorize(doc.getText());
-        candidates = c.phraseExtractor.extractPhrases(doc.getText());     
-        System.out.println("numCandidates: "+candidates.size());
-        removeNullCandidates();
+        prepareForExtraction(doc);
         if (verbose) printRankedCandidates();
         constructPhraseSet();
         return phrases;
     }   
+    
+    // create necessary data structures, it is public to be used
+    // before printing ranked phrases
+    public void prepareForExtraction(KpeDocument doc) throws Exception {
+        document = doc;
+        c.adaptToDocument(doc.getText());
+        documentVector = c.docVectorizer.vectorize(doc.getText());
+        candidates = c.phraseExtractor.extractPhrases(doc.getText());             
+        removeNullCandidates();        
+    }
     
     private void constructPhraseSet() throws Exception {
         PrintStream pr = null;
@@ -108,8 +113,12 @@ public class GreedyExtractor implements IKpextractor {
     }
 
     private void printRankedCandidates() throws Exception {
-        BufferedWriter w = new BufferedWriter(
-                new FileWriter(outputFolder+document.getId()+".cand.rank.txt"));
+        PrintStream out = new PrintStream(outputFolder+document.getId()+".cand.rank.txt");             
+        printRankedCandidates(out);
+        out.close();
+    }   
+    
+    public void printRankedCandidates(PrintStream out) throws Exception {       
         c.phVectorizer.clear();
         List<Phrase> cand = new ArrayList<Phrase>();
         List<Double> cqual = new ArrayList<Double>();
@@ -119,15 +128,12 @@ public class GreedyExtractor implements IKpextractor {
             double phQuality = c.phraseSetQuality.compare(phVec, documentVector);
             cand.add(ph); cqual.add(phQuality);
             c.phVectorizer.removeLastAdded();
-        }
-        
+        }        
         Utils.sort(cand, cqual, true);
         for (int i = 0; i < cand.size(); ++i) {
-            w.write(Utils.fixw(Utils.doubleStr(cqual.get(i)), 10) + " ");
-            w.write(cand.get(i).canonicForm() + " ; " + cand.get(i).toString());
-            w.write("\n");            
-        }
-        w.close();
+            out.print(Utils.fixw(Utils.doubleStr(cqual.get(i)), 10) + " ");
+            out.println(cand.get(i).canonicForm() + " ; " + cand.get(i).toString());            
+        }        
     }
     
     // remove from set of candidates phrases that cannot be vectorized

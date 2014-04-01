@@ -45,6 +45,7 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
+import hr.irb.zel.kpelab.inspector.KpeInspector;
 import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.term.WeightedTerm;
@@ -96,10 +97,20 @@ public class KpeRunner {
         //HulthCorpusExperiments.greedyCorpus(10);
         //testCandidates();    
         //pageRankTests();
-        verboseGreedy();
+        //verboseGreedy();
+        inspect();
         
         end(); // finalize environment
     }
+    
+    private static void inspect() throws Exception {
+        KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.COBINED);        
+        GreedyExtractorConfig conf = GreedyExtractorFactory.
+                create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+                    null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);        
+        KpeInspector inspector = new KpeInspector(conf);
+        inspector.inspect(doc);
+    }    
     
     private static void semevalCoverage() throws Exception {
         IPhraseExtractor extr = new PosRegexPhraseExtractor(

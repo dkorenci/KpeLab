@@ -57,6 +57,24 @@ public class Phrase implements Comparable<Phrase>, Serializable {
         return cthis.compareTo(cph);
     }    
     
+    // return true if this is real subphrase of ph
+    public boolean isSubphrase(Phrase ph) {
+        if (ph.ctokens.size() <= this.ctokens.size()) return false;        
+        List<String> subtok = this.ctokens; int SS = subtok.size();
+        List<String> tok = ph.ctokens; int S = tok.size();
+        for (int i = 0; i < S-SS+1; ++i) {
+            boolean match = true; // match at position i in tok
+            for (int j = 0; j < SS; ++j) {
+                if (subtok.get(j).equals(tok.get(i+j)) == false) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) return true;
+        }
+        return false;
+    }
+    
     // ****************** getters and setters ***********************
     
     public int getFirstOccurence() {

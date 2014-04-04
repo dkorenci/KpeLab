@@ -47,9 +47,9 @@ public class SemevalCorpusExperiments {
                 CorpusSemeval.getDocument("train/H-37" , SolutionPhraseSet.COBINED);
         //PosTaggingAnalyser.analyseDocument(doc, config);
         PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(config);
-        PhraseHelper.printPhraseSet(extractor.extractPhrases(doc.getText()), 4);
+        PhraseHelper.printPhraseSet(extractor.extractPhrases(doc.getText()), 4, false);
         System.out.println("*** solution keyphrases (combined) ***");
-        PhraseHelper.printPhraseSet(doc.getKeyphrases(), 4);
+        PhraseHelper.printPhraseSet(doc.getKeyphrases(), 4, false);
     }        
 
     public static void singleDocExtraction() throws Exception {                                  
@@ -75,9 +75,9 @@ public class SemevalCorpusExperiments {
         System.out.println(metric);
         
         System.out.println("---- soultion");
-        PhraseHelper.printPhraseSet(solution, 7);
+        PhraseHelper.printPhraseSet(solution, 7, false);
         System.out.println("---- result");
-        PhraseHelper.printPhraseSet(result, 7);
+        PhraseHelper.printPhraseSet(result, 7, false);
         
     }      
 
@@ -94,9 +94,9 @@ public class SemevalCorpusExperiments {
         System.out.println(metric);
         
         System.out.println("---- soultion");
-        PhraseHelper.printPhraseSet(solution, 7);
+        PhraseHelper.printPhraseSet(solution, 7, false);
         System.out.println("---- result");
-        PhraseHelper.printPhraseSet(result, 7);
+        PhraseHelper.printPhraseSet(result, 7, false);
         
     }      
     
@@ -116,9 +116,9 @@ public class SemevalCorpusExperiments {
         System.out.println(metric);
         
         System.out.println("---- soultion");
-        PhraseHelper.printPhraseSet(solution, 7);
+        PhraseHelper.printPhraseSet(solution, 7, false);
         System.out.println("---- result");
-        PhraseHelper.printPhraseSet(result, 7);        
+        PhraseHelper.printPhraseSet(result, 7, false);        
     }  
     
     // test how many correct phrases (prom solution set phset) are covered 
@@ -159,9 +159,9 @@ public class SemevalCorpusExperiments {
         System.out.println(metric);
         
         System.out.println("---- soultion");
-        PhraseHelper.printPhraseSet(solution, 7);
+        PhraseHelper.printPhraseSet(solution, 7, false);
         System.out.println("---- result");
-        PhraseHelper.printPhraseSet(result, 7);        
+        PhraseHelper.printPhraseSet(result, 7, false);        
     }     
 
     // evaluate performance of Greedy Extractor on a single subset of semeval documents

@@ -36,6 +36,7 @@ import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
+import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
@@ -45,6 +46,7 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
+import hr.irb.zel.kpelab.extraction.ranking.KpMinerExtractor;
 import hr.irb.zel.kpelab.inspector.KpeInspector;
 import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
@@ -105,11 +107,17 @@ public class KpeRunner {
     
     private static void inspect() throws Exception {
         KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.COBINED);        
-        GreedyExtractorConfig conf = GreedyExtractorFactory.
-                create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
-                    null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);        
-        KpeInspector inspector = new KpeInspector(conf);
-        inspector.inspect(doc);
+//        GreedyExtractorConfig conf = GreedyExtractorFactory.
+//                create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+//                    null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);        
+        KpeInspector inspector = new KpeInspector(doc);
+        IPhraseExtractor extr = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));        
+        IKpextractor kpextr = new KpMinerExtractor(extr, 
+                DfFactory.loadDfSemevalStemOpenNlp(), 10);
+        inspector.extractedPhrases(kpextr);
+        //inspector.phrasesByFrequency(extr);
+        //inspector.phrasesBySimilarity(conf);        
     }    
     
     private static void semevalCoverage() throws Exception {
@@ -413,9 +421,9 @@ public class KpeRunner {
         List<Phrase> phrases = extractor.extractPhrases(doc.getText());
         List<Phrase> solution = doc.getKeyphrases();
         System.out.println("candidate phrases: ");
-        PhraseHelper.printPhraseSet(phrases, 5);
+        PhraseHelper.printPhraseSet(phrases, 5, false);
         System.out.println("solution phrases: ");
-        PhraseHelper.printPhraseSet(solution, 5);        
+        PhraseHelper.printPhraseSet(solution, 5, false);        
     }
     
      public static void testTfIdf() throws Exception {                  

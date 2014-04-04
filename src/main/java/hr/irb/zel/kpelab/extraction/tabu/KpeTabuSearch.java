@@ -136,12 +136,12 @@ public class KpeTabuSearch implements IKpextractor {
 
     private void printDebugData(double optQual, Queue<Phrase> insertTabu, Queue<Phrase> removeTabu) {
         System.out.println("insert tabu: ");
-        PhraseHelper.printPhraseSet((List<Phrase>)insertTabu, 7);
+        PhraseHelper.printPhraseSet((List<Phrase>)insertTabu, 7, false);
         System.out.println("remove tabu: ");
-        PhraseHelper.printPhraseSet((List<Phrase>)removeTabu, 7);        
+        PhraseHelper.printPhraseSet((List<Phrase>)removeTabu, 7, false);        
         
         System.out.println("optimal solution for this loop: ");
-        PhraseHelper.printPhraseSet(searchSet.getPhrases(), 7);
+        PhraseHelper.printPhraseSet(searchSet.getPhrases(), 7, false);
         System.out.println("optimal value: " + optQual);
         searchSet.printDebugData();        
     }

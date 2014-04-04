@@ -239,7 +239,7 @@ public class GreedyExtractorFactory {
         // document vectorization
         IDocumentVectorizer dvec;
         if (doc == DocAgg.TFIDF_SUM || doc == DocAgg.TFIDF_MAX) {   
-            TermDocumentFrequency tdf = DfFactory.loadDfHulthStemOpenNlp();
+            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
             Method m; // aggregation method
             if (doc == DocAgg.TFIDF_SUM) m = Method.SUM; else m = Method.MAX;
             dvec = new TfIdfVectorizer(compWvm, cform, tdf, m);

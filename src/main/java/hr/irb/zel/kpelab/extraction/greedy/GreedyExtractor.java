@@ -1,27 +1,16 @@
 package hr.irb.zel.kpelab.extraction.greedy;
 
-import edu.stanford.nlp.io.PrintFile;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
-import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
-import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
-import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
-import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.util.Utils;
 import hr.irb.zel.kpelab.vectors.IRealVector;
-import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
-import hr.irb.zel.kpelab.vectors.input.TermSetPruneFilter;
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.uima.UIMAException;
-import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Generic greedy extractor.
@@ -104,7 +93,7 @@ public class GreedyExtractor implements IKpextractor {
             }            
             if (verbose) { 
                 pr.println("optimum quality: " + Utils.doubleStr(optQual));
-                PhraseHelper.printPhraseSet(pr, phrases, phraseSetSize);                
+                PhraseHelper.printPhraseSet(pr, phrases, phraseSetSize, false);                
             }
             //System.out.println("*******************************************");
         }

@@ -119,16 +119,18 @@ public class PhraseHelper {
         }
     }
 
-    public static void printPhraseSet(List<Phrase> phrases, int phrasesPerRow) {
-        printPhraseSet(System.out, phrases, phrasesPerRow);
+    public static void printPhraseSet(List<Phrase> phrases, int phrasesPerRow, boolean canonic) {
+        printPhraseSet(System.out, phrases, phrasesPerRow, canonic);
     }
         
     // if phrasesPerRow == -1, print all phrases in the same row
-    public static void printPhraseSet(PrintStream pstream, List<Phrase> phrases, int phrasesPerRow) {
+    public static void printPhraseSet(PrintStream pstream, List<Phrase> phrases, 
+            int phrasesPerRow, boolean canonic) {
         int ppr = 0;
         for (int i = 0; i < phrases.size(); ++i) {
             Phrase ph = phrases.get(i);
-            pstream.print(ph + " ; ");
+            String phstr = canonic ? ph.canonicForm() : ph.toString();
+            pstream.print(phstr + " ; ");
             if (++ppr == phrasesPerRow) {
                 ppr = 0;
                 pstream.println();                

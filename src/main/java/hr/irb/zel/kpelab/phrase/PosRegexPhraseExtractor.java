@@ -9,6 +9,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.N;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.util.Utils;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
@@ -53,6 +54,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         this.text = text;        
         preprocess();        
         extract();
+        removeSubphrases();        
         return phrases;
     }
     
@@ -63,7 +65,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     
     private List<Phrase> phrases;       
     
-    private static final int MAX_PHRASE_LENGTH = 3;
+    private static final int MAX_PHRASE_LENGTH = 4;
 
     private void preprocess() throws UIMAException {
         jCas = JCasFactory.createJCas();
@@ -109,7 +111,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
                 }
                 else if (isAdj) {
                     if (nouns) { 
-                        processPhrase(tokens, npSentStart, i-1, npDocStart); // end of phrase
+                        processSubphrases(tokens, npSentStart, i-1, npDocStart); // end of phrase
                         // start new phrase (adjective part)
                         nouns = false; adjs = true; 
                         npSentStart = i; npDocStart = tokenCnt;
@@ -119,7 +121,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
                     }
                 }
                 else {
-                    if (nouns) processPhrase(tokens, npSentStart, i-1, npDocStart);
+                    if (nouns) processSubphrases(tokens, npSentStart, i-1, npDocStart);
                     nouns = false; adjs = false;
                 }                                
             }            
@@ -131,6 +133,26 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         return !Utils.isWord(txt) || txt.length() <= 1;
     }    
     
+    // process all valid subphrases Adj*N+ sequences shorter than MAX_PHRASE_LENGTH
+    private void processSubphrases(List<Token> sentence, int start, int end, int docStart) {
+        // calc index of first noun
+        int firstNoun = -1;
+        for (int i = start; i <= end; ++i) {
+            Token t = sentence.get(i);
+            if (isNoun(t)) { firstNoun = i; break; }
+        }
+        assert(firstNoun != -1);
+        // find valid subphrases (as [i,j] token ranges)
+        for (int i = start; i <= end; ++i) {
+            for (int j = i; j <= end; ++j) {
+                if (j >= firstNoun && j-i+1 <= MAX_PHRASE_LENGTH) {
+                    processPhrase(sentence, i, j, docStart);
+                }
+            }
+        }
+    }
+    
+    // form phrase from sentence token coordinates, add to phrase register
     private void processPhrase(List<Token> sentence, int start, int end, int docStart) {
         Phrase phrase = new Phrase();
         phrase.setFirstOccurence(docStart);
@@ -169,10 +191,32 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         for (Phrase ph : phrases) {
             if (ph.equals(newPhrase)) {
                 ph.setFrequency(ph.getFrequency() + 1);
+                //System.out.println(ph + " new freq: " + ph.getFrequency());
                 return;
             }
         }
         phrases.add(newPhrase);
+        //System.out.println(newPhrase);
+    }
+    
+    // remove subphrases that occur only as part of a superphrase
+    private void removeSubphrases() {        
+        Iterator<Phrase> it = phrases.iterator();
+        while (it.hasNext()) {
+            Phrase ph = it.next();
+            boolean remove = false;
+            // remove phrase if there is a superphrase with equal frequency
+            for (Phrase phr : phrases) {
+                if (ph.isSubphrase(phr)) {
+                    //assert(ph.getFrequency() >= phr.getFrequency());                    
+                    if (ph.getFrequency() == phr.getFrequency()) {
+                        remove = true;
+                        break;
+                    }                    
+                }
+            }
+            if (remove) it.remove();
+        }
     }
     
     private void print() {

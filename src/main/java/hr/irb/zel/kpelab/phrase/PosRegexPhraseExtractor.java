@@ -124,7 +124,8 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
                     if (nouns) processSubphrases(tokens, npSentStart, i-1, npDocStart);
                     nouns = false; adjs = false;
                 }                                
-            }            
+            }
+            if (nouns) processSubphrases(tokens, npSentStart, tokens.size()-1, npDocStart);
         }
     }
 

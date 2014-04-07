@@ -17,7 +17,7 @@ public class AllCandidatesExtractor implements IKpextractor {
     
     public AllCandidatesExtractor(IPhraseExtractor ext) { extractor = ext; }
     
-    public String getId() { return "allCand"; }
+    public String getId() { return "allCand"+extractor.getId(); }
     
     public List<Phrase> extract(KpeDocument doc) throws Exception {
         return extractor.extractPhrases(doc.getText());

@@ -11,6 +11,7 @@ import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.phrase.SubphraseRemover;
 import hr.irb.zel.kpelab.util.Utils;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +28,8 @@ public class RankerExtractor implements IKpextractor, IPhraseScore  {
     public enum Mean { ARITHMETIC, GEOMETRIC, HARMONIC }
     
     public RankerExtractor(IPhraseExtractor extr, TermDocumentFrequency df, int n) {
-        phext = extr; tdf = df; N = n;
+        phext = new SubphraseRemover(extr); 
+        tdf = df; N = n;
     }
 
     public String getId() { return "ranker"; }    

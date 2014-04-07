@@ -16,6 +16,7 @@ import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
+import hr.irb.zel.kpelab.phrase.SubphraseRemover;
 import hr.irb.zel.kpelab.util.VectorAggregator;
 import hr.irb.zel.kpelab.util.VectorAggregator.Method;
 import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
@@ -221,8 +222,8 @@ public class GreedyExtractorFactory {
         // phrase extractor
 //        IPhraseExtractor phext = new FirstOccurenceExtractor(new PosRegexPhraseExtractor(
 //                new PosExtractorConfig(Components.OPEN_NLP, cform)), 0.2);    
-        IPhraseExtractor phext = new PosRegexPhraseExtractor(
-                new PosExtractorConfig(Components.OPEN_NLP, cform));    
+        IPhraseExtractor phext =  new SubphraseRemover(new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, cform)));    
                 
         // word to vector mapping
         IWordToVectorMap wvm;

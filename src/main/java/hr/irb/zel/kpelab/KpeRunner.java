@@ -107,8 +107,8 @@ public class KpeRunner {
         //inspect();        
         //rankerExperiment();
         //kpminerGrid();
-        wcoverageExperiment();
-        //rankerExperiment();
+        //wcoverageExperiment();
+        rankerExperiment();
         //phsumExperiment();
         
         end(); // finalize environment
@@ -133,9 +133,9 @@ public class KpeRunner {
                     null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);   
         IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);         
         
-        IKpextractor extr = new GreedyExtractor(15, conf);
+//        IKpextractor extr = new GreedyExtractor(15, conf);
         
-//        IKpextractor extr = new WGreedyExtractor(15, conf, scr);        
+        IKpextractor extr = new WGreedyExtractor(15, conf, scr);        
         SemevalCorpusExperiments.trainSubsample(extr, 20);
 //        SemevalCorpusExperiments.datasetExperiment("test", extr);
     }    

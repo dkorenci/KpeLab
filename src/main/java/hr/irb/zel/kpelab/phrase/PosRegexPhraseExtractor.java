@@ -54,7 +54,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         this.text = text;        
         preprocess();        
         extract();
-        removeSubphrases();        
+        //removeSubphrases();        
         return phrases;
     }
     
@@ -200,24 +200,24 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     }
     
     // remove subphrases that occur only as part of a superphrase
-    private void removeSubphrases() {        
-        Iterator<Phrase> it = phrases.iterator();
-        while (it.hasNext()) {
-            Phrase ph = it.next();
-            boolean remove = false;
-            // remove phrase if there is a superphrase with equal frequency
-            for (Phrase phr : phrases) {
-                if (ph.isSubphrase(phr)) {
-                    //assert(ph.getFrequency() >= phr.getFrequency());                    
-                    if (ph.getFrequency() == phr.getFrequency()) {
-                        remove = true;
-                        break;
-                    }                    
-                }
-            }
-            if (remove) it.remove();
-        }
-    }
+//    private void removeSubphrases() {        
+//        Iterator<Phrase> it = phrases.iterator();
+//        while (it.hasNext()) {
+//            Phrase ph = it.next();
+//            boolean remove = false;
+//            // remove phrase if there is a superphrase with equal frequency
+//            for (Phrase phr : phrases) {
+//                if (ph.isSubphrase(phr)) {
+//                    //assert(ph.getFrequency() >= phr.getFrequency());                    
+//                    if (ph.getFrequency() == phr.getFrequency()) {
+//                        remove = true;
+//                        break;
+//                    }                    
+//                }
+//            }
+//            if (remove) it.remove();
+//        }
+//    }
     
     private void print() {
         for (Sentence sentence : select(jCas, Sentence.class)) {

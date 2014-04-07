@@ -5,6 +5,7 @@ import hr.irb.zel.kpelab.df.TermDocumentFrequency;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.phrase.SubphraseRemover;
 import hr.irb.zel.kpelab.util.Utils;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,7 +25,7 @@ public class KpMinerExtractor implements IKpextractor {
     
     public KpMinerExtractor(IPhraseExtractor extr, TermDocumentFrequency df, int n, 
             double ss, double tt) {
-        phext = extr; tdf = df; N = n;
+        phext = new SubphraseRemover(extr); tdf = df; N = n;
         s = ss; t = tt;
     }
 

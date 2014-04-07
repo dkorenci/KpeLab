@@ -7,6 +7,7 @@ import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.util.Utils;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -17,39 +18,50 @@ public class KpMinerExtractor implements IKpextractor {
     IPhraseExtractor phext;
     TermDocumentFrequency tdf;
     double boost; // boosting factor (idf approximation for phrases)
-    static final double s = 2.3, t = 3; // parameters for calculating boost
+    double s, t; //s = 2.3, t = 3; // parameters for calculating boost
     List<Phrase> phrases;
     int N; // number of phrases to be extracted
     
-    public KpMinerExtractor(IPhraseExtractor extr, TermDocumentFrequency df, int n) {
+    public KpMinerExtractor(IPhraseExtractor extr, TermDocumentFrequency df, int n, 
+            double ss, double tt) {
         phext = extr; tdf = df; N = n;
+        s = ss; t = tt;
     }
 
     public String getId() { return "kpminer"; }    
     
     public List<Phrase> extract(KpeDocument doc) throws Exception {
         phrases = phext.extractPhrases(doc.getText());
+        filterPhrases();
         calcBoostingFactor();
         sortPhrases();
-        rerankPhrases();
-        return phrases.subList(0, 100);
+        rerankPhrases();        
+        int m = N; if (m > phrases.size()) m = phrases.size();
+        return phrases.subList(0, m);
     }
 
+    // filter out phrases witf frequency < 3
+    private void filterPhrases() {
+        Iterator<Phrase> it = phrases.iterator();
+        while (it.hasNext()) {
+            Phrase ph = it.next();
+            if (ph.getFrequency() < 3 || ph.getFirstOccurence() > 400) 
+                it.remove();
+        }
+    }
+    
     private void calcBoostingFactor() {
         double numPhrases = phrases.size();
         double numCompound = 0; // phrases with > 1 words
         for (Phrase ph : phrases) {
             if (ph.getCanonicTokens().size() > 1) numCompound++;
         }
-        System.out.println("num phrases: " + numPhrases);
-        System.out.println("num compound: " + numCompound);
         if (numCompound != 0) {
             boost = numPhrases/(numCompound*s);
             if (boost > t) boost = t;
         }
         else boost = 0;
-        boost = t;
-        System.out.println("boost: " + boost);
+        //System.out.println("N: " + numPhrases + " C: " + numCompound);
     }
 
     // sort phrases by measure of keyness
@@ -65,7 +77,9 @@ public class KpMinerExtractor implements IKpextractor {
     private Double calcKeyness(Phrase ph) {
         double k;
         if (ph.getCanonicTokens().size() > 1) {
-            k = ph.getFrequency() * boost;            
+            double idf = tdf.getNumDocuments() / 1.0;
+            idf = Math.log(idf)/Math.log(2); 
+            k = ph.getFrequency() * idf * boost;            
         }
         else {
             String word = ph.getCanonicTokens().get(0);

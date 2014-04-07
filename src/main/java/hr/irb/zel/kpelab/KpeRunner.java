@@ -36,6 +36,7 @@ import hr.irb.zel.kpelab.similarity.word.VectorWordSimilarity;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
+import hr.irb.zel.kpelab.evaluation.F1Metric;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig;
@@ -46,10 +47,13 @@ import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.PhAgg;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.Vec;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.VecQ;
 import static hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorFactory.create;
+import hr.irb.zel.kpelab.extraction.greedy.WGreedyExtractor;
 import hr.irb.zel.kpelab.extraction.ranking.KpMinerExtractor;
+import hr.irb.zel.kpelab.extraction.ranking.RankerExtractor;
 import hr.irb.zel.kpelab.inspector.KpeInspector;
 import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
+import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.util.REngineManager;
 import hr.irb.zel.kpelab.util.Utils;
@@ -100,9 +104,77 @@ public class KpeRunner {
         //testCandidates();    
         //pageRankTests();
         //verboseGreedy();
-        inspect();
+        //inspect();        
+        //rankerExperiment();
+        //kpminerGrid();
+        wcoverageExperiment();
+        //rankerExperiment();
+        //phsumExperiment();
         
         end(); // finalize environment
+    }
+
+    private static void phsumExperiment() throws Exception {
+        GreedyExtractorConfig conf = GreedyExtractorFactory.
+                create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+                    null, 0, null, null, PhAgg.PH_SUM_WEIGHTED, VecQ.COS);   
+        
+        IKpextractor extr = new GreedyExtractor(15, conf);
+        
+        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);                 
+        //IKpextractor extr = new WGreedyExtractor(15, conf, scr);                
+        SemevalCorpusExperiments.trainSubsample(extr, 20);
+        //SemevalCorpusExperiments.datasetExperiment("test", extr);
+    }        
+    
+    private static void wcoverageExperiment() throws Exception {
+        GreedyExtractorConfig conf = GreedyExtractorFactory.
+                create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+                    null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);   
+        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);         
+        
+        IKpextractor extr = new GreedyExtractor(15, conf);
+        
+//        IKpextractor extr = new WGreedyExtractor(15, conf, scr);        
+        SemevalCorpusExperiments.trainSubsample(extr, 20);
+//        SemevalCorpusExperiments.datasetExperiment("test", extr);
+    }    
+    
+    private static void kpminerGrid() throws Exception {
+        double [] ss = { 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1 };
+        double [] tt = { 2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4 };
+
+        IPhraseExtractor extr = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));         
+        
+        double maxf1 = Double.NEGATIVE_INFINITY, maxs = 0, maxt = 0;
+        for (double s : ss) {
+            for (double t : tt) {
+                IKpextractor kpextr = new KpMinerExtractor(extr, 
+                        DfFactory.loadDfSemevalStemOpenNlp(), 15, s, t);    
+        //        IKpextractor kpextr = new RankerExtractor(extr, 
+        //                DfFactory.loadDfSemevalStemOpenNlp(), 15);      
+                System.out.println("s: " + s + " t: " + t);
+                F1Metric m = SemevalCorpusExperiments.trainSubsample(kpextr, 50);                
+                if (m.f1 > maxf1) {
+                    maxf1 = m.f1; maxs = s; maxt = t;
+                }
+            }
+        }
+        
+        System.out.println("max f1: " + maxf1);
+        System.out.println("for s: " + maxs + " t: " + maxt);        
+    }    
+    
+    private static void rankerExperiment() throws Exception {
+        IPhraseExtractor extr = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));        
+//        IKpextractor kpextr = new KpMinerExtractor(extr, 
+//                DfFactory.loadDfSemevalStemOpenNlp(), 15, 0.6, 3);    
+        IKpextractor kpextr = new RankerExtractor(extr, 
+                DfFactory.loadDfSemevalStemOpenNlp(), 15);          
+        SemevalCorpusExperiments.trainSubsample(kpextr, 20);
+        //SemevalCorpusExperiments.datasetExperiment("test", kpextr);
     }
     
     private static void inspect() throws Exception {
@@ -113,11 +185,21 @@ public class KpeRunner {
         KpeInspector inspector = new KpeInspector(doc);
         IPhraseExtractor extr = new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));        
-        IKpextractor kpextr = new KpMinerExtractor(extr, 
-                DfFactory.loadDfSemevalStemOpenNlp(), 10);
+//        IKpextractor kpextr = new KpMinerExtractor(extr, 
+//                DfFactory.loadDfSemevalStemOpenNlp(), 10, 1, 3);
+        IKpextractor kpextr = new RankerExtractor(extr, 
+                DfFactory.loadDfSemevalStemOpenNlp(), 15);    
+        GreedyExtractorConfig conf = GreedyExtractorFactory.
+                create(Vec.ESA, true, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
+                    null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);          
         inspector.extractedPhrases(kpextr);
         //inspector.phrasesByFrequency(extr);
-        //inspector.phrasesBySimilarity(conf);        
+        List<Phrase> kphrases = kpextr.extract(doc);
+        List<Phrase> phrases100 = (new RankerExtractor(extr, 
+                DfFactory.loadDfSemevalStemOpenNlp(), 100)).extract(doc);
+        phrases100.removeAll(kphrases);
+        inspector.coverage(phrases100, conf, 2);
+        inspector.coverage(phrases100, conf, 3);
     }    
     
     private static void semevalCoverage() throws Exception {

@@ -2,6 +2,7 @@ package hr.irb.zel.kpelab.extraction.greedy;
 
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
+import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.util.Utils;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Generic greedy extractor.
  */
-public class GreedyExtractor implements IKpextractor {
+public class WGreedyExtractor implements IKpextractor {
 
     private final int phraseSetSize;   
     private final GreedyExtractorConfig c;
@@ -27,16 +28,17 @@ public class GreedyExtractor implements IKpextractor {
     private boolean verbose; // produce output
     private String outputFolder;
     private KpeDocument document;
+    private IPhraseScore phScr;
     
     /** Initialize with processing components. Comparison must be a 
      * measure of quality of a phrase set for the document, first argument 
      * is a phrase set vector, second is a document vector. */
-    public GreedyExtractor(int K, GreedyExtractorConfig conf) {
-        c = conf; phraseSetSize = K;
+    public WGreedyExtractor(int K, GreedyExtractorConfig conf, IPhraseScore scr) {
+        c = conf; phraseSetSize = K; phScr = scr;
     }
 
     public String getId() {
-        return c.getId();
+        return "w"+c.getId();
     }
     
     public void makeVerbose(String outFolder) {
@@ -67,7 +69,7 @@ public class GreedyExtractor implements IKpextractor {
         Iterator<Phrase> it = candidates.iterator();
         while (it.hasNext()) {
             Phrase ph = it.next();
-            if (ph.getFrequency() < 3 || ph.getFirstOccurence() > 400)
+            if (ph.getFrequency() < 3|| ph.getFirstOccurence() > 400)
                 it.remove();
         }
     }      
@@ -89,7 +91,8 @@ public class GreedyExtractor implements IKpextractor {
             if (!phrases.contains(ph)) {
                 c.phVectorizer.addPhrase(ph);
                 IRealVector phVec = c.phVectorizer.vector();
-                double phQuality = c.phraseSetQuality.compare(phVec, documentVector);
+                double vecSim = c.phraseSetQuality.compare(phVec, documentVector);
+                double phQuality = aggregatePhraseScores(ph) * vecSim;
                 //System.out.println(phQuality);
                 if (phQuality > optQual) {
                     optQual = phQuality;
@@ -112,6 +115,15 @@ public class GreedyExtractor implements IKpextractor {
         if (verbose) pr.close();
     }
 
+    // aggreagtion of scores with ph added to phrases list
+    private double aggregatePhraseScores(Phrase ph) {
+        List<Phrase> phr = new ArrayList<Phrase>(phrases);
+        phr.add(ph);        
+        double[] scores = new double[phr.size()];        
+        for (int i = 0; i < phr.size(); ++i) scores[i] = phScr.score(phr.get(i));
+        return Utils.geometricMean(scores);
+    }
+    
     private void printRankedCandidates() throws Exception {
         PrintStream out = new PrintStream(outputFolder+document.getId()+".cand.rank.txt");             
         printRankedCandidates(out);

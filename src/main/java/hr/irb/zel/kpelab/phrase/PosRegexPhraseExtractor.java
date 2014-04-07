@@ -96,8 +96,8 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
             int npSentStart = 0; // start of the noun phrase relative to sentence
             int npDocStart = 0; // start of the noun phrase relative to document
             for (int i = 0; i < tokens.size(); ++i) {
-                tokenCnt++;
                 Token tok = tokens.get(i);
+                if (!isCorruptToken(tok)) tokenCnt++;                 
                 boolean isNoun = isNoun(tok), isAdj = isAdj(tok);
                 // stop building a phrase is token is corrupt
                 if (isCorruptToken(tok)) { isNoun = false; isAdj = false; }

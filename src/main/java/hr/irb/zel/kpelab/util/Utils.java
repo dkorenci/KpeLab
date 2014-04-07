@@ -95,5 +95,23 @@ public class Utils {
             Collections.reverse(order);
         }
     }
+
+    public static double arithmeticMean(double [] num) {
+        double mean = 0;
+        for (double d : num) mean += d;
+        return mean/num.length;
+    }
+    
+    public static double geometricMean(double [] num) {
+        double mean = 1;
+        for (double d : num) mean *= d;
+        return Math.pow(mean, 1.0/num.length);
+    }
+    
+    public static double harmonicMean(double [] num) {
+        double mean = 0;
+        for (double d : num) mean += 1/d;
+        return num.length / mean;
+    }    
     
 }

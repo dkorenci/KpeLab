@@ -5,10 +5,14 @@ import hr.irb.zel.kpelab.df.TermDocumentFrequency;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractorConfig.VectorMod;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.IPhraseSetVectorizer;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.MaxPhraseSetVectorizer;
+import hr.irb.zel.kpelab.extraction.greedy.phrase.PhSumPhraseSetVectorizer;
 import hr.irb.zel.kpelab.extraction.greedy.phrase.SumPhraseSetVectorizer;
+import hr.irb.zel.kpelab.extraction.greedy.phrase.WSumPhraseSetVectorizer;
+import hr.irb.zel.kpelab.extraction.ranking.RankerExtractor;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
+import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
@@ -194,7 +198,10 @@ public class GreedyExtractorFactory {
     // phrase set to vector aggregation method
     public enum PhAgg { 
         UW_SUM, // sum of vectors of unique words
-        UW_MAX // max of vectors of unique words
+        UW_MAX, // max of vectors of unique words
+        UW_WEIGHTED, // sum of vectors of unique words, weighted with phrase weights
+        PH_SUM, // sum of phrases
+        PH_SUM_WEIGHTED // sum of weighted phrases
     }
     // quality measure that compares phrase set and document vectors
     public enum VecQ { COS, COS_CUT, EBE }
@@ -271,6 +278,17 @@ public class GreedyExtractorFactory {
         }
         else if (ph == PhAgg.UW_MAX) {
             phvec = new MaxPhraseSetVectorizer(compWvm);
+        }
+        else if (ph == PhAgg.UW_WEIGHTED) {
+            IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);
+            phvec = new WSumPhraseSetVectorizer(compWvm, scr);
+        }
+        else if (ph == PhAgg.PH_SUM) {
+            phvec = new PhSumPhraseSetVectorizer(compWvm, null);
+        }
+        else if (ph == PhAgg.PH_SUM_WEIGHTED) {
+            IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);            
+            phvec = new PhSumPhraseSetVectorizer(compWvm, scr);
         }
         else throw new UnsupportedOperationException();
         

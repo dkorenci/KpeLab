@@ -15,6 +15,7 @@ import hr.irb.zel.kpelab.evaluation.F1Metric;
 import hr.irb.zel.kpelab.evaluation.IPhraseEquality;
 import hr.irb.zel.kpelab.evaluation.IPhraseEquality.PhEquality;
 import hr.irb.zel.kpelab.extraction.AllCandidatesExtractor;
+import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.extraction.esa.EsaSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.esa.EsamaxSearchPhraseSet;
 import hr.irb.zel.kpelab.extraction.greedy.GreedyExtractor;
@@ -166,25 +167,38 @@ public class SemevalCorpusExperiments {
 
     // evaluate performance of Greedy Extractor on a single subset of semeval documents
     public static void greedyDataset(String setId, 
-            GreedyExtractorConfig conf, int K) throws Exception {
-        List<KpeDocument> docs = CorpusSemeval.getDataset(setId, SolutionPhraseSet.COBINED);
-        GreedyExtractor greedy = new GreedyExtractor(K, conf);         
-        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
-        F1Metric metric = eval.evaluateDocuments(docs);
-        System.out.println(metric);         
+            GreedyExtractorConfig conf, int K) throws Exception {        
+        GreedyExtractor greedy = new GreedyExtractor(K, conf);    
+        datasetExperiment(setId, greedy);
     }      
     
     // evalueate greedy extractor on a subsample of size S of train
     public static void greedyDatasetTrainSubsample(GreedyExtractorConfig conf, int K, int S) 
             throws Exception {
+        GreedyExtractor greedy = new GreedyExtractor(K, conf);         
+        trainSubsample(greedy, S);
+    }     
+    
+    // evaluate performance of KpeExtractor on a single subset of semeval documents
+    public static void datasetExperiment(String setId, 
+            IKpextractor extractor) throws Exception {
+        List<KpeDocument> docs = CorpusSemeval.getDataset(setId, SolutionPhraseSet.COBINED);       
+        F1Evaluator eval = new F1Evaluator(extractor, PhEquality.SEMEVAL);
+        F1Metric metric = eval.evaluateDocuments(docs);
+        System.out.println(metric);         
+    }      
+    
+    // evaluate KpeExtractor on a subsample of size S of train
+    public static F1Metric trainSubsample(IKpextractor extractor, int S) 
+            throws Exception {
         List<KpeDocument> docs = CorpusSemeval.getDataset("train", SolutionPhraseSet.COBINED);
         List<KpeDocument> sample = Utils.getRandomSubsample(docs, S);
-        for (KpeDocument d : sample) System.out.println(d.getId());
-        GreedyExtractor greedy = new GreedyExtractor(K, conf);         
-        F1Evaluator eval = new F1Evaluator(greedy, PhEquality.SEMEVAL);
+        //for (KpeDocument d : sample) System.out.println(d.getId());       
+        F1Evaluator eval = new F1Evaluator(extractor, PhEquality.SEMEVAL);
         F1Metric metric = eval.evaluateDocuments(sample);
         System.out.println(metric);         
-    }     
+        return metric;
+    }         
     
     public static void printTermFrequencies(String docName) throws Exception {
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);

@@ -23,6 +23,11 @@ public class KpMinerExtractor implements IKpextractor {
     List<Phrase> phrases;
     int N; // number of phrases to be extracted
     
+    // construct with default s and t values
+    public KpMinerExtractor(IPhraseExtractor extr, TermDocumentFrequency df, int n) {
+        this(extr, df, n, 2.3, 3);
+    }
+    
     public KpMinerExtractor(IPhraseExtractor extr, TermDocumentFrequency df, int n, 
             double ss, double tt) {
         phext = new SubphraseRemover(extr); tdf = df; N = n;
@@ -62,7 +67,7 @@ public class KpMinerExtractor implements IKpextractor {
             if (boost > t) boost = t;
         }
         else boost = 0;
-        //System.out.println("N: " + numPhrases + " C: " + numCompound);
+        System.out.println("N: " + numPhrases + " C: " + numCompound);
     }
 
     // sort phrases by measure of keyness

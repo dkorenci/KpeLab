@@ -107,12 +107,15 @@ public class KpeRunner {
         //pageRankTests();
         //verboseGreedy();
         //kpminerGrid();
-        //wcoverageExperiment();
-        //rankerExperiment();
-        //phsumExperiment();
-
-        inspect();        
+        
+        //wcoverageExperiment();        
+        phsumExperiment();
+        //inspect();        
         //rankerExperiment();        
+//        DfFactory.createDfSemevalStemOpenNlpTrainTrial();
+//        DfFactory.createDfSemevalStemOpenNlpAll();
+        
+        //CorpusSemeval.getTest(SolutionPhraseSet.COBINED);
         
         end(); // finalize environment
     }
@@ -120,27 +123,31 @@ public class KpeRunner {
     private static void phsumExperiment() throws Exception {
         GreedyExtractorConfig conf = GreedyExtractorFactory.
                 create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
-                    null, 0, null, null, PhAgg.PH_SUM_WEIGHTED, VecQ.COS);   
+                    null, 0, null, null, PhAgg.PH_SUM, VecQ.COS);   
         
-        IKpextractor extr = new GreedyExtractor(15, conf);
+        //IKpextractor extr = new GreedyExtractor(10, conf);
         
-        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);                 
-        //IKpextractor extr = new WGreedyExtractor(15, conf, scr);                
+        //IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfHulthStemOpenNlp(), 0);                 
+        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlpAll(), 0);                         
+        IKpextractor extr = new WGreedyExtractor(15, conf, scr);                
         SemevalCorpusExperiments.trainSubsample(extr, 20);
         //SemevalCorpusExperiments.datasetExperiment("test", extr);
+        //HulthCorpusExperiments.testCorpus(extr, CanonicForm.STEM);
     }        
     
     private static void wcoverageExperiment() throws Exception {
         GreedyExtractorConfig conf = GreedyExtractorFactory.
                 create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
                     null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);   
-        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);         
+        //IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfHulthStemOpenNlp(), 0); 
+        IPhraseScore scr = new KpMinerExtractor(conf.phraseExtractor, DfFactory.loadDfSemevalStemOpenNlpAll(), 0);
         
 //        IKpextractor extr = new GreedyExtractor(15, conf);
         
         IKpextractor extr = new WGreedyExtractor(15, conf, scr);        
+        //HulthCorpusExperiments.testCorpus(extr, CanonicForm.STEM);
         SemevalCorpusExperiments.trainSubsample(extr, 20);
-//        SemevalCorpusExperiments.datasetExperiment("test", extr);
+        //SemevalCorpusExperiments.datasetExperiment("test", extr);
     }    
     
     private static void kpminerGrid() throws Exception {
@@ -154,7 +161,7 @@ public class KpeRunner {
         for (double s : ss) {
             for (double t : tt) {
                 IKpextractor kpextr = new KpMinerExtractor(extr, 
-                        DfFactory.loadDfSemevalStemOpenNlp(), 15, s, t);    
+                        DfFactory.loadDfSemevalStemOpenNlpAll(), 15, s, t);    
         //        IKpextractor kpextr = new RankerExtractor(extr, 
         //                DfFactory.loadDfSemevalStemOpenNlp(), 15);      
                 System.out.println("s: " + s + " t: " + t);
@@ -170,15 +177,16 @@ public class KpeRunner {
     }    
     
     private static void rankerExperiment() throws Exception {
-//        IPhraseExtractor extr = new PosRegexPhraseExtractor(
-//                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));        
-//        IKpextractor kpextr = new RankerExtractor(extr, 
-//                DfFactory.loadDfSemevalStemOpenNlp(), 15);                  
-        IPhraseExtractor extr = new NgramPhraseExtractor(
-                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));         
-        IKpextractor kpextr = new KpMinerExtractor(extr,DfFactory.loadDfSemevalStemOpenNlp(), 15);    
-        SemevalCorpusExperiments.trainSubsample(kpextr, 20);
-        //SemevalCorpusExperiments.datasetExperiment("test", kpextr);
+        IPhraseExtractor extr = new PosRegexPhraseExtractor(
+                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));        
+        IKpextractor kpextr = new RankerExtractor(extr, DfFactory.loadDfSemevalStemOpenNlpAll(), 15);
+                //DfFactory.loadDfSemevalStemOpenNlpTrainTrial(), 15);                  
+//        IPhraseExtractor extr = new NgramPhraseExtractor(
+//                new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));         
+//        IKpextractor kpextr = new KpMinerExtractor(extr,DfFactory.loadDfSemevalStemOpenNlpTrainTrial(), 15);    
+        //SemevalCorpusExperiments.trainSubsample(kpextr, 20);
+        SemevalCorpusExperiments.datasetExperiment("train", kpextr);
+        //HulthCorpusExperiments.testCorpus(kpextr, CanonicForm.STEM);
     }
     
     private static void inspect() throws Exception {
@@ -208,7 +216,7 @@ public class KpeRunner {
           GreedyExtractorConfig conf = GreedyExtractorFactory.
                 create(Vec.ESA, false, VectorMod.PRUNE, DocAgg.TFIDF_SUM, 
                     null, 0, null, null, PhAgg.UW_SUM, VecQ.COS);   
-        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);         
+        IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlpAll(), 0);         
         
 //        IKpextractor extr = new GreedyExtractor(15, conf);
         
@@ -277,7 +285,7 @@ public class KpeRunner {
         IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.COSINE);
         //IVectorComparison vSim = new VectorSimilarity(SimilarityMeasure.EBE_MULTIPLY);
         CanonicForm cf = CanonicForm.STEM;
-        TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+        TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlpAll();
         TermPageRankVectorizer pageRank = new TermPageRankVectorizer(wvm, wvmSim, 
                 vSim, cf, tdf, Method.SUM, 0.85, SimMod.NONE);        
         KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.AUTHOR);

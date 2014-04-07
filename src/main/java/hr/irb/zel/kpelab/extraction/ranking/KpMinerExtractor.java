@@ -4,6 +4,7 @@ import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.df.TermDocumentFrequency;
 import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
+import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.SubphraseRemover;
 import hr.irb.zel.kpelab.util.Utils;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  *
  */
-public class KpMinerExtractor implements IKpextractor {
+public class KpMinerExtractor implements IKpextractor, IPhraseScore {
 
     IPhraseExtractor phext;
     TermDocumentFrequency tdf;
@@ -46,6 +47,16 @@ public class KpMinerExtractor implements IKpextractor {
         return phrases.subList(0, m);
     }
 
+    public double score(Phrase ph) {
+        return calcKeyness(ph);
+    }
+    
+    public void adaptToDocument(KpeDocument doc) throws Exception {
+        phrases = phext.extractPhrases(doc.getText());
+        filterPhrases();
+        calcBoostingFactor();        
+    }
+    
     // filter out phrases witf frequency < 3
     private void filterPhrases() {
         Iterator<Phrase> it = phrases.iterator();
@@ -67,7 +78,7 @@ public class KpMinerExtractor implements IKpextractor {
             if (boost > t) boost = t;
         }
         else boost = 0;
-        System.out.println("N: " + numPhrases + " C: " + numCompound);
+        //System.out.println("N: " + numPhrases + " C: " + numCompound);
     }
 
     // sort phrases by measure of keyness
@@ -102,5 +113,5 @@ public class KpMinerExtractor implements IKpextractor {
     private void rerankPhrases() {
         
     }
-
+    
 }

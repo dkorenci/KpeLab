@@ -18,9 +18,12 @@ public class Phrase implements Comparable<Phrase>, Serializable {
     private int firstOccurence;
     private int frequency;
     private String canonicStr; // string representation
+    private double relFirstOcc; // relative fist occurence
     
     private List<String> tokens;
     private List<String> ctokens;   
+    private List<Phrase> alternativeForms;
+    private boolean firstLevel; // true if appear independently (not only as a subphrase)
 
     @Override
     public boolean equals(Object o) {
@@ -85,6 +88,9 @@ public class Phrase implements Comparable<Phrase>, Serializable {
         this.firstOccurence = firstOccurence;
     }
 
+    public double getRelFirstOccurence() { return relFirstOcc; }
+    public void setRelFirstOccurence(double rfo) { relFirstOcc = rfo; }
+    
     public int getFrequency() {
         return frequency;
     }
@@ -108,6 +114,22 @@ public class Phrase implements Comparable<Phrase>, Serializable {
     public void setCanonicTokens(List<String> canonicTokens) {
         this.ctokens = canonicTokens;
         canonicStr = null;
+    }
+
+    public List<Phrase> getAlternativeForms() {
+        return alternativeForms;
+    }
+
+    public void setAlternativeForms(List<Phrase> alternativeForms) {
+        this.alternativeForms = alternativeForms;
+    }
+
+    public boolean isFirstLevel() {
+        return firstLevel;
+    }
+
+    public void setFirstLevel(boolean firstLevel) {
+        this.firstLevel = firstLevel;
     }
     
 }

@@ -9,6 +9,18 @@ import java.util.List;
 public class SemevalPhraseEquality implements IPhraseEquality {
 
     public boolean equal(Phrase solution, Phrase correct) {
+        if (correct.getAlternativeForms() == null) {
+            return equalPh(solution, correct);
+        } 
+        else {
+            if (equalPh(solution, correct)) return true;
+            for (Phrase ph : correct.getAlternativeForms())
+                if (equalPh(solution, ph)) return true;            
+            return false;
+        }
+    }
+    
+    private boolean equalPh(Phrase solution, Phrase correct) {
         List<String> solTok = solution.getTokens();
         List<String> corrCanonTok = correct.getCanonicTokens();
         if (solTok.size() != corrCanonTok.size()) return false;

@@ -61,17 +61,42 @@ public class DfFactory {
          String file = DF_COUNTER_HULTH_TRAIN;
          counter.saveToFile(file);         
      }      
+
+     public static void createDfSemevalStemOpenNlpTrain() throws Exception {
+         List<KpeDocument> docs = CorpusSemeval.getTrain(SolutionPhraseSet.AUTHOR);
+         TermExtractor extractor = new TermExtractor(
+                 new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+         TermDocumentFrequency df = new TermDocumentFrequency(extractor);
+         df.createTermFrequency(docs, "df_semeval_stem_opennlp_train");
+     }
      
-     public static void createDfSemevalStemOpenNlp() throws Exception {
+     public static void createDfSemevalStemOpenNlpTrainTrial() throws Exception {
+         List<KpeDocument> docs = CorpusSemeval.getTrain(SolutionPhraseSet.AUTHOR);
+         docs.addAll(CorpusSemeval.getTrial(SolutionPhraseSet.AUTHOR));
+         TermExtractor extractor = new TermExtractor(
+                 new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
+         TermDocumentFrequency df = new TermDocumentFrequency(extractor);
+         df.createTermFrequency(docs, "df_semeval_stem_opennlp_train_trial");
+     }     
+     
+     public static TermDocumentFrequency loadDfSemevalStemOpenNlpTrainTrial() throws Exception {
+         return new TermDocumentFrequency("df_semeval_stem_opennlp_train_trial");
+     }       
+     
+     public static TermDocumentFrequency loadDfSemevalStemOpenNlpTrain() throws Exception {
+         return new TermDocumentFrequency("df_semeval_stem_opennlp_train");
+     }     
+     
+     public static void createDfSemevalStemOpenNlpAll() throws Exception {
          List<KpeDocument> docs = CorpusSemeval.getAll(SolutionPhraseSet.AUTHOR);
          TermExtractor extractor = new TermExtractor(
                  new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM));
          TermDocumentFrequency df = new TermDocumentFrequency(extractor);
-         df.createTermFrequency(docs, "df_semeval_stem_opennlp");
+         df.createTermFrequency(docs, "df_semeval_stem_opennlp_all");
      }
      
-     public static TermDocumentFrequency loadDfSemevalStemOpenNlp() throws Exception {
-         return new TermDocumentFrequency("df_semeval_stem_opennlp");
+     public static TermDocumentFrequency loadDfSemevalStemOpenNlpAll() throws Exception {
+         return new TermDocumentFrequency("df_semeval_stem_opennlp_all");
      }
 
      public static void createDfHulthStemOpenNlp() throws Exception {

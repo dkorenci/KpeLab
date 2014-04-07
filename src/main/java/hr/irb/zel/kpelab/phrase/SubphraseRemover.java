@@ -23,18 +23,19 @@ public class SubphraseRemover implements IPhraseExtractor {
         Iterator<Phrase> it = phrases.iterator();
         while (it.hasNext()) {
             Phrase ph = it.next();
-            boolean remove = false;
-            // remove phrase if there is a superphrase with equal frequency
-            for (Phrase phr : phrases) {
-                if (ph.isSubphrase(phr)) {
-                    //assert(ph.getFrequency() >= phr.getFrequency());                    
-                    if (ph.getFrequency() == phr.getFrequency()) {
-                        remove = true;
-                        break;
-                    }                    
-                }
-            }
-            if (remove) it.remove();
+            if (ph.isFirstLevel() == false) it.remove();
+//            boolean remove = false;
+//            // remove phrase if there is a superphrase with equal frequency
+//            for (Phrase phr : phrases) {
+//                if (ph.isSubphrase(phr)) {
+//                    //assert(ph.getFrequency() >= phr.getFrequency());                    
+//                    if (ph.getFrequency() == phr.getFrequency()) {
+//                        remove = true;
+//                        break;
+//                    }                    
+//                }
+//            }
+//            if (remove) it.remove();
         }        
         return phrases;
     }

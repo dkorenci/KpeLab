@@ -54,6 +54,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         this.text = text;        
         preprocess();        
         extract();
+        calcRelativeOccurences();
         //removeSubphrases();        
         return phrases;
     }
@@ -64,6 +65,8 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     private PosExtractorConfig config;    
     
     private List<Phrase> phrases;       
+    
+    private int tokenCnt; // token counter at document level
     
     private static final int MAX_PHRASE_LENGTH = 4;
 
@@ -87,7 +90,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     // extract noun phrases - token sequeces that have the form Adj*Noun+
     private void extract() {
         initPhrases();
-        int tokenCnt = 0; // token index at document level
+        tokenCnt = 0; 
         // iterate over all sentences in document jCas
         for (Sentence sentence : select(jCas, Sentence.class)) {
             // get all tokens in the sentence
@@ -147,14 +150,18 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         for (int i = start; i <= end; ++i) {
             for (int j = i; j <= end; ++j) {
                 if (j >= firstNoun && j-i+1 <= MAX_PHRASE_LENGTH) {
-                    processPhrase(sentence, i, j, docStart);
+                    boolean firstLevel;
+                    if (i == start && j == end) firstLevel = true;
+                    else firstLevel = false;                    
+                    processPhrase(sentence, i, j, docStart, firstLevel);
                 }
             }
         }
     }
     
     // form phrase from sentence token coordinates, add to phrase register
-    private void processPhrase(List<Token> sentence, int start, int end, int docStart) {
+    private void processPhrase(List<Token> sentence, int start, int end, 
+                                int docStart, boolean firstLevel) {
         Phrase phrase = new Phrase();
         phrase.setFirstOccurence(docStart);
         phrase.setFrequency(1);
@@ -180,7 +187,7 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
         phrase.setTokens(tokens);
         phrase.setCanonicTokens(ctokens);
         
-        addPhrase(phrase);
+        addPhrase(phrase, firstLevel);
     }    
     
     private void initPhrases() {
@@ -188,14 +195,16 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
     }    
     
     // update set of phrases with a new phrase
-    private void addPhrase(Phrase newPhrase) {
+    private void addPhrase(Phrase newPhrase, boolean firstLevel) {
         for (Phrase ph : phrases) {
             if (ph.equals(newPhrase)) {
                 ph.setFrequency(ph.getFrequency() + 1);
+                if (firstLevel) ph.setFirstLevel(true);
                 //System.out.println(ph + " new freq: " + ph.getFrequency());
                 return;
             }
         }
+        newPhrase.setFirstLevel(firstLevel);
         phrases.add(newPhrase);
         //System.out.println(newPhrase);
     }
@@ -242,6 +251,14 @@ public class PosRegexPhraseExtractor implements IPhraseExtractor {
 
     private void IllegalArgumentException(String uncovered_canonic_form) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void calcRelativeOccurences() {
+        for (Phrase ph : phrases) {
+            double rfo = tokenCnt + 1 - ph.getFirstOccurence();
+            rfo /= tokenCnt;
+            ph.setRelFirstOccurence(rfo);
+        }
     }
    
 }

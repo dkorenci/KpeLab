@@ -49,13 +49,15 @@ public class CorpusSemeval {
         List<File> documents = getDocumentFiles(corpusLocation+folder);
         
         List<KpeDocument> result = new ArrayList<KpeDocument>();
+        numMultSolutions = numSolutions = 0;
         for (File doc : documents) {
             String docText = readDocument(doc);
             String docId = getDocId(doc);
             List<Phrase> phrases = getPhrases(docText, solMap.getSolutions(docId));
             result.add(new KpeDocument(docId, docText, phrases));
         }
-        
+        System.out.println("num solutions / num multiple : "+
+                (double)numMultSolutions/numSolutions);
         return result;
     }
 
@@ -67,10 +69,13 @@ public class CorpusSemeval {
         DocumentToSolutionMap solMap = 
                 new DocumentToSolutionMap(solutionFileName(folder, phSetId));                
         String docText = readDocument(docFile);
-        String docId = getDocId(docFile);        
+        String docId = getDocId(docFile);                
         List<Phrase> phrases = getPhrases(docText, solMap.getSolutions(docId));
         return new KpeDocument(docId, docText, phrases);
     }    
+    
+    private static int numMultSolutions; // number of phrases with multiple solutions fomrs
+    private static int numSolutions; // number of solution phrases 
     
     /** Get a single document specified as folder/docId */
     public static KpeDocument getDocument(String doc, SolutionPhraseSet phSet) 
@@ -111,23 +116,30 @@ public class CorpusSemeval {
     // From a list of solutions pick one of surface forms.
     private static List<Phrase> getPhrases(String docText, List<List<Phrase>> solutions) {
         List<Phrase> phrases = new ArrayList<Phrase>();
+        numSolutions += solutions.size();
         for (List<Phrase> sol : solutions) {
             if (sol.isEmpty()) throw new IllegalArgumentException("empty solution");
-            else if (sol.size() == 1) phrases.add(sol.get(0));
-            else { 
-                // more than one surface form, pick one depending on their structure
-                boolean ofPhrase = false; // phrase of the form "A of B"
-                int notOfPhrase = 0; // index of a phrase that is not "A of B"
-                // search for "of phrases"
-                for (int i = 0; i < sol.size(); ++i) {
-                    Phrase ph = sol.get(i);
-                    if (ph.getCanonicTokens().contains("of")) ofPhrase = true;
-                    else notOfPhrase = i;
-                }
-                // selection of surface form
-                if (ofPhrase) phrases.add(sol.get(notOfPhrase));
-                else phrases.add(sol.get(0)); // add one of the forms
-            }
+            
+            Phrase s = sol.get(0);
+            phrases.add(sol.get(0));
+            if (sol.size() > 1) s.setAlternativeForms(sol.subList(1, sol.size()));
+            
+//            else if (sol.size() == 1) phrases.add(sol.get(0));
+//            else { 
+//                numMultSolutions++;
+//                // more than one surface form, pick one depending on their structure
+//                boolean ofPhrase = false; // phrase of the form "A of B"
+//                int notOfPhrase = 0; // index of a phrase that is not "A of B"
+//                // search for "of phrases"
+//                for (int i = 0; i < sol.size(); ++i) {
+//                    Phrase ph = sol.get(i);
+//                    if (ph.getCanonicTokens().contains("of")) ofPhrase = true;
+//                    else notOfPhrase = i;
+//                }
+//                // selection of surface form
+//                if (ofPhrase) phrases.add(sol.get(notOfPhrase));
+//                else phrases.add(sol.get(0)); // add one of the forms
+//            }
         }
         return phrases;
     }

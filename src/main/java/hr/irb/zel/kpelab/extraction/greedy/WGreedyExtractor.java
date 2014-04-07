@@ -48,6 +48,7 @@ public class WGreedyExtractor implements IKpextractor {
     
     public List<Phrase> extract(KpeDocument doc) throws Exception {
         prepareForExtraction(doc);
+        phScr.adaptToDocument(doc);
         if (verbose) printRankedCandidates();
         constructPhraseSet();
         return phrases;
@@ -60,7 +61,7 @@ public class WGreedyExtractor implements IKpextractor {
         c.adaptToDocument(doc.getText());
         documentVector = c.docVectorizer.vectorize(doc.getText());
         candidates = c.phraseExtractor.extractPhrases(doc.getText());   
-        filterCandidates();
+        //filterCandidates();
         removeNullCandidates();        
     }
     

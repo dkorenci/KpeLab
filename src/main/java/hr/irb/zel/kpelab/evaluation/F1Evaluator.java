@@ -51,7 +51,7 @@ public class F1Evaluator {
             if (stepCounter % 100 == 0) {                
                 F1Metric tmpResult = new F1Metric(result);
                 tmpResult.precision /= stepCounter; tmpResult.recall /= stepCounter;
-                tmpResult.calculateF1();
+                tmpResult.f1 /= stepCounter;
                 System.out.println("temporary result for " + stepCounter + 
                         " documents : " + tmpResult); 
             }

@@ -13,6 +13,7 @@ import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.FirstOccurenceExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.IPhraseScore;
+import hr.irb.zel.kpelab.phrase.NgramPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig.Components;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
@@ -224,6 +225,9 @@ public class GreedyExtractorFactory {
 //                new PosExtractorConfig(Components.OPEN_NLP, cform)), 0.2);    
         IPhraseExtractor phext =  new SubphraseRemover(new PosRegexPhraseExtractor(
                 new PosExtractorConfig(Components.OPEN_NLP, cform)));    
+//        IPhraseExtractor phext =  new SubphraseRemover(new NgramPhraseExtractor(
+//                new PosExtractorConfig(Components.OPEN_NLP, cform)));    
+        
                 
         // word to vector mapping
         IWordToVectorMap wvm;
@@ -247,7 +251,7 @@ public class GreedyExtractorFactory {
         // document vectorization
         IDocumentVectorizer dvec;
         if (doc == DocAgg.TFIDF_SUM || doc == DocAgg.TFIDF_MAX) {   
-            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlpAll();
             Method m; // aggregation method
             if (doc == DocAgg.TFIDF_SUM) m = Method.SUM; else m = Method.MAX;
             dvec = new TfIdfVectorizer(compWvm, cform, tdf, m);
@@ -263,7 +267,7 @@ public class GreedyExtractorFactory {
                 vSim = new VectorSimilarity(SimilarityMeasure.COSINE);                
             }
             else throw new UnsupportedOperationException();             
-            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+            TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlpAll();
             dvec = new TermPageRankVectorizer(compWvm, wvmSim, vSim, cform, 
                     tdf, aggMeth, prDf, prSm);                    
         }
@@ -281,14 +285,14 @@ public class GreedyExtractorFactory {
             phvec = new MaxPhraseSetVectorizer(compWvm);
         }
         else if (ph == PhAgg.UW_WEIGHTED) {
-            IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);
+            IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlpAll(), 0);
             phvec = new WSumPhraseSetVectorizer(compWvm, scr);
         }
         else if (ph == PhAgg.PH_SUM) {
             phvec = new PhSumPhraseSetVectorizer(compWvm, null);
         }
         else if (ph == PhAgg.PH_SUM_WEIGHTED) {
-            IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlp(), 0);            
+            IPhraseScore scr = new RankerExtractor(null, DfFactory.loadDfSemevalStemOpenNlpAll(), 0);            
             phvec = new PhSumPhraseSetVectorizer(compWvm, scr);
         }
         else throw new UnsupportedOperationException();
@@ -359,7 +363,7 @@ public class GreedyExtractorFactory {
         // wort to vector mapping
         IWordToVectorMap wvm = WordVectorMapFactory.getESA01Vectors();
         // document vetorization
-        TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlp();
+        TermDocumentFrequency tdf = DfFactory.loadDfSemevalStemOpenNlpAll();
         IDocumentVectorizer dvec = new TfIdfVectorizer(wvm, cform, tdf, Method.SUM);
         // phrase extractor
         IPhraseExtractor phext = new PosRegexPhraseExtractor(

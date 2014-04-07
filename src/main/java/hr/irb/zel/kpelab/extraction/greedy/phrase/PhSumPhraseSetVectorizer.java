@@ -46,7 +46,7 @@ public class PhSumPhraseSetVectorizer implements IPhraseSetVectorizer {
             if (vec == null) vec = v;                               
             else vec.add(v);              
         }
-        //vec.multiply(1.0/(ph.getCanonicTokens().size()));
+        vec.multiply(1.0/(ph.getCanonicTokens().size()));
         phraseVectors.put(ph, vec);
         return vec;
     }

@@ -46,6 +46,7 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
         readWordLists();
         preprocess();        
         extract();        
+        calcRelativeOccurences();
         return phrases;
     }
     
@@ -56,9 +57,10 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
     
     private List<Phrase> phrases;       
     private Set<String> stopwords;
-    private Set<String> insidewords;
+    private Set<String> insidewords;    
     
-    private static final int MAX_PHRASE_LENGTH = 4;
+    private static final int MAX_PHRASE_LENGTH = 8;
+    private int tokenCnt;
 
     private void preprocess() throws UIMAException {
         jCas = JCasFactory.createJCas();
@@ -101,7 +103,7 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
     // extract noun phrases - token sequeces that have the form Adj*Noun+
     private void extract() {
         initPhrases();
-        int tokenCnt = 0; // token index at document level
+        tokenCnt = 0; // token index at document level
         // iterate over all sentences in document jCas
         for (Sentence sentence : select(jCas, Sentence.class)) {
             // get all tokens in the sentence
@@ -159,14 +161,18 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
         for (int i = start; i <= end; ++i) {
             for (int j = i; j <= end; ++j) {
                 if (j-i+1 <= MAX_PHRASE_LENGTH) {
-                    processPhrase(sentence, i, j, docStart);
+                    boolean firstLevel;
+                    if (i == start && j == end) firstLevel = true;
+                    else firstLevel = false;
+                    processPhrase(sentence, i, j, docStart, firstLevel);
                 }
             }
         }
     }
     
     // form phrase from sentence token coordinates, add to phrase register
-    private void processPhrase(List<Token> sentence, int start, int end, int docStart) {
+    private void processPhrase(List<Token> sentence, int start, int end, 
+            int docStart, boolean firstLevel) {
         if (isInsideWord(sentence.get(start)) || isInsideWord(sentence.get(end))) return;
         Phrase phrase = new Phrase();
         phrase.setFirstOccurence(docStart);
@@ -189,7 +195,7 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
         phrase.setTokens(tokens);
         phrase.setCanonicTokens(ctokens);
         
-        addPhrase(phrase);
+        addPhrase(phrase, firstLevel);
     }    
     
     private void initPhrases() {
@@ -197,14 +203,16 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
     }    
     
     // update set of phrases with a new phrase
-    private void addPhrase(Phrase newPhrase) {
+    private void addPhrase(Phrase newPhrase, boolean firstLevel) {
         for (Phrase ph : phrases) {
             if (ph.equals(newPhrase)) {
                 ph.setFrequency(ph.getFrequency() + 1);
+                if (firstLevel) ph.setFirstLevel(true);
                 //System.out.println(ph + " new freq: " + ph.getFrequency());
                 return;
             }
         }
+        newPhrase.setFirstLevel(firstLevel);
         phrases.add(newPhrase);
         //System.out.println(newPhrase);
     }
@@ -249,6 +257,12 @@ public class NgramPhraseExtractor implements IPhraseExtractor {
         return (tok.getPos() instanceof ADJ);
     }
 
+    private void calcRelativeOccurences() {
+        for (Phrase ph : phrases) {
+            ph.setRelFirstOccurence(ph.getFirstOccurence()/((double)tokenCnt));
+        }
+    }    
+    
     private void IllegalArgumentException(String uncovered_canonic_form) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

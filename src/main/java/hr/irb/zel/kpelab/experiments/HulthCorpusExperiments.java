@@ -85,6 +85,14 @@ public class HulthCorpusExperiments {
         F1Metric metric = eval.evaluateDocument(doc);
         System.out.println(metric);
     }     
+
+    /** Evaluate performance of tfidf extractor on the entire corpus. */    
+    public static void testCorpus(IKpextractor extr, CanonicForm cform) throws Exception {        
+         List<KpeDocument> docs = CorpusHulth.getDocuments("Test", true, cform);         
+         F1Evaluator eval = new F1Evaluator(extr, PhEquality.CANONIC);
+         F1Metric metric = eval.evaluateDocuments(docs);
+         System.out.println(metric);         
+    }      
     
     /** Evaluate performance of tfidf extractor on the entire corpus. */    
     public static void tfidfCorpus(int K, String docFreqCounter) throws Exception {

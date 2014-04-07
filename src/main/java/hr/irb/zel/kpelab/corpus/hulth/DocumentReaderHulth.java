@@ -115,11 +115,11 @@ public class DocumentReaderHulth {
             List<String> tokens = new ArrayList<String>();
             List<String> ctokens = new ArrayList<String>();
             for (TokenCanonic tl : tokenCannonic) {
-                System.out.print(tl.canonic+";");
+                //System.out.print(tl.canonic+";");
                 tokens.add(tl.token);
                 ctokens.add(tl.canonic);
             }
-            System.out.println();
+            //System.out.println();
             phrase.setTokens(tokens);
             phrase.setCanonicTokens(ctokens);            
             phrase.setFrequency(-1);

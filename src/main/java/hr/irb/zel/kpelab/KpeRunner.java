@@ -8,6 +8,7 @@ import hr.irb.zel.kpelab.analysis.CannonizationAnalyser;
 import hr.irb.zel.kpelab.analysis.EsaGraph;
 import hr.irb.zel.kpelab.analysis.PhraseExtractionAnalyzer;
 import hr.irb.zel.kpelab.analysis.PosTaggingAnalyser;
+import hr.irb.zel.kpelab.analysis.VectorAnalyser;
 import hr.irb.zel.kpelab.analysis.WS353CorrelationAnalysis;
 import hr.irb.zel.kpelab.analysis.devel.DevelTester;
 import hr.irb.zel.kpelab.config.KpeConfig;
@@ -109,13 +110,15 @@ public class KpeRunner {
         //kpminerGrid();
         
         //wcoverageExperiment();        
-        phsumExperiment();
+        //phsumExperiment();
         //inspect();        
         //rankerExperiment();        
 //        DfFactory.createDfSemevalStemOpenNlpTrainTrial();
 //        DfFactory.createDfSemevalStemOpenNlpAll();
         
         //CorpusSemeval.getTest(SolutionPhraseSet.COBINED);
+        
+        VectorAnalyser.analyse(WordVectorMapFactory.getESAVectors());
         
         end(); // finalize environment
     }

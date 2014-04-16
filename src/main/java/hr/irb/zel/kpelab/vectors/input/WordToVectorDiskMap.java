@@ -20,6 +20,8 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +70,7 @@ public class WordToVectorDiskMap extends WordToVectorMapBase implements IWordToV
         }
         else return readWordVectorFromFile(word);        
     }
-      
+    
     public void saveCache() throws FileNotFoundException, IOException {
         if (!cached) return;
         System.out.println("saving word to vector map cache: " + getCacheFileName());

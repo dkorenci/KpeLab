@@ -2,6 +2,7 @@ package hr.irb.zel.kpelab.vectors.input;
 
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.VectorEntry;
+import java.util.Collection;
 
 /** Coverts vector from the map to 0-1 vectors that have 
  * value of 1 at all coordinates !=0. */
@@ -42,6 +43,10 @@ public class WordToVector01Filter implements IWordToVectorMap {
             result.setElement(e.coordinate, 1);
         }
         return result;
+    }
+
+    public Collection<String> getWords() {
+        return wordToVector.getWords();
     }
     
 }

@@ -2,6 +2,7 @@ package hr.irb.zel.kpelab.vectors.input;
 
 import hr.irb.zel.kpelab.vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.VectorEntry;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,7 +11,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /** Sets to 0 those coordinates that are not shared by at 
- * least one coordinate of a vector from a term set. */
+ * least one coordinate of a vector from a term set. 
+ * TODO: remove from map vectors with all 0 coordinates. */
 public class TermSetPruneFilter implements IWordToVectorMap {
 
     private IWordToVectorMap wordToVector;
@@ -115,6 +117,10 @@ public class TermSetPruneFilter implements IWordToVectorMap {
 
     private void addUniqueCoordinates(IRealVector vec, String word) {
         vec.setElement(uniqueCoord.get(word), uniqueVal.get(word));
+    }
+
+    public Collection<String> getWords() {
+        return wordToVector.getWords();
     }
 
 }

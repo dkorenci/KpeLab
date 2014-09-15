@@ -25,8 +25,7 @@ public class GreedyExtractor implements IKpextractor {
     private List<Phrase> phrases; // result        
     
     private boolean verbose; // produce output
-    private String outputFolder;
-    private KpeDocument document;
+    private String outputFolder;    
     
     /** Initialize with processing components. Comparison must be a 
      * measure of quality of a phrase set for the document, first argument 
@@ -44,20 +43,19 @@ public class GreedyExtractor implements IKpextractor {
         outputFolder = outFolder;
     }
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        prepareForExtraction(doc);
-        if (verbose) printRankedCandidates();
+    public List<Phrase> extract(String text) throws Exception {
+        prepareForExtraction(text);
+        // if (verbose) printRankedCandidates();
         constructPhraseSet();
         return phrases;
     }   
     
     // create necessary data structures, it is public to be used
     // before printing ranked phrases
-    public void prepareForExtraction(KpeDocument doc) throws Exception {
-        document = doc;
-        c.adaptToDocument(doc.getText());
-        documentVector = c.docVectorizer.vectorize(doc.getText());
-        candidates = c.phraseExtractor.extractPhrases(doc.getText());   
+    public void prepareForExtraction(String text) throws Exception {        
+        c.adaptToDocument(text);
+        documentVector = c.docVectorizer.vectorize(text);
+        candidates = c.phraseExtractor.extractPhrases(text);   
         filterCandidates();
         removeNullCandidates();        
     }
@@ -73,11 +71,11 @@ public class GreedyExtractor implements IKpextractor {
     }      
     
     private void constructPhraseSet() throws Exception {
-        PrintStream pr = null;
-        if (verbose) {
-            pr = new PrintStream(
-                 new FileOutputStream(outputFolder+document.getId()+".sol.build.txt"));
-        }                
+//        PrintStream pr = null;
+//        if (verbose) {
+//            pr = new PrintStream(
+//                 new FileOutputStream(outputFolder+document.getId()+".sol.build.txt"));
+//        }                
         
         c.phVectorizer.clear();
         phrases = new ArrayList<Phrase>();
@@ -102,21 +100,15 @@ public class GreedyExtractor implements IKpextractor {
                 phrases.add(optPhrase);
                 c.phVectorizer.addPhrase(optPhrase);
             }            
-            if (verbose) { 
-                pr.println("optimum quality: " + Utils.doubleStr(optQual));
-                PhraseHelper.printPhraseSet(pr, phrases, phraseSetSize, false);                
-            }
+//            if (verbose) { 
+//                pr.println("optimum quality: " + Utils.doubleStr(optQual));
+//                PhraseHelper.printPhraseSet(pr, phrases, phraseSetSize, false);                
+//            }
             //System.out.println("*******************************************");
         }
         
-        if (verbose) pr.close();
-    }
-
-    private void printRankedCandidates() throws Exception {
-        PrintStream out = new PrintStream(outputFolder+document.getId()+".cand.rank.txt");             
-        printRankedCandidates(out);
-        out.close();
-    }   
+//        if (verbose) pr.close();
+    }  
     
     public void printRankedCandidates(PrintStream out) throws Exception {       
         c.phVectorizer.clear();

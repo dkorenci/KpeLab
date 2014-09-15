@@ -25,7 +25,7 @@ public class GreedyMaxExtractor implements IKpextractor {
     IPhraseExtractor phExtr;
     int K; // number of phrases to extract
     IRealVector docVector;
-    KpeDocument doc;    
+    String text;
     List<Phrase> docPhrases;
     IRealVector[] phraseVectors;
     IWordToVectorMap wordVec;
@@ -37,8 +37,8 @@ public class GreedyMaxExtractor implements IKpextractor {
     
     public String getId() { return "greedyMax"; }
     
-    public List<Phrase> extract(KpeDocument d) throws Exception {
-        doc = d;
+    public List<Phrase> extract(String txt) throws Exception {
+        text = txt;
         config = new PosExtractorConfig(
                 PosExtractorConfig.Components.OPEN_NLP, CanonicForm.STEM);
         wordVec = WordVectorMapFactory.getESAVectors();
@@ -50,7 +50,7 @@ public class GreedyMaxExtractor implements IKpextractor {
     // max. aggregate terms in the document
     private void constructDocumentVector() throws Exception {
         TermExtractor textr = new TermExtractor(config);
-        List<String> terms = textr.extract(doc.getText());
+        List<String> terms = textr.extract(text);
         VectorAggregator agg = new VectorAggregator(wordVec);
         docVector = agg.aggregate(terms, VectorAggregator.Method.MAX);        
     }
@@ -101,7 +101,7 @@ public class GreedyMaxExtractor implements IKpextractor {
     // extract phrases and construct phrase vectors
     private void processPhrases() throws Exception {
         phExtr = new PosRegexPhraseExtractor(config);
-        docPhrases = phExtr.extractPhrases(doc.getText());
+        docPhrases = phExtr.extractPhrases(text);
         phraseVectors = new IRealVector[docPhrases.size()];
         VectorAggregator agg = new VectorAggregator(wordVec);
         int i = 0;

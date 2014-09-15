@@ -53,7 +53,7 @@ public class KpeInspector {
     public void phrasesBySimilarity(GreedyExtractorConfig config) throws Exception {
         initFolder();
         GreedyExtractor extr = new GreedyExtractor(5, config);
-        extr.prepareForExtraction(doc);
+        extr.prepareForExtraction(doc.getText());
         PrintStream out = new PrintStream(outFolder+"phrasesBySim.txt");
         out.println("solution phrases: ");
         PhraseHelper.printPhraseSet(out, doc.getKeyphrases(), 5, true);
@@ -77,7 +77,7 @@ public class KpeInspector {
     
     public void extractedPhrases(IKpextractor extr) throws Exception {
         initFolder();
-        List<Phrase> kphrases = extr.extract(doc);
+        List<Phrase> kphrases = extr.extract(doc.getText());
         PrintStream out = new PrintStream(outFolder+"keyphrases_"+extr.getId()+".txt");
         
         out.println("correct phrases:");

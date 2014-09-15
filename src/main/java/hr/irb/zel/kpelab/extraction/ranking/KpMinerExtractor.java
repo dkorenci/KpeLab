@@ -37,8 +37,8 @@ public class KpMinerExtractor implements IKpextractor, IPhraseScore {
 
     public String getId() { return "kpminer"; }    
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        phrases = phext.extractPhrases(doc.getText());
+    public List<Phrase> extract(String text) throws Exception {
+        phrases = phext.extractPhrases(text);
         filterPhrases();
         calcBoostingFactor();
         sortPhrases();
@@ -51,8 +51,8 @@ public class KpMinerExtractor implements IKpextractor, IPhraseScore {
         return calcKeyness(ph);
     }
     
-    public void adaptToDocument(KpeDocument doc) throws Exception {
-        phrases = phext.extractPhrases(doc.getText());
+    public void adaptToText(String text) throws Exception {
+        phrases = phext.extractPhrases(text);
         filterPhrases();
         calcBoostingFactor();        
     }

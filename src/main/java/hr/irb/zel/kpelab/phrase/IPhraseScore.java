@@ -5,6 +5,6 @@ import hr.irb.zel.kpelab.corpus.KpeDocument;
 public interface IPhraseScore {
     
     double score(Phrase ph);
-    void adaptToDocument(KpeDocument doc) throws Exception;
+    void adaptToText(String text) throws Exception;
     
 }

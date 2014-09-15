@@ -41,8 +41,8 @@ public class MaxCoverageExtractor implements IKpextractor {
         extractor = extr; phraseCoverage = cov; phraseSetSize = K;
     }
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        phrases = extractor.extractPhrases(doc.getText());
+    public List<Phrase> extract(String text) throws Exception {
+        phrases = extractor.extractPhrases(text);
         randomGen = new Random(7786654);
         tabuSearch();
         return solution;

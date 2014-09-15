@@ -29,9 +29,9 @@ public class TfidfKpextractor implements IKpextractor {
     
     public String getId() { return "tfidf"; }
     
-    public List<Phrase> extract(KpeDocument doc) throws UIMAException {
-        List<Phrase> phrases = extractor.extractPhrases(doc.getText());
-        int numWords = PhraseHelper.countWords(doc.getText());        
+    public List<Phrase> extract(String text) throws UIMAException {
+        List<Phrase> phrases = extractor.extractPhrases(text);
+        int numWords = PhraseHelper.countWords(text);        
         // calculate tfidfs 
         tfidfphrases = new ArrayList<TfidfPhrase>();
         for (Phrase ph : phrases) {

@@ -38,8 +38,8 @@ public class RankerExtractor implements IKpextractor, IPhraseScore  {
 
     public String getId() { return "ranker"; }    
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        phrases = phext.extractPhrases(doc.getText()); 
+    public List<Phrase> extract(String text) throws Exception {
+        phrases = phext.extractPhrases(text); 
         //calcAvgFreq();
         //filterPhrases();
         //clearSubphrases();
@@ -63,7 +63,7 @@ public class RankerExtractor implements IKpextractor, IPhraseScore  {
         return calcKeyness(ph);
     }    
     
-    public void adaptToDocument(KpeDocument doc) {}
+    public void adaptToText(String text) {}
     
     // filter out phrases with frequency < 3
     private void filterPhrases() {

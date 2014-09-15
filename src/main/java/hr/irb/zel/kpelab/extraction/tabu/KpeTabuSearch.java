@@ -43,8 +43,8 @@ public class KpeTabuSearch implements IKpextractor {
     
     public String getId() { return "tabu"; }
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        searchSet.setDocument(doc);        
+    public List<Phrase> extract(String text) throws Exception {
+        searchSet.setText(text);        
         phrases = searchSet.getDocumentPhrases();     
 //        System.out.println("all phrases: ");
 //        printPhraseSet(phrases, 7);

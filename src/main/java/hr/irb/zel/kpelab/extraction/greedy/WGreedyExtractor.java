@@ -27,7 +27,7 @@ public class WGreedyExtractor implements IKpextractor {
     
     private boolean verbose; // produce output
     private String outputFolder;
-    private KpeDocument document;
+    private String text;
     private IPhraseScore phScr;
     
     /** Initialize with processing components. Comparison must be a 
@@ -46,21 +46,20 @@ public class WGreedyExtractor implements IKpextractor {
         outputFolder = outFolder;
     }
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        prepareForExtraction(doc);
-        phScr.adaptToDocument(doc);
-        if (verbose) printRankedCandidates();
+    public List<Phrase> extract(String text) throws Exception {
+        prepareForExtraction(text);
+        phScr.adaptToText(text);
+        //if (verbose) printRankedCandidates();
         constructPhraseSet();
         return phrases;
     }   
     
     // create necessary data structures, it is public to be used
     // before printing ranked phrases
-    public void prepareForExtraction(KpeDocument doc) throws Exception {
-        document = doc;
-        c.adaptToDocument(doc.getText());
-        documentVector = c.docVectorizer.vectorize(doc.getText());
-        candidates = c.phraseExtractor.extractPhrases(doc.getText());   
+    public void prepareForExtraction(String text) throws Exception {        
+        c.adaptToDocument(text);
+        documentVector = c.docVectorizer.vectorize(text);
+        candidates = c.phraseExtractor.extractPhrases(text);   
         //filterCandidates();
         removeNullCandidates();        
     }
@@ -77,10 +76,10 @@ public class WGreedyExtractor implements IKpextractor {
     
     private void constructPhraseSet() throws Exception {
         PrintStream pr = null;
-        if (verbose) {
-            pr = new PrintStream(
-                 new FileOutputStream(outputFolder+document.getId()+".sol.build.txt"));
-        }                
+//        if (verbose) {
+//            pr = new PrintStream(
+//                 new FileOutputStream(outputFolder+document.getId()+".sol.build.txt"));
+//        }                
         
         c.phVectorizer.clear();
         phrases = new ArrayList<Phrase>();
@@ -123,13 +122,7 @@ public class WGreedyExtractor implements IKpextractor {
         double[] scores = new double[phr.size()];        
         for (int i = 0; i < phr.size(); ++i) scores[i] = phScr.score(phr.get(i));
         return Utils.geometricMean(scores);
-    }
-    
-    private void printRankedCandidates() throws Exception {
-        PrintStream out = new PrintStream(outputFolder+document.getId()+".cand.rank.txt");             
-        printRankedCandidates(out);
-        out.close();
-    }   
+    } 
     
     public void printRankedCandidates(PrintStream out) throws Exception {       
         c.phVectorizer.clear();

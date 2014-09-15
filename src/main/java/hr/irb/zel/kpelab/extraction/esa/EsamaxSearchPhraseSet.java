@@ -35,15 +35,15 @@ public class EsamaxSearchPhraseSet implements ISearchPhraseSet {
     double docVectorSum; // sum od docVector coordinates
     
     PosExtractorConfig config;
-    KpeDocument doc;
+    String text;
     
     public EsamaxSearchPhraseSet() throws Exception {        
         esaVectors = WordVectorMapFactory.getESAVectors();     
         config = new PosExtractorConfig(Components.OPEN_NLP, CanonicForm.STEM);        
     }
     
-    public void setDocument(KpeDocument d) throws Exception {
-        doc = d;
+    public void setText(String txt) throws Exception {
+        text = txt;
         extractDocumentPhrases();
         constructDocumentVector();
     }
@@ -95,7 +95,7 @@ public class EsamaxSearchPhraseSet implements ISearchPhraseSet {
     // max. aggregate esa vectors of important document terms
     private void constructDocumentVector() throws Exception {
         TermExtractor extractor = new TermExtractor(config);
-        List<String> terms = extractor.extract(doc.getText());
+        List<String> terms = extractor.extract(text);
         docVector = maxAggregateTermVectors(terms);
         docVectorSum = docVector.sumOfCoordinates();
     }
@@ -117,7 +117,7 @@ public class EsamaxSearchPhraseSet implements ISearchPhraseSet {
     
     private void extractDocumentPhrases() throws UIMAException {
         PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(config);
-        docPhrases = extractor.extractPhrases(doc.getText());
+        docPhrases = extractor.extractPhrases(text);
     }
 
 }

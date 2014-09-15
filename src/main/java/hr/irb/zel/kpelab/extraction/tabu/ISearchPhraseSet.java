@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ISearchPhraseSet {
     
-    public void setDocument(KpeDocument doc) throws Exception;
+    public void setText(String text) throws Exception;
     public void setPhraseSet(List<Phrase> phraseSet) throws Exception;
     //public void addPhrase(Phrase ph);
     //public void removePhrase(int i);

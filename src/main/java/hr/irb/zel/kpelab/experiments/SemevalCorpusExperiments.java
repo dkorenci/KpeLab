@@ -68,7 +68,7 @@ public class SemevalCorpusExperiments {
         KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
 
-        List<Phrase> result = tabuSearch.extract(doc);
+        List<Phrase> result = tabuSearch.extract(doc.getText());
         List<Phrase> solution = doc.getKeyphrases();
         
         F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
@@ -87,7 +87,7 @@ public class SemevalCorpusExperiments {
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
         GreedyMaxExtractor extractor = new GreedyMaxExtractor(K);
         
-        List<Phrase> result = extractor.extract(doc);
+        List<Phrase> result = extractor.extract(doc.getText());
         List<Phrase> solution = doc.getKeyphrases();
         
         F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
@@ -109,7 +109,7 @@ public class SemevalCorpusExperiments {
         KpeTabuSearch tabuSearch = new KpeTabuSearch(phraseSet, K);                
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
 
-        List<Phrase> result = tabuSearch.extract(doc);
+        List<Phrase> result = tabuSearch.extract(doc.getText());
         List<Phrase> solution = doc.getKeyphrases();
         
         F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);
@@ -152,7 +152,7 @@ public class SemevalCorpusExperiments {
         KpeDocument doc = CorpusSemeval.getDocument(docName, SolutionPhraseSet.COBINED);
         GreedyExtractor greedy = new GreedyExtractor(K, conf);        
         
-        List<Phrase> result = greedy.extract(doc);
+        List<Phrase> result = greedy.extract(doc.getText());
         List<Phrase> solution = doc.getKeyphrases();
         
         F1Evaluator eval = new F1Evaluator(null, PhEquality.SEMEVAL);

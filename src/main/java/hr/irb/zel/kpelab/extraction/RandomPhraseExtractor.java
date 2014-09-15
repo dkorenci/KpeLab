@@ -32,8 +32,8 @@ public class RandomPhraseExtractor implements IKpextractor {
         extractor = extr; phraseSetSize = K;
     }
     
-    public List<Phrase> extract(KpeDocument doc) throws Exception {
-        phrases = extractor.extractPhrases(doc.getText());
+    public List<Phrase> extract(String text) throws Exception {
+        phrases = extractor.extractPhrases(text);
         Set<Phrase> uniquePhrases = new TreeSet<Phrase>(phrases);        
         phrases = new ArrayList<Phrase>(uniquePhrases);        
         randomGen = new Random(7786654);

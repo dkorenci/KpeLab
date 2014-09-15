@@ -277,7 +277,7 @@ public class KpeRunner {
         GreedyExtractor extr = new GreedyExtractor(10, conf);        
         String outFolder = KpeConfig.getProperty("devel.tests") + "measure/";
         extr.makeVerbose(outFolder);
-        extr.extract(doc);        
+        extr.extract(doc.getText());        
     }
     
     // 
@@ -388,7 +388,7 @@ public class KpeRunner {
         KpeDocument doc = CorpusSemeval.getDocument("devel/H-83", SolutionPhraseSet.COBINED);        
         GreedyExtractorConfig conf = GreedyExtractorFactory.getESA01PrunedTfCosExtractor();        
         GreedyExtractor extr = new GreedyExtractor(10, conf);        
-        List<Phrase> res = extr.extract(doc);
+        List<Phrase> res = extr.extract(doc.getText());
         System.out.println(res.size());        
     }
     
@@ -524,7 +524,7 @@ public class KpeRunner {
         TfidfKpextractor extractor = new TfidfKpextractor(phExtractor, counter, 50);
         KpeDocument doc = new DocumentReaderHulth(true, CanonicForm.LEMMA)
                 .readDocument("Training/639.abstr");
-        List<Phrase> phrases = extractor.extract(doc);
+        List<Phrase> phrases = extractor.extract(doc.getText());
         for (Phrase ph : phrases) {
             System.out.println(ph);
         }
@@ -549,7 +549,7 @@ public class KpeRunner {
                  .readDocument("Training/1037.abstr");
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
          TfidfKpextractor tfidf = new TfidfKpextractor(extractor, counter, 20);
-         tfidf.extract(doc);
+         tfidf.extract(doc.getText());
      }
             
     public static void testWordCanonization() throws Exception {

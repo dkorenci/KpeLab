@@ -64,7 +64,7 @@ public class F1Evaluator {
     
     public F1Metric evaluateDocument(KpeDocument document) throws Exception {
         List<Phrase> solution = document.getKeyphrases();
-        List<Phrase> result = this.extractor.extract(document);
+        List<Phrase> result = this.extractor.extract(document.getText());
         return evaluateResult(result, solution);
     }
     

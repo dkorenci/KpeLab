@@ -33,15 +33,15 @@ public class EsaSearchPhraseSet implements ISearchPhraseSet {
         wordVectors = vec;
     }
         
-    public void setDocument(KpeDocument doc) throws Exception {
-        extractDocumentPhrases(doc);
+    public void setText(String text) throws Exception {
+        extractDocumentPhrases(text);
         constructDocumentVector();
     }
 
     // extract list of unique phrases
-    private void extractDocumentPhrases(KpeDocument doc) throws UIMAException {
+    private void extractDocumentPhrases(String text) throws UIMAException {
         phExtractor = getExtractor();
-        List<Phrase> ph = phExtractor.extractPhrases(doc.getText());
+        List<Phrase> ph = phExtractor.extractPhrases(text);
         Set<Phrase> uniquePhrases = new TreeSet<Phrase>(ph);        
         documentPhrases = new ArrayList<Phrase>(uniquePhrases);
 //        System.out.println("unique phrases: ");

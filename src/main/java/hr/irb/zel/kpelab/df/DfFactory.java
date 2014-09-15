@@ -5,6 +5,7 @@
 
 package hr.irb.zel.kpelab.df;
 
+import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.corpus.hulth.CorpusHulth;
 import hr.irb.zel.kpelab.corpus.hulth.DocumentReaderHulth;
@@ -28,6 +29,11 @@ public class DfFactory {
     public static final String DF_COUNTER_HULTH_ALL = "counts_hulthAllPhrases_StanfordNlpPos";
     public static final String DF_COUNTER_HULTH_TRAIN = "counts_hulthTrainPhrases_StanfordNlpPos";
     
+    // folder for saving counters
+    private static final String repositoryFolder = KpeConfig.getProperty("cache.folder"); 
+    
+    private static String getFullPath(String fileId) { return  repositoryFolder+"/"+fileId; }
+    
     /** Test counter persistence by creating a counter from documents, 
      * reading a counter from file and comparing counts. */
     public static void testCounterPersistence() throws Exception {
@@ -36,14 +42,14 @@ public class DfFactory {
          PhraseDocumentFrequency counter = 
                  new PhraseDocumentFrequency(PhraseDocumentFrequency.textList(docs), extractor);
          String file = "hulthAllPhrases_OpenNlpPos";
-         counter.saveToFile(file);
+         counter.saveToFile(getFullPath(file));
          
          KpeDocument doc = 
           new DocumentReaderHulth(true, CanonicForm.LEMMA).readDocument("Training/1037.abstr");
          List<Phrase> phrases = extractor.extractPhrases(doc.getText());
          for (Phrase ph : phrases) System.out.println(ph + " : " + counter.countOccurences(ph));
                                  
-         counter = new PhraseDocumentFrequency(file);
+         counter = new PhraseDocumentFrequency(getFullPath(file));
          for (Phrase ph : phrases) System.out.println(ph + " : " + counter.countOccurences(ph));
      }   
 
@@ -53,7 +59,7 @@ public class DfFactory {
          PhraseDocumentFrequency counter = 
                  new PhraseDocumentFrequency(PhraseDocumentFrequency.textList(docs), extractor);
          String file = DF_COUNTER_HULTH_ALL;
-         counter.saveToFile(file);         
+         counter.saveToFile(getFullPath(file));         
      }      
 
      public static void createCounterHulthTrainingDocs() throws Exception {
@@ -62,7 +68,7 @@ public class DfFactory {
          PhraseDocumentFrequency counter = 
                  new PhraseDocumentFrequency(PhraseDocumentFrequency.textList(docs), extractor);
          String file = DF_COUNTER_HULTH_TRAIN;
-         counter.saveToFile(file);         
+         counter.saveToFile(getFullPath(file));         
      }      
 
      public static void createDfSemevalStemOpenNlpTrain() throws Exception {

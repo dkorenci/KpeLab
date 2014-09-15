@@ -27,9 +27,6 @@ public class PhraseDocumentFrequency {
     private Map<Phrase, Integer> phraseCount;
     private int numDocuments;
     
-    // folder for saving counters
-    private static final String repositoryFolder = KpeConfig.getProperty("cache.folder"); 
-
     /** Create counter by extracting phrases from collection and counting occurrences. */
     public PhraseDocumentFrequency(Collection<String> docs, IPhraseExtractor phExtr) throws Exception {
         documents = docs; numDocuments = docs.size();
@@ -45,8 +42,7 @@ public class PhraseDocumentFrequency {
     }
         
     /** Create counter by reading phrase -> count map from file. */
-    public PhraseDocumentFrequency(String counterId) throws Exception {
-        String fileName = repositoryFolder + counterId;
+    public PhraseDocumentFrequency(String fileName) throws Exception {
         FileInputStream file = new FileInputStream(fileName);
         ObjectInputStream ois = new ObjectInputStream(file);
         phraseCount = (Map<Phrase, Integer>)ois.readObject();
@@ -61,8 +57,7 @@ public class PhraseDocumentFrequency {
     }
 
     /** Persist phrase->count mapping to counterId file. */
-    public void saveToFile(String counterId) throws FileNotFoundException, IOException {
-        String fileName = repositoryFolder + counterId;
+    public void saveToFile(String fileName) throws FileNotFoundException, IOException {        
         FileOutputStream file = new FileOutputStream(fileName);
         ObjectOutputStream oos = new ObjectOutputStream(file);
         oos.writeObject(phraseCount);        

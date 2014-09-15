@@ -33,7 +33,8 @@ public class DfFactory {
     public static void testCounterPersistence() throws Exception {
          List<KpeDocument> docs = CorpusHulth.getDocuments("Training", false, CanonicForm.LEMMA);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-         PhraseDocumentFrequency counter = new PhraseDocumentFrequency(docs, extractor);
+         PhraseDocumentFrequency counter = 
+                 new PhraseDocumentFrequency(PhraseDocumentFrequency.textList(docs), extractor);
          String file = "hulthAllPhrases_OpenNlpPos";
          counter.saveToFile(file);
          
@@ -49,7 +50,8 @@ public class DfFactory {
      public static void createCounterHulthAllDocs() throws Exception {
          List<KpeDocument> docs = CorpusHulth.getAllDocuments(false, CanonicForm.LEMMA);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-         PhraseDocumentFrequency counter = new PhraseDocumentFrequency(docs, extractor);
+         PhraseDocumentFrequency counter = 
+                 new PhraseDocumentFrequency(PhraseDocumentFrequency.textList(docs), extractor);
          String file = DF_COUNTER_HULTH_ALL;
          counter.saveToFile(file);         
      }      
@@ -57,7 +59,8 @@ public class DfFactory {
      public static void createCounterHulthTrainingDocs() throws Exception {
          List<KpeDocument> docs = CorpusHulth.getDocuments("Training", false, CanonicForm.LEMMA);
          PosRegexPhraseExtractor extractor = new PosRegexPhraseExtractor(CanonicForm.LEMMA);
-         PhraseDocumentFrequency counter = new PhraseDocumentFrequency(docs, extractor);
+         PhraseDocumentFrequency counter = 
+                 new PhraseDocumentFrequency(PhraseDocumentFrequency.textList(docs), extractor);
          String file = DF_COUNTER_HULTH_TRAIN;
          counter.saveToFile(file);         
      }      

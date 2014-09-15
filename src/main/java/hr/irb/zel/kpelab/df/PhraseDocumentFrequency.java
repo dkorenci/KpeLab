@@ -4,6 +4,8 @@ import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.corpus.KpeDocument;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
+import hr.irb.zel.kpelab.util.ObjectIO;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,12 +44,11 @@ public class PhraseDocumentFrequency {
     }
         
     /** Create counter by reading phrase -> count map from file. */
-    public PhraseDocumentFrequency(String fileName) throws Exception {
-        FileInputStream file = new FileInputStream(fileName);
-        ObjectInputStream ois = new ObjectInputStream(file);
-        phraseCount = (Map<Phrase, Integer>)ois.readObject();
-        numDocuments = ois.readInt();
-        ois.close();
+    public PhraseDocumentFrequency(String fileName) throws Exception {        
+        ObjectIO oio = new ObjectIO(new File(fileName), false);
+        phraseCount = (Map<Phrase, Integer>)oio.readObject();
+        numDocuments = (Integer)oio.readObject();
+        oio.close();
     }
     
     public int countOccurences(Phrase ph) {
@@ -57,12 +58,11 @@ public class PhraseDocumentFrequency {
     }
 
     /** Persist phrase->count mapping to counterId file. */
-    public void saveToFile(String fileName) throws FileNotFoundException, IOException {        
-        FileOutputStream file = new FileOutputStream(fileName);
-        ObjectOutputStream oos = new ObjectOutputStream(file);
-        oos.writeObject(phraseCount);        
-        oos.writeInt(numDocuments);
-        oos.close();
+    public void saveToFile(String fileName) throws FileNotFoundException, IOException {                
+        ObjectIO oio = new ObjectIO(new File(fileName), true);
+        oio.writeObject(phraseCount);
+        oio.writeObject(numDocuments);
+        oio.close();
     }
     
     private void createPhraseCount() throws Exception {

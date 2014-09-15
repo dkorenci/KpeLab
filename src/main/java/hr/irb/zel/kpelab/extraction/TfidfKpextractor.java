@@ -5,6 +5,9 @@ import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
+import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
+import hr.irb.zel.kpelab.util.EnglishWordCounter;
+import hr.irb.zel.kpelab.util.IWordCounter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,22 +19,32 @@ import org.apache.uima.UIMAException;
 public class TfidfKpextractor implements IKpextractor {
 
     PhraseDocumentFrequency counter;
-    PosRegexPhraseExtractor extractor;
+    IPhraseExtractor extractor;
+    IWordCounter wordCounter;
     private int numPhrases;
     private List<TfidfPhrase> tfidfphrases;
     
-    public TfidfKpextractor(PosRegexPhraseExtractor extractor, 
+    public TfidfKpextractor(IPhraseExtractor extractor, 
             PhraseDocumentFrequency counter, int K) {
         this.counter = counter;
         this.extractor = extractor;
         this.numPhrases = K;
+        wordCounter = new EnglishWordCounter();
     }
+    
+    public TfidfKpextractor(IPhraseExtractor extractor, 
+            PhraseDocumentFrequency counter, IWordCounter wcounter, int K) {
+        this.counter = counter;
+        this.extractor = extractor;
+        this.numPhrases = K;
+        this.wordCounter = wcounter;                
+    }    
     
     public String getId() { return "tfidf"; }
     
-    public List<Phrase> extract(String text) throws UIMAException {
+    public List<Phrase> extract(String text) throws Exception {
         List<Phrase> phrases = extractor.extractPhrases(text);
-        int numWords = PhraseHelper.countWords(text);        
+        int numWords = wordCounter.countWords(text);
         // calculate tfidfs 
         tfidfphrases = new ArrayList<TfidfPhrase>();
         for (Phrase ph : phrases) {

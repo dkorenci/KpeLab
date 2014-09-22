@@ -6,6 +6,8 @@ import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.df.PhraseDocumentFrequency;
 import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
+import hr.irb.zel.kpelab.tfidf.ITfidfCalculator;
+import hr.irb.zel.kpelab.tfidf.TfidfCalculator;
 import hr.irb.zel.kpelab.util.EnglishWordCounter;
 import hr.irb.zel.kpelab.util.IWordCounter;
 import java.util.ArrayList;
@@ -21,24 +23,40 @@ public class TfidfKpextractor implements IKpextractor {
     PhraseDocumentFrequency counter;
     IPhraseExtractor extractor;
     IWordCounter wordCounter;
+    ITfidfCalculator tfIdf;
     private int numPhrases;
     private List<TfidfPhrase> tfidfphrases;
     
     public TfidfKpextractor(IPhraseExtractor extractor, 
             PhraseDocumentFrequency counter, int K) {
-        this.counter = counter;
-        this.extractor = extractor;
-        this.numPhrases = K;
-        wordCounter = new EnglishWordCounter();
+        configure(extractor, counter, K, new EnglishWordCounter(), new TfidfCalculator());
     }
     
     public TfidfKpextractor(IPhraseExtractor extractor, 
+            PhraseDocumentFrequency counter, int K, ITfidfCalculator tfidf) {
+        configure(extractor, counter, K, new EnglishWordCounter(), tfidf);
+    }
+        
+    public TfidfKpextractor(IPhraseExtractor extractor, 
             PhraseDocumentFrequency counter, IWordCounter wcounter, int K) {
-        this.counter = counter;
-        this.extractor = extractor;
-        this.numPhrases = K;
-        this.wordCounter = wcounter;                
+        configure(extractor, counter, K, wcounter, new TfidfCalculator());
     }    
+
+    public TfidfKpextractor(IPhraseExtractor extractor, 
+            PhraseDocumentFrequency counter, IWordCounter wcounter, 
+            int K, ITfidfCalculator tfidf) {
+        configure(extractor, counter, K, wcounter, tfidf);
+    }          
+    
+    // configure object with given components
+    private void configure(IPhraseExtractor extractor, 
+            PhraseDocumentFrequency counter, int K, IWordCounter wcounter, ITfidfCalculator tfidf) {
+        this.extractor = extractor;
+        this.counter = counter;        
+        this.numPhrases = K; 
+        this.wordCounter = wcounter;
+        this.tfIdf = tfidf;
+    }
     
     public String getId() { return "tfidf"; }
     
@@ -52,7 +70,7 @@ public class TfidfKpextractor implements IKpextractor {
             tfidfph.phrase = ph;
             int tf = ph.getFrequency();
             int df = counter.countOccurences(ph);
-            tfidfph.tfidf = tfIdf(tf, numWords, df, counter.getNumDocuments());
+            tfidfph.tfidf =  tfIdf.tfIdf(tf, numWords, df, counter.getNumDocuments());
             tfidfphrases.add(tfidfph);
         }        
         // sort phrases by tfidf
@@ -71,7 +89,9 @@ public class TfidfKpextractor implements IKpextractor {
     // construct sorted list of tfidfed phrases
     public void printTfidfs() {
         for (TfidfPhrase ph : tfidfphrases) {
-            System.out.println(ph.phrase + " " + ph.tfidf);
+            String data = String.format("phrase %s ; tfidf %.3f ; tf %d ; df %d  ", 
+             ph.phrase, ph.tfidf, ph.phrase.getFrequency(), counter.countOccurences(ph.phrase));
+            System.out.println(data);
         }
     }
     

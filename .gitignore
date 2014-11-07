@@ -1,17 +1,11 @@
-# maven builds and bookkeeping
-target
-
 # temp files
 output.txt
 
-# ?
--Djava.library.path='
-
-# netbeans project files
-
-nbactions.xml
-nb-configuration.xml
-nbactions-release-profile.xml
+# netbeans project and build files
+dist
+nbproject
+build.xml
+manifest.mf
 
 # cache (for serialized objects)
 cache

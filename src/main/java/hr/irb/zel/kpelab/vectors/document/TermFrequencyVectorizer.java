@@ -5,7 +5,7 @@ import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.util.VectorAggregator;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.List;
 import org.apache.uima.UIMAException;

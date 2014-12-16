@@ -7,8 +7,8 @@ package hr.irb.zel.kpelab.experiments;
 
 import hr.irb.zel.kpelab.vectorcoverage.CoverageMeasures;
 import hr.irb.zel.kpelab.vectorcoverage.QhullCmdCoverage;
-import hr.irb.zel.kpelab.vectors.ArrayRealVector;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.ArrayRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorDiskMap;
 import hr.irb.zel.kpelab.vectors.input.WordToVectorMemMap;
 import java.util.ArrayList;

@@ -35,7 +35,7 @@ import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.util.VectorAggregator;
 import hr.irb.zel.kpelab.util.VectorAggregator.Method;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
-import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
+import vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer;
 import hr.irb.zel.kpelab.vectors.document.TermPageRankVectorizer.SimMod;
 import java.util.List;

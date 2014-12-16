@@ -7,7 +7,7 @@ package hr.irb.zel.kpelab.extraction.greedy.phrase;
 
 import hr.irb.zel.kpelab.phrase.IPhraseScore;
 import hr.irb.zel.kpelab.phrase.Phrase;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.ArrayList;
 import java.util.List;

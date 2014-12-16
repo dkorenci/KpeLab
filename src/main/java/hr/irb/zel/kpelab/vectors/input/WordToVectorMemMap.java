@@ -5,8 +5,8 @@
 
 package hr.irb.zel.kpelab.vectors.input;
 
-import hr.irb.zel.kpelab.vectors.ArrayRealVector;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.ArrayRealVector;
+import vectors.IRealVector;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

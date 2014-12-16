@@ -8,7 +8,7 @@ import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.term.weighting.TfIdfTermWeight;
 import hr.irb.zel.kpelab.util.VectorAggregator;
 import hr.irb.zel.kpelab.util.VectorAggregator.Method;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.ArrayList;
 import java.util.List;

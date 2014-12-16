@@ -1,6 +1,6 @@
 package hr.irb.zel.kpelab.vectorcoverage;
 
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import java.util.List;
 
 public interface ICoverageCalculator {

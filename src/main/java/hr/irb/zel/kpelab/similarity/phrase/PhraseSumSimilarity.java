@@ -2,9 +2,9 @@ package hr.irb.zel.kpelab.similarity.phrase;
 
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.similarity.SimilarityCalculationException;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
-import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
+import vectors.comparison.IVectorComparison;
 import java.util.List;
 
 /**

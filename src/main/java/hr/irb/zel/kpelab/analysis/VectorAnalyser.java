@@ -1,8 +1,8 @@
 
 package hr.irb.zel.kpelab.analysis;
 
-import hr.irb.zel.kpelab.vectors.IRealVector;
-import hr.irb.zel.kpelab.vectors.VectorEntry;
+import vectors.IRealVector;
+import vectors.VectorEntry;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.Collection;
 import java.util.HashSet;

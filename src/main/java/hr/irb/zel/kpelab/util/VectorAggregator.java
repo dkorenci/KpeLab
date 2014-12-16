@@ -2,7 +2,7 @@ package hr.irb.zel.kpelab.util;
 
 import hr.irb.zel.kpelab.term.WeightedTerm;
 import hr.irb.zel.kpelab.term.weighting.ITermWeight;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.Arrays;
 import java.util.Collection;

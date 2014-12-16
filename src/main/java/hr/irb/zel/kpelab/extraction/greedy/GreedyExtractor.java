@@ -5,7 +5,7 @@ import hr.irb.zel.kpelab.extraction.IKpextractor;
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.phrase.PhraseHelper;
 import hr.irb.zel.kpelab.util.Utils;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;

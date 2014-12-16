@@ -1,7 +1,7 @@
 package hr.irb.zel.kpelab.vectors.phrase;
 
 import hr.irb.zel.kpelab.phrase.Phrase;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.util.List;
 import org.apache.commons.math3.linear.ArrayRealVector;

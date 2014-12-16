@@ -5,9 +5,9 @@
 
 package hr.irb.zel.kpelab.vectors.input;
 
-import hr.irb.zel.kpelab.vectors.ArrayRealVector;
-import hr.irb.zel.kpelab.vectors.IRealVector;
-import hr.irb.zel.kpelab.vectors.SparseRealVector;
+import vectors.ArrayRealVector;
+import vectors.IRealVector;
+import vectors.SparseRealVector;
 import static hr.irb.zel.kpelab.vectors.input.WordToVectorMapBase.cacheFolder;
 import java.io.BufferedInputStream;
 import java.io.File;

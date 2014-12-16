@@ -1,7 +1,7 @@
 package hr.irb.zel.kpelab.vectors.input;
 
-import hr.irb.zel.kpelab.vectors.ArrayRealVector;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.ArrayRealVector;
+import vectors.IRealVector;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;

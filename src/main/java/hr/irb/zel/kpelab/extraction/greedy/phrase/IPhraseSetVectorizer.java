@@ -2,7 +2,7 @@ package hr.irb.zel.kpelab.extraction.greedy.phrase;
 
 import hr.irb.zel.kpelab.phrase.Phrase;
 import hr.irb.zel.kpelab.util.IComponent;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 
 /**  Interface for manipulating a phrase set from a greedy algorithm.  */

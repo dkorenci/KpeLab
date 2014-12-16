@@ -1,7 +1,7 @@
 package hr.irb.zel.kpelab.vectorcoverage;
 
 import hr.irb.zel.kpelab.config.KpeConfig;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

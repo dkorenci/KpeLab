@@ -9,7 +9,7 @@ import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.phrase.PosRegexPhraseExtractor;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.util.VectorAggregator;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import hr.irb.zel.kpelab.vectors.input.WordVectorMapFactory;
 import java.util.ArrayList;

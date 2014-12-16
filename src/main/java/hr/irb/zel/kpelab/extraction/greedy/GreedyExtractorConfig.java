@@ -7,7 +7,7 @@ import hr.irb.zel.kpelab.phrase.IPhraseExtractor;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.term.TermExtractor;
 import hr.irb.zel.kpelab.util.IComponent;
-import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
+import vectors.comparison.IVectorComparison;
 import hr.irb.zel.kpelab.vectors.document.IDocumentVectorizer;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import hr.irb.zel.kpelab.vectors.input.TermSetPruneFilter;

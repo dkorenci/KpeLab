@@ -1,7 +1,7 @@
 package hr.irb.zel.kpelab.vectors.document;
 
 import hr.irb.zel.kpelab.util.IComponent;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 
 /** Creates vector representation of a document.  */

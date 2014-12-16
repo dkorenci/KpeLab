@@ -1,9 +1,9 @@
 package hr.irb.zel.kpelab.similarity.word;
 
 import hr.irb.zel.kpelab.similarity.SimilarityCalculationException;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
-import hr.irb.zel.kpelab.vectors.comparison.IVectorComparison;
+import vectors.comparison.IVectorComparison;
 
 /** Calculates word similarity based on similarity of vector representation of words. */
 public class VectorWordSimilarity implements IWordSimilarityCalculator {

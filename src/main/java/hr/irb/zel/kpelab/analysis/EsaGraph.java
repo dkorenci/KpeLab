@@ -10,7 +10,7 @@ import hr.irb.zel.kpelab.config.KpeConfig;
 import hr.irb.zel.kpelab.phrase.CanonicForm;
 import hr.irb.zel.kpelab.phrase.PosExtractorConfig;
 import hr.irb.zel.kpelab.term.TermExtractor;
-import hr.irb.zel.kpelab.vectors.comparison.VectorSimilarity;
+import vectors.comparison.VectorSimilarity;
 import hr.irb.zel.kpelab.vectors.input.IWordToVectorMap;
 import java.io.BufferedWriter;
 import java.io.FileWriter;

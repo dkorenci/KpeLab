@@ -1,7 +1,7 @@
 package hr.irb.zel.kpelab.vectors.input;
 
 import hr.irb.zel.kpelab.util.IComponent;
-import hr.irb.zel.kpelab.vectors.IRealVector;
+import vectors.IRealVector;
 import java.io.IOException;
 import java.util.Collection;
 
